@@ -1567,11 +1567,12 @@ config.formatters.push( {
 * [[VALUE_NO]] relationship discovered following the elimination of options as part of an enumeration.
 </pre>
 </div>
-<div title="LogicProblem" creator="Fred" modifier="Fred" created="201510312313" modified="201510312333" changecount="4">
+<div title="LogicProblem" creator="Fred" modifier="Fred" created="201510312313" modified="201511100235" changecount="5">
 <pre>Main class describing the problem data. It is serializable and can be saved to, or loaded from, an {{{.lpf}}} file.
 Must contain as fields:
-*Categories
-*Items
+*Title, source, notes
+*Categories as a String ArrayList?
+*Items as a String ArrayList?
 *[[Clues|Clue]]
 *[[Constraints|Constraint]]
 
