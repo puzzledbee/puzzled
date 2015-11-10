@@ -6,11 +6,12 @@
 package data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  *
  * @author Fred
  */
 public class LogicProblem implements Serializable {
-    
+    ArrayList<String> Categories;
 }
