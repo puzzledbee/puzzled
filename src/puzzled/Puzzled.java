@@ -18,6 +18,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import puzzled.UI.PuzzledMenuBar;
 
 /**
  *
@@ -31,27 +32,12 @@ public class Puzzled extends Application {
         btn.setText("Say 'Hello World'");
         btn.setOnAction(event -> System.out.println("Hello World")); //using lambda expressions
         
-        MenuBar menuBar = new MenuBar();
-        Menu fileMenu = new Menu("File");
-        fileMenu.getItems().add(new MenuItem("New"));
-
-        MenuItem openMenuItem = new MenuItem("Open");
-        openMenuItem.setOnAction(ae -> openFile());//using lambda expressions
-        fileMenu.getItems().add(openMenuItem);
-        
-        
-        fileMenu.getItems().add(new MenuItem("Save"));
-        
-        MenuItem exitMenuItem = new MenuItem("Exit");
-        exitMenuItem.setOnAction(ae -> Platform.exit());//using lambda expressions
-        fileMenu.getItems().add(exitMenuItem);
-        
-        menuBar.getMenus().add(fileMenu);
         
   
         BorderPane root = new BorderPane();
         root.setCenter(btn);
-        root.setTop(menuBar);
+        
+        root.setTop(new PuzzledMenuBar(this));
         
         Scene scene = new Scene(root, 300, 250);
         
@@ -62,11 +48,18 @@ public class Puzzled extends Application {
         primaryStage.show();
     }
 
-    private static void openFile() {
+    public static void openFile() {
         loadProblem("test");
     }
+
     
+    /*
+    * This routine loads a logic problem file by de-serializing
+    * the object from file
+    * @param myFile string representing the filename to be loaded.
+    */
     private static void loadProblem(String myFile){
+        //check that there are no problem already loaded
         System.out.println("loading logic problem file: " + myFile);
     }
     
@@ -107,6 +100,7 @@ public class Puzzled extends Application {
             
         });
     }
+    
     /**
      * @param args the command line arguments
      */
