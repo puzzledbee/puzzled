@@ -19,6 +19,8 @@ public class PuzzledMenuBar extends MenuBar {
 
     public PuzzledMenuBar(Puzzled myApplication) {
         
+        System.out.println("generating menubar");
+        
         Menu fileMenu = new Menu("File");
         fileMenu.getItems().add(new MenuItem("New"));
 
@@ -26,8 +28,9 @@ public class PuzzledMenuBar extends MenuBar {
         openMenuItem.setOnAction(ae -> myApplication.openFile());//using lambda expressions
         fileMenu.getItems().add(openMenuItem);
         
-        
-        fileMenu.getItems().add(new MenuItem("Save"));
+        MenuItem saveMenuItem = new MenuItem("Save");
+        saveMenuItem.setOnAction(ae -> myApplication.saveFile());//using lambda expressions
+        fileMenu.getItems().add(saveMenuItem);
         
         MenuItem exitMenuItem = new MenuItem("Exit");
         exitMenuItem.setOnAction(ae -> Platform.exit());//using lambda expressions

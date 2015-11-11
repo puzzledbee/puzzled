@@ -5,14 +5,25 @@
  */
 package puzzled;
 
+import data.LogicProblem;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -26,14 +37,23 @@ import puzzled.UI.PuzzledMenuBar;
  */
 public class Puzzled extends Application {
     
+    private LogicProblem logicProblem;
+    private static final Logger fLogger =
+        Logger.getLogger(Puzzled.class.getPackage().getName());
+    
+    public Puzzled() {
+        System.out.println("Puzzled ocnstructor invoked");
+        //logicProblem = new LogicProblem();
+    }
+    
+    
+    
     @Override
     public void start(Stage primaryStage) {
+        
         Button btn = new Button();
         btn.setText("Say 'Hello World'");
         btn.setOnAction(event -> System.out.println("Hello World")); //using lambda expressions
-        
-        
-  
         BorderPane root = new BorderPane();
         root.setCenter(btn);
         
@@ -48,8 +68,9 @@ public class Puzzled extends Application {
         primaryStage.show();
     }
 
-    public static void openFile() {
-        loadProblem("test");
+    public void openFile() {
+        System.out.println("openFile called");
+        loadProblem("test.lpf");
     }
 
     
@@ -58,12 +79,44 @@ public class Puzzled extends Application {
     * the object from file
     * @param myFile string representing the filename to be loaded.
     */
-    private static void loadProblem(String myFile){
+    private void loadProblem(String myFile){
         //check that there are no problem already loaded
         System.out.println("loading logic problem file: " + myFile);
+        
+        try(
+            InputStream file = new FileInputStream("test.lpf");
+            InputStream buffer = new BufferedInputStream(file);
+            ObjectInput input = new ObjectInputStream (buffer);
+          ){
+            //deserialize the object
+            logicProblem = (LogicProblem) input.readObject();
+            //display its data
+            System.out.println(logicProblem);
+          }
+          catch(ClassNotFoundException ex){
+            fLogger.log(Level.SEVERE, "Cannot perform input. Class not found.", ex);
+          }
+          catch(IOException ex){
+            fLogger.log(Level.SEVERE, "Cannot perform input.", ex);
+          }
     }
     
-    
+    public void saveFile(){
+        
+        System.out.println("saveFile called");
+        System.out.println(logicProblem);
+        
+        try (
+          OutputStream file = new FileOutputStream("test.lpf");
+          OutputStream buffer = new BufferedOutputStream(file);
+          ObjectOutput output = new ObjectOutputStream(buffer);
+        ){
+          output.writeObject(logicProblem);
+        }  
+        catch(IOException ex){
+          fLogger.log(Level.SEVERE, "Cannot perform output.", ex);
+        }
+    }
     /*
     * Sets up the drag and drop capability for files and URLs to be
     * dragged and dropped onto the scene. This will load the image into
@@ -105,6 +158,7 @@ public class Puzzled extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        System.out.println("test this output");
         launch(args);
     }
     
