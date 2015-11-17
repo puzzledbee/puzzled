@@ -46,7 +46,7 @@ DAMAGE.
 <!--}}}-->
 
 <!--PRE-HEAD-END-->
-<title> Puzzled notes - used induring the design and development of puzzled </title>
+<title> Puzzled notes - used induring the design and development of Puzzled </title>
 <style id="styleArea" type="text/css">
 #saveTest {display:none;}
 #messageArea {display:none;}
@@ -1318,11 +1318,15 @@ What is the best data structure for dependencies? Is it one tree à la blockchai
 
 </pre>
 </div>
-<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" changecount="1">
+<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201511120117" changecount="5">
 <pre>Design considerations
+*use modern JavaFX components; is it necessary to create a custom control for the grid cell?
 *keep as little as possible in the [[LogicProblem]] class which is serializable. The relationship array, [[HintsTable]], etc. can be re-generated
 *keep ordinals (months, days) text in a text file for each language. Entries should be in the right order so that numerical rules can be applied
-*should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (first level)... and also show all the relationships that depend on it (first level)...</pre>
+*should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (first level)... and also show all the relationships that depend on it (first level)...
+*try to keep classes small; however find a reasonable way to pass object pointers between classes for necessary application context information
+*log plenty, use modern flexible logging framework
+*set mnemonic and shortcut keys for menu items</pre>
 </div>
 <div title="EnableDisableTextClues" modifier="Fred" created="200807181801" tags="Feature">
 <pre>It would be nice if the user had the option of viewing all entered text clues in a table and also have the ability to enable or disable certain clues to assess impact on the puzzle solving algorithms.
@@ -2214,8 +2218,8 @@ search in:
 <pre>Object which simply assign an incrementing sequence number to the [[Relationship]] created.
 The relationship sequence is required to implement the RollBack feature.</pre>
 </div>
-<div title="SiteSubtitle" modifier="Fred" created="200807152356" modified="200807182055">
-<pre>used induring the design and development of [[puzzled|http://puzzled.sf.net]]</pre>
+<div title="SiteSubtitle" modifier="Fred" created="200807152356" modified="201511111307" changecount="1">
+<pre>used induring the design and development of [[Puzzled|http://puzzled.sf.net]]</pre>
 </div>
 <div title="SiteTitle" modifier="Fred" created="200807152355" modified="200807182054">
 <pre>Puzzled notes</pre>

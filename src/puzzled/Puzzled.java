@@ -5,7 +5,7 @@
  */
 package puzzled;
 
-import data.LogicProblem;
+import puzzled.data.LogicProblem;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
@@ -18,7 +18,6 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -38,8 +37,11 @@ import puzzled.UI.PuzzledMenuBar;
 public class Puzzled extends Application {
     
     private LogicProblem logicProblem;
+    
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
+    
+    private boolean dirtyProblem = false;
     
     public Puzzled() {
         System.out.println("Puzzled ocnstructor invoked");
@@ -59,9 +61,11 @@ public class Puzzled extends Application {
         
         root.setTop(new PuzzledMenuBar(this));
         
-        Scene scene = new Scene(root, 300, 250);
+        Scene scene = new Scene(root);
         
         setupDragNDrop(scene);
+        
+        primaryStage.setMaximized(true);
         
         primaryStage.setTitle("Puzzled!");
         primaryStage.setScene(scene);
@@ -91,7 +95,8 @@ public class Puzzled extends Application {
             //deserialize the object
             logicProblem = (LogicProblem) input.readObject();
             //display its data
-            System.out.println(logicProblem);
+            fLogger.setLevel(Level.INFO);
+            fLogger.log(Level.INFO, "trying out the logger."+ logicProblem);
           }
           catch(ClassNotFoundException ex){
             fLogger.log(Level.SEVERE, "Cannot perform input. Class not found.", ex);
@@ -152,6 +157,13 @@ public class Puzzled extends Application {
             event.consume();
             
         });
+    }
+    public Logger getLogger(){
+        return fLogger;
+    }
+    
+    public boolean getDirtyProblem(){
+        return dirtyProblem;
     }
     
     /**
