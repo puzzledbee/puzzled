@@ -1318,9 +1318,11 @@ What is the best data structure for dependencies? Is it one tree à la blockchai
 
 </pre>
 </div>
-<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201511230226" changecount="9">
+<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201511230259" changecount="13">
 <pre>Design considerations
 *use modern JavaFX components for the user interface; is it necessary to create a custom control for the grid cell. Try to bind the [[GridCell]] to the [[Relationship]] in a bi-directional fashion
+*use a modern data structure from the Java Collections Framework for the [[RelationshipTable]]
+*use FXML for the application shell (menu, [[Tabs]], status bar, [[Clue]] text field, etc, and Java code to draw the [[Grid]] / [[Answers]]
 *use lambda expressions for event handling, because the code is cleaner and shorter
 *keep as little as possible in the [[LogicProblem]] class, which is serializable and used for saving/loading the problem to file/from file. The [[RelationshipTable]], [[HintsTable]], etc. can be re-generated
 *keep ordinals (months, days) text in a text file for each language. Entries should be in the right order so that numerical rules can be applied
@@ -1358,15 +1360,18 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
-<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201511230218" changecount="3">
+<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201511230311" changecount="6">
 <pre>Ordered list of nice-to-have features:
+#Add look and feel options.... Look at p.159- for look and feel setting code.  
 #provide zoom in/zoom out capability
 #undo for [[Constraint]] with cascade down tree
 #set/change category or item labels from the [[Grid]]
 #provide &quot;pannable&quot; user interface
 #drag-and-drop {{{.lpf}}} file
+#print API to print the grid with or without the [[Relationship]] (use CSS to hide them?)
 #mnemonic and shortcut keys for menu items
-
+#export to {{{.png}}} snapshot
+#tool tips
 </pre>
 </div>
 <div title="Gender" modifier="Fred" created="200807182037" modified="200807182039" tags="Clue">
@@ -1557,6 +1562,13 @@ config.formatters.push( {
 //}}}
 </pre>
 </div>
+<div title="Layout" creator="Fred" modifier="Fred" created="201511230301" changecount="1">
+<pre>Application layout:
+*BorderPane for application
+*Menu and toolbar in a vertical FlowPane(10,10) in top
+*[[Tabs]] in centre
+*Clue number (label), clue input textfield and button in bottom FlowPane (10,10)Type the text for 'Layout'</pre>
+</div>
 <div title="Logic Elements" modifier="Fred" created="200807160004" modified="201510290122" changecount="2">
 <pre>This tiddler describes the various logic elements used by puzzled.
 !Manual
@@ -1595,7 +1607,7 @@ Must contain as fields:
 
 [[Relationships|Relationship]] are not saved with the [[LogicProblem]].</pre>
 </div>
-<div title="MainMenu" modifier="Fred" created="200807152359" modified="201511230214" changecount="7">
+<div title="MainMenu" modifier="Fred" created="200807152359" modified="201511230255" changecount="8">
 <pre>[[Puzzled|Puzzled]]
 [[Design considerations]]
 [[Features|Features (Wish List)]]
@@ -1607,6 +1619,7 @@ ProblemDatabase
 HintsTable
 [[Objects]]
 [[Grid]]
+[[Next]]
 
 &lt;&lt;calendar thismonth&gt;&gt;
 
@@ -1650,6 +1663,11 @@ HintsTable
 	place.lastChild.title=show?&quot;hide sidebar&quot;:&quot;show sidebar&quot;; // SET TOOLTIP
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
+</div>
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201511230300" changecount="2">
+<pre>*Learn Java Collections Framework
+*Learn what preferred size means in UI components
+*Work on the app [[Layout]]</pre>
 </div>
 <div title="NormalClue" modifier="Fred" created="200807182006" modified="200808030006" tags="Clue">
 <pre>A normal clue is specific enough that further reassessments are not necessary, as it provides VALUE_NO or VALUE_YES relationships at the onset, and will not be provide additional information in the future.  It is distinct from a [[special clue|SpecialClue]].
@@ -1721,7 +1739,7 @@ implements [[Dependable]]
 
 ''Relationships'' will have a //list// of [[Dependable]] objects and a //list// of ''Relationship'' it impacts.</pre>
 </div>
-<div title="RelationshipTable" creator="Fred" modifier="Fred" created="201511012313" modified="201511230225" changecount="5">
+<div title="RelationshipTable" creator="Fred" modifier="Fred" created="201511012313" modified="201511230252" changecount="6">
 <pre>Storage data structure of all [[Relationship]] objects.
 
 Should the problem context (''RelationshipTable'', dirtyness) be kept with the application and generated on load/create?
@@ -2243,6 +2261,15 @@ The relationship sequence is required to implement the RollBack feature.</pre>
 <pre>Contrary to a [[normal clue|NormalClue]], a [[special clue|SpecialClue]] is a text clue that needs to be reassessed periodically because it does not, at the onset, provide sufficient information to determine VALUE_YES relationships.
 *e.g. A's baby is two pounds lighter than B's baby. 
 Note however that some [[special clue|SpecialClue]] such as the example above implies immediate [[VALUE_NO]] relationships consisting of [[extremes|Extremes]] and possibly further [[restricted values|RestrictedValues]] as the puzzle solving progresses. Other special clues such as [[Or]] clues may not lead to any immediate relationship, but will once a clause has been proven true or false.</pre>
+</div>
+<div title="Tabs" creator="Fred" modifier="Fred" created="201511230259" modified="201511230301" changecount="2">
+<pre>Tab list:
+*[[Grid]] (bunch of HBox? or something cleaner?)
+*answers
+*clues list
+
+*Are TableViews the best for answers and clues list. 
+*Are tabs the best way to divide out, can we look at accordion?</pre>
 </div>
 <div title="ToDo" modifier="Fred" created="200807181952" modified="201510291105" changecount="2">
 <pre>*RollBack handling

@@ -54,11 +54,7 @@ public class Puzzled extends Application {
     @Override
     public void start(Stage primaryStage) {
         
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(event -> System.out.println("Hello World")); //using lambda expressions
         BorderPane root = new BorderPane();
-        root.setCenter(btn);
         
         root.setTop(new PuzzledMenuBar(this));
         root.setCenter(new Grid(this));
