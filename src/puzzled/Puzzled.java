@@ -28,6 +28,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import puzzled.UI.Grid;
 import puzzled.UI.PuzzledMenuBar;
 
 /**
@@ -60,7 +61,7 @@ public class Puzzled extends Application {
         root.setCenter(btn);
         
         root.setTop(new PuzzledMenuBar(this));
-        
+        root.setCenter(new Grid(this));
         Scene scene = new Scene(root);
         
         setupDragNDrop(scene);

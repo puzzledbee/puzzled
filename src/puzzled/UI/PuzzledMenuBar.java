@@ -24,9 +24,9 @@ public class PuzzledMenuBar extends MenuBar {
         myApplication.getLogger().log(Level.INFO, "generating menubar");
         
         Menu fileMenu = new Menu("_File");
-        fileMenu.getItems().add(new MenuItem("_New"));
+        fileMenu.getItems().add(new MenuItem("_New..."));
 
-        MenuItem openMenuItem = new MenuItem("_Open");
+        MenuItem openMenuItem = new MenuItem("_Open...");
         openMenuItem.setOnAction(ae -> myApplication.openFile());//using lambda expressions
         openMenuItem.setAccelerator(
             KeyCombination.keyCombination("SHORTCUT+O")

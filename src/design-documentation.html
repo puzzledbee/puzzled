@@ -1318,15 +1318,15 @@ What is the best data structure for dependencies? Is it one tree à la blockchai
 
 </pre>
 </div>
-<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201511120117" changecount="5">
+<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201511230226" changecount="9">
 <pre>Design considerations
-*use modern JavaFX components; is it necessary to create a custom control for the grid cell?
-*keep as little as possible in the [[LogicProblem]] class which is serializable. The relationship array, [[HintsTable]], etc. can be re-generated
+*use modern JavaFX components for the user interface; is it necessary to create a custom control for the grid cell. Try to bind the [[GridCell]] to the [[Relationship]] in a bi-directional fashion
+*use lambda expressions for event handling, because the code is cleaner and shorter
+*keep as little as possible in the [[LogicProblem]] class, which is serializable and used for saving/loading the problem to file/from file. The [[RelationshipTable]], [[HintsTable]], etc. can be re-generated
 *keep ordinals (months, days) text in a text file for each language. Entries should be in the right order so that numerical rules can be applied
 *should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (first level)... and also show all the relationships that depend on it (first level)...
 *try to keep classes small; however find a reasonable way to pass object pointers between classes for necessary application context information
-*log plenty, use modern flexible logging framework
-*set mnemonic and shortcut keys for menu items</pre>
+*log plenty, use modern flexible logging framework</pre>
 </div>
 <div title="EnableDisableTextClues" modifier="Fred" created="200807181801" tags="Feature">
 <pre>It would be nice if the user had the option of viewing all entered text clues in a table and also have the ability to enable or disable certain clues to assess impact on the puzzle solving algorithms.
@@ -1358,16 +1358,29 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
+<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201511230218" changecount="3">
+<pre>Ordered list of nice-to-have features:
+#provide zoom in/zoom out capability
+#undo for [[Constraint]] with cascade down tree
+#set/change category or item labels from the [[Grid]]
+#provide &quot;pannable&quot; user interface
+#drag-and-drop {{{.lpf}}} file
+#mnemonic and shortcut keys for menu items
+
+</pre>
+</div>
 <div title="Gender" modifier="Fred" created="200807182037" modified="200807182039" tags="Clue">
 <pre>Using the gender of names in the clue text:
 e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesecake
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201511040256" tags="Object" changecount="2">
-<pre>''Grid'' descends from Shape also with a whole lot of lines and text; static. It needs not to be part of the [[LogicProblem]], but can be generated/drawn upon loading/creating by the [[application|Puzzled]]
-
-It would be nice if the user could double-click the Grid text to set/change text (UI design pattern to bind to [[Items]] or [[Categories]], but maybe this is not the best/fastest way to populate these values at the onset.</pre>
+<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201511230216" tags="Object" changecount="3">
+<pre>''Grid'' is a container of the category and item labels as well as the data structure of [[GridCell]].
+It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]]</pre>
+</div>
+<div title="GridCell" creator="Fred" modifier="Fred" created="201511230220" modified="201511230221" tags="Object" changecount="3">
+<pre>Class that extends StackPane which can be set to [[VALUE_YES]], [[VALUE_NO]] or [[VALUE_UNKNOWN]] like its corresponding [[Relationship]] object. It can draw a circle or a cross, and has a context menu allowing the user to set a [[Constraint]]</pre>
 </div>
 <div title="HintsTable" modifier="Fred" created="200807202011" modified="201510291107" tags="Object" changecount="2">
 <pre>A table used to capture relationship between items that have a mathematical expression such as equal, less than, more than, n less than, n more than, unequal (where n is called [[offset]].  Once captured in the HintsTable, new relationships can be discovered using one of the three algebraic method discovered (see LogicElements).  A HintsTable looks like:
@@ -1582,9 +1595,10 @@ Must contain as fields:
 
 [[Relationships|Relationship]] are not saved with the [[LogicProblem]].</pre>
 </div>
-<div title="MainMenu" modifier="Fred" created="200807152359" modified="201511040256" changecount="6">
+<div title="MainMenu" modifier="Fred" created="200807152359" modified="201511230214" changecount="7">
 <pre>[[Puzzled|Puzzled]]
 [[Design considerations]]
+[[Features|Features (Wish List)]]
 [[RelationshipTable]]
 [[Relationship]]
 [[Logic Elements]]
@@ -1653,23 +1667,24 @@ Spring was completed three years earlier than the painting by Max Dawkins
 * pay special attention to problem 5 (Dress Design) of the Pocket Puzzles Logic Puzzle 1 booklet which uses positional information (could it be handled as a normal category with less than / greater than??)
 * the months of the year and the days of the week need to be considered as numerical values as it leads to eliminations of values</pre>
 </div>
-<div title="Objects" modifier="Fred" created="200807210014" modified="201511040246" changecount="8">
+<div title="Objects" modifier="Fred" created="200807210014" modified="201511230224" changecount="13">
 <pre>Follows is a list of objects:
-See also [[Design considerations]]
 
 [[Puzzled]] -&gt; main application
 *instantiates the logic processors
 **can create, load or save [[LogicProblems|LogicProblems]]
 *loading a [[LogicProblem]] will follow the following steps:
 **de-serialize the {{{.lpf}}}
-**draw the blank [[Grid]]
-**generates the Relationship array/ArrayList/...
+**generates the Relationship data structure
+**assembles the [[Grid]] of [[GridCells|GridCell]]
 ***setting each relationship has the impact of drawing them on the [[Grid]] (if the [[ApplicationSettings]] says to do that)
 [[LogicProblem]] (can be serialized)
 *has categories (list/array?)
 *has items (should be easy to retrieve a relationship between two items; no two items should have equivalent strings)
-[[Clues|Clue]]
-[[Rules|Rule]]
+[[Clues|Clue]] and [[CategoryRules]]
+[[Constraints|Constraint]]
+
+See also [[Design considerations]]
 
 &lt;&lt;tagging Object&gt;&gt;</pre>
 </div>
@@ -1706,8 +1721,8 @@ implements [[Dependable]]
 
 ''Relationships'' will have a //list// of [[Dependable]] objects and a //list// of ''Relationship'' it impacts.</pre>
 </div>
-<div title="RelationshipTable" creator="Fred" modifier="Fred" created="201511012313" modified="201511040243" changecount="4">
-<pre>Storage array of all [[Relationship]] objects.
+<div title="RelationshipTable" creator="Fred" modifier="Fred" created="201511012313" modified="201511230225" changecount="5">
+<pre>Storage data structure of all [[Relationship]] objects.
 
 Should the problem context (''RelationshipTable'', dirtyness) be kept with the application and generated on load/create?
 
