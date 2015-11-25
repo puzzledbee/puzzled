@@ -1314,7 +1314,7 @@ function addRemindersToPopup(p,when,format)
 <div title="Dependable" modifier="Fred" created="201510290103" modified="201511012307" changecount="5">
 <pre>Interface against which comply all objects which can be used to infer [[Relationship]], such as a [[Clue]], an [[interactive action]], and a [[Relationship]]. For example, if a user clicks the grid and sets a relationship to [[VALUE_YES]], the [[Cross|logic elements]] can be filled out using [[VALUE_NO]] which depend on the user interactive action. The first relationship itself depends on the [[interactive action]].
 
-What is the best data structure for dependencies? Is it one tree à la blockchain, or is there a tree to/from each relationship? Is there such a thing as a double-linked tree (many to one to many)? E.g. each tree node has ArrayList of predecessors (derived from) and ArrayList of successors (impacting)?
+What is the best data structure for dependencies? Is it one tree ࠬa blockchain, or is there a tree to/from each relationship? Is there such a thing as a double-linked tree (many to one to many)? E.g. each tree node has ArrayList of predecessors (derived from) and ArrayList of successors (impacting)?
 
 </pre>
 </div>
@@ -1360,12 +1360,12 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
-<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201511230311" changecount="6">
+<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201511230327" changecount="7">
 <pre>Ordered list of nice-to-have features:
 #Add look and feel options.... Look at p.159- for look and feel setting code.  
 #provide zoom in/zoom out capability
 #undo for [[Constraint]] with cascade down tree
-#set/change category or item labels from the [[Grid]]
+#set/change category or item labels from the [[Grid]] using [[Lightweight dialogs|http://fxexperience.com/controlsfx/features/dialogs/]]
 #provide &quot;pannable&quot; user interface
 #drag-and-drop {{{.lpf}}} file
 #print API to print the grid with or without the [[Relationship]] (use CSS to hide them?)
@@ -1380,12 +1380,17 @@ e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesec
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201511230216" tags="Object" changecount="3">
-<pre>''Grid'' is a container of the category and item labels as well as the data structure of [[GridCell]].
-It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]]</pre>
+<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201511231150" tags="Object" changecount="5">
+<pre>''Grid'' is a visual container of the category and item labels as well as the data structure of [[GridCell]].
+It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]].
+
+TilePane simpler to setup than the set of VBox containing HBox, but does not take the row/column distribution when application is maximized.
+Take a look at eGridPane also and the controlsFX GridView</pre>
 </div>
-<div title="GridCell" creator="Fred" modifier="Fred" created="201511230220" modified="201511230221" tags="Object" changecount="3">
-<pre>Class that extends StackPane which can be set to [[VALUE_YES]], [[VALUE_NO]] or [[VALUE_UNKNOWN]] like its corresponding [[Relationship]] object. It can draw a circle or a cross, and has a context menu allowing the user to set a [[Constraint]]</pre>
+<div title="GridCell" creator="Fred" modifier="Fred" created="201511230220" modified="201511231150" tags="Object" changecount="4">
+<pre>Class that extends StackPane which can be set to [[VALUE_YES]], [[VALUE_NO]] or [[VALUE_UNKNOWN]] like its corresponding [[Relationship]] object. It can draw a circle or a cross, and has a context menu allowing the user to set a [[Constraint]].
+
+Setting the visible property of the primitives appear or add/removing the primitives appear equivalent.</pre>
 </div>
 <div title="HintsTable" modifier="Fred" created="200807202011" modified="201510291107" tags="Object" changecount="2">
 <pre>A table used to capture relationship between items that have a mathematical expression such as equal, less than, more than, n less than, n more than, unequal (where n is called [[offset]].  Once captured in the HintsTable, new relationships can be discovered using one of the three algebraic method discovered (see LogicElements).  A HintsTable looks like:
@@ -1562,12 +1567,21 @@ config.formatters.push( {
 //}}}
 </pre>
 </div>
-<div title="Layout" creator="Fred" modifier="Fred" created="201511230301" changecount="1">
+<div title="Layout" creator="Fred" modifier="Fred" created="201511230301" modified="201511231200" changecount="10">
 <pre>Application layout:
 *BorderPane for application
 *Menu and toolbar in a vertical FlowPane(10,10) in top
 *[[Tabs]] in centre
-*Clue number (label), clue input textfield and button in bottom FlowPane (10,10)Type the text for 'Layout'</pre>
+*Clue number (label), clue input textfield and button in bottom FlowPane (10,10)Type the text for 'Layout'
+
+For n categories, the layout of the grid is as follows:
+||Cat 2|Cat n|Cat n-1|...|Cat 4|Cat 3|
+|Cat 1|||||||
+|Cat 3|||||||
+|Cat 4||||||~|
+|...|||||~|~|
+|Cat n||||~|~|~|
+</pre>
 </div>
 <div title="Logic Elements" modifier="Fred" created="200807160004" modified="201510290122" changecount="2">
 <pre>This tiddler describes the various logic elements used by puzzled.
@@ -1664,8 +1678,9 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201511230300" changecount="2">
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201511230332" changecount="3">
 <pre>*Learn Java Collections Framework
+*Check out [[GridView|http://controlsfx.bitbucket.org/org/controlsfx/control/GridView.html]] from ControlsFX.
 *Learn what preferred size means in UI components
 *Work on the app [[Layout]]</pre>
 </div>

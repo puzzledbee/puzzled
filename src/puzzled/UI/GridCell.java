@@ -33,7 +33,7 @@ public class GridCell extends StackPane {
         //super();
         application = myApplication;
         
-        myRectangle.setStroke(Color.RED);
+        myRectangle.setStroke(Color.BLACK);
         circle.setMouseTransparent(true);
         circle.setStroke(Color.BLUE);
         
@@ -54,28 +54,32 @@ public class GridCell extends StackPane {
         contextMenu.getItems().addAll(item1,item2, item3);
         
         myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));
-        
-        this.getChildren().add(myRectangle);
+        clear();
+        this.getChildren().addAll(myRectangle,circle,line1,line2);
     }
 
     
     public void setFalse() {
-        this.getChildren().remove(circle);
-        this.getChildren().addAll(line1,line2);
+        circle.setVisible(false);
+        line1.setVisible(true);
+        line2.setVisible(true);
         application.getLogger().log(Level.INFO, "setting FALSE");
     }
      
     
     public void setTrue() {
-        this.getChildren().removeAll(line1,line2);
-        this.getChildren().add(circle);
+        circle.setVisible(true);
+        line1.setVisible(false);
+        line2.setVisible(false);
         application.getLogger().log(Level.INFO, "setting TRUE");
     }
  
 
 
     public void clear() {
-        this.getChildren().removeAll(line1,line2, circle);
+        circle.setVisible(false);
+        line1.setVisible(false);
+        line2.setVisible(false);
         application.getLogger().log(Level.INFO, "setting UNKNOWN");
     }
   

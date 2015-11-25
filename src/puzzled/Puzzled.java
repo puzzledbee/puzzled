@@ -21,15 +21,13 @@ import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import puzzled.UI.Grid;
-import puzzled.UI.PuzzledMenuBar;
 
 /**
  *
@@ -50,14 +48,18 @@ public class Puzzled extends Application {
     }
     
     
-    
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception{
         
-        BorderPane root = new BorderPane();
+        Parent root = FXMLLoader.load(getClass().getResource("Puzzled.fxml"));
         
-        root.setTop(new PuzzledMenuBar(this));
-        root.setCenter(new Grid(this));
+        //BorderPane root = new BorderPane();
+        
+        //root.setTop(new PuzzledMenuBar(this));
+        
+        //gridPane.setCenter(new Grid(this));
+        //clueField.setText("test this");
+        
         Scene scene = new Scene(root);
         
         setupDragNDrop(scene);
