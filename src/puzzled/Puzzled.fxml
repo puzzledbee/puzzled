@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -7,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="puzzled.PuzzledController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="puzzled.PuzzledController">
    <top>
       <VBox prefHeight="75.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -32,7 +33,9 @@
             </MenuBar>
             <ToolBar prefHeight="40.0" prefWidth="200.0">
               <items>
-                <Button mnemonicParsing="false" text="Button" />
+                <Button mnemonicParsing="false" style="-fx-graphic: url(&quot;icons/puzzle.svg&quot;);" text="New" />
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" style="-fx-graphic: url(&quot;icons/puzzle.png&quot;);" text="Open" />
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" style="-fx-graphic: url(&quot;resources/new.gif&quot;);" text="Save" />
               </items>
             </ToolBar>
          </children>
@@ -47,7 +50,14 @@
                      <children>
                         <Button layoutX="8.0" layoutY="8.0" mnemonicParsing="false" text="-" />
                         <Button layoutX="42.0" layoutY="8.0" mnemonicParsing="false" text="+" />
-                        <BorderPane id="gridPane" fx:id="gridPane" prefHeight="226.0" prefWidth="591.0" />
+                        <BorderPane id="gridPane" fx:id="gridPane" prefHeight="628.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <bottom>
+                              <TilePane alignment="CENTER_RIGHT" prefHeight="48.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Button mnemonicParsing="false" style="-fx-border-radius: 100;" text="1" />
+                                 </children>
+                              </TilePane>
+                           </bottom></BorderPane>
                      </children>
                   </AnchorPane>
             </content>
@@ -73,8 +83,8 @@
                <children>
                   <Label prefHeight="21.0" prefWidth="49.0" text="Clue:" textAlignment="RIGHT" />
                   <Label alignment="CENTER" prefHeight="21.0" prefWidth="22.0" text="1" textAlignment="CENTER" textFill="#1b2ab5" />
-                  <TextField id="textField" fx:id="clueField" prefHeight="31.0" prefWidth="411.0" promptText="enter a clue here" />
-                  <Button mnemonicParsing="false" text="Submit" onAction="#handleButtonAction"/>
+                  <TextField id="textField" fx:id="clueField" prefHeight="31.0" prefWidth="816.0" promptText="enter a clue here" />
+                  <Button mnemonicParsing="false" onAction="#handleButtonAction" text="Submit" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" top="10.0" />

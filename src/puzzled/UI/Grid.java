@@ -5,11 +5,9 @@
  */
 package puzzled.UI;
 
-import javafx.geometry.Insets;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -20,11 +18,14 @@ import puzzled.Puzzled;
  */
 public class Grid extends HBox {
 
-    Puzzled application;
+    //PuzzledController controller;
     
-    public Grid(Puzzled myApplication) {
+    private static final Logger fLogger =
+        Logger.getLogger(Puzzled.class.getPackage().getName());
+    
+    public Grid() {
         //super();
-        application = myApplication;
+        //controller = myController;
 
         this.setAlignment(Pos.CENTER);
         //this.setSpacing(10);
@@ -42,7 +43,7 @@ public class Grid extends HBox {
         tPane.setMaxWidth(155);
         tPane.setAlignment(Pos.CENTER);
         for (int i = 0; i < 9; i++) {
-            tPane.getChildren().add(new GridCell(application));
+            tPane.getChildren().add(new GridCell());
         }
         
         getChildren().addAll(labels,tPane);

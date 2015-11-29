@@ -931,6 +931,9 @@ config.options.txtCalStartOfWeekend=5;
 config.macros.calendar.journalDateFmt=&quot;DDD MMM 0DD YYYY&quot;;
 //}}}</pre>
 </div>
+<div title="Category" creator="Fred" modifier="Fred" created="201511290206" changecount="1">
+<pre>Name of a group of related [[items|Item]]</pre>
+</div>
 <div title="CategoryRules" modifier="Fred" created="200807202354" modified="200807211448" tags="Clue">
 <pre>Type of text clue in which rules are specified between entire categories rather than between items.  Categories need to be considered by their numerical values.  The category rules need to be parsed into one or more RestrictedValues.
 *e.g. The number of pulleys is never the same as the number of levers
@@ -1360,7 +1363,7 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
-<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201511230327" changecount="7">
+<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201511290205" changecount="8">
 <pre>Ordered list of nice-to-have features:
 #Add look and feel options.... Look at p.159- for look and feel setting code.  
 #provide zoom in/zoom out capability
@@ -1371,6 +1374,7 @@ Graphically entered relationships need to be listed as well.</pre>
 #print API to print the grid with or without the [[Relationship]] (use CSS to hide them?)
 #mnemonic and shortcut keys for menu items
 #export to {{{.png}}} snapshot
+#auto-complete when entering [[clues|Clue]], based on recognized [[items|Item]] or [[category|Category]] names
 #tool tips
 </pre>
 </div>
@@ -1567,12 +1571,16 @@ config.formatters.push( {
 //}}}
 </pre>
 </div>
-<div title="Layout" creator="Fred" modifier="Fred" created="201511230301" modified="201511231200" changecount="10">
+<div title="Item" creator="Fred" modifier="Fred" created="201511290206" changecount="1">
+<pre>element of a [[Category]]. A [[Relationship]] is defined between any two item from two different [[categories|Category]].</pre>
+</div>
+<div title="Layout" creator="Fred" modifier="Fred" created="201511230301" modified="201511290207" changecount="11">
 <pre>Application layout:
 *BorderPane for application
 *Menu and toolbar in a vertical FlowPane(10,10) in top
 *[[Tabs]] in centre
 *Clue number (label), clue input textfield and button in bottom FlowPane (10,10)Type the text for 'Layout'
+*bottom-right of the grid would be a number for each clue, which can be used when showing dependencies to a text clue (using arrows)
 
 For n categories, the layout of the grid is as follows:
 ||Cat 2|Cat n|Cat n-1|...|Cat 4|Cat 3|
@@ -2296,6 +2304,16 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *how to handle &gt; &lt; : as special clue only or in table (ref [[Type 2]])
 *[[delta]] (no direction for offset): SpecialClue until sign is determined and then into HintsTable, or dormant in the HintsTable as an unsigned [[offset]] used for RestrictedValues only?? (should a delta simply be considered as an [[Or]] rule?)
 *[[Enumeration]] handling, [[Or]] handling</pre>
+</div>
+<div title="Toolbar" creator="Fred" modifier="Fred" created="201511290154" changecount="1">
+<pre>Under the menu there will be a toolbar containing frequently-used buttons with graphic+text.
+
+FXML graphic tips:
+*Using the {{{-fx-graphic}}} CSS property to set the image is recommended over other approaches such as {{{-fx-background-}}}... or an {{{ImageView}}} object inside the {{{Button}}}.
+*{{{.png}}} works best {{{.svg}}} did not, and {{{.gif}}} worked if loaded directly from the Internet but not from local file.
+*In {{{SceneBuilder}}}, the button graphic icon will not show when pointing to a local file (relative file location not right). The icon will however show once the application launched. 
+*Place icons in the {{{resources/icons/}}} directory (same level as src in NetBeans) and referred to as url(&quot;icons/new.png&quot;) provided the {{{resources}}} folder was added in NetBeans project {{{properties}}}-&gt; {{{sources}}}.
+*Showing the content of the running puzzled.jar file using {{{unzip -l}}} and watching for error messages loading the image file in the running output helps troubleshooting any issue.</pre>
 </div>
 <div title="Type 1" modifier="Fred" created="200807202054" modified="200807211502">
 <pre>| offset~~1~~ = offset~~2~~ | AND | unknown_x~~1~~ = unknown_x~~2~~ | AND | cat_x~~1~~ = cat_x~~2~~ | AND | item_x~~1~~ &amp;ne; item_x~~2~~ | AND | unknown_y~~1~~ = unknown_y~~2~~ | AND | cat_y~~1~~ &amp;ne; cat_y~~2~~ | =&gt; | rel (cat_y~~1~~, item_y~~1~~, cat_y~~2~~, item_y~~2~~) = VALUE_NO |

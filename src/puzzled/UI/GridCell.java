@@ -5,7 +5,7 @@
  */
 package puzzled.UI;
 
-import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -22,16 +22,18 @@ import puzzled.Puzzled;
  */
 public class GridCell extends StackPane {
 
-    Puzzled application;
+    private static final Logger fLogger =
+        Logger.getLogger(Puzzled.class.getPackage().getName());
+    
     Rectangle myRectangle = new Rectangle(50, 50, Color.TRANSPARENT);
     private Circle circle = new Circle(20.0f,Color.TRANSPARENT);
     private Line line1 = new Line(5,5,45,45);
     private Line line2 = new Line(45,5,5,45);
     private ContextMenu contextMenu = new ContextMenu();
 
-    public GridCell(Puzzled myApplication) {
+    public GridCell() {
         //super();
-        application = myApplication;
+        
         
         myRectangle.setStroke(Color.BLACK);
         circle.setMouseTransparent(true);
@@ -63,7 +65,7 @@ public class GridCell extends StackPane {
         circle.setVisible(false);
         line1.setVisible(true);
         line2.setVisible(true);
-        application.getLogger().log(Level.INFO, "setting FALSE");
+        fLogger.info("setting FALSE");
     }
      
     
@@ -71,7 +73,7 @@ public class GridCell extends StackPane {
         circle.setVisible(true);
         line1.setVisible(false);
         line2.setVisible(false);
-        application.getLogger().log(Level.INFO, "setting TRUE");
+        fLogger.info("setting TRUE");
     }
  
 
@@ -80,7 +82,7 @@ public class GridCell extends StackPane {
         circle.setVisible(false);
         line1.setVisible(false);
         line2.setVisible(false);
-        application.getLogger().log(Level.INFO, "setting UNKNOWN");
+        fLogger.info("setting UNKNOWN");
     }
   
 }
