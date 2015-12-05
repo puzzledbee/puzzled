@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -45,7 +46,8 @@ public class Puzzled extends Application {
         
         Scene scene = new Scene(root);
         
-        
+        //primaryStage.getIcons().add(new Image("file:puzzle_16.png"));
+        //primaryStage.getIcons().add(new Image("file:puzzle_32.png"));
         primaryStage.setMaximized(true);
         
         primaryStage.setTitle("Puzzled!");

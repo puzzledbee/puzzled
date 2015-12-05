@@ -1,0 +1,15 @@
+#btn_new {          
+    -fx-graphic: url("/icons/puzzle_32.png");
+}
+
+#btn_open {          
+    -fx-graphic: url("/icons/puzzle_16.png");
+}
+
+.tool-bar .button {
+    -fx-text-fill: #673AB7;
+}
+
+.tool-bar .button:hover {
+       -fx-text-fill: #ff0000;
+}

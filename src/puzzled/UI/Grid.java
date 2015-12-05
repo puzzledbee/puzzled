@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.PopOver;
 import puzzled.Puzzled;
 /**
  *
@@ -23,6 +24,9 @@ public class Grid extends HBox {
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
     
+    
+    private PopOver myPopOver = new PopOver(new Label("hello!"));
+    
     public Grid() {
         //super();
         //controller = myController;
@@ -33,8 +37,14 @@ public class Grid extends HBox {
           
         VBox labels = new VBox(25);
         labels.setAlignment(Pos.CENTER);
+        
+        
+        
         for (int j = 0; j < 3; j++) {
-            labels.getChildren().add(new Label("test 1 2 3"));
+            Label myLabel = new Label("test 1 2 3");
+            
+            myLabel.setOnMouseClicked(e->myPopOver.show(myLabel));
+            labels.getChildren().add(myLabel);
         }      
         
 

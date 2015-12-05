@@ -9,8 +9,7 @@
 package puzzled.data;
 
 import javafx.beans.property.SimpleStringProperty;
-
-
+import javafx.beans.property.StringProperty;
 
 /**
  *
@@ -18,14 +17,18 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class Item {
     
-    private SimpleStringProperty text = new SimpleStringProperty();
+    private StringProperty itemText = new SimpleStringProperty();
+    
+    public Item(String mytext){
+        itemText.set(mytext);
+    }
     
     public void setText(String newText) {
-        text.set(newText);
+        itemText.set(newText);
     }
     
     public String getText() {
-        return text.getValue();
+        return itemText.getValue();
     }
     
 }

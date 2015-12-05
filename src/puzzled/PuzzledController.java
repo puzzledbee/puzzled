@@ -21,13 +21,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -68,9 +65,6 @@ public class PuzzledController implements Initializable {
             if (newvalue!=null) setupDragNDrop(gridPane.getScene());
         });
     }    
-    
-    
-    
     
     
     public Logger getLogger(){

@@ -6,26 +6,39 @@
 package puzzled.data;
 
 import java.util.ArrayList;
+import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  *
  * @author Fred
  */
 public class Category {
-    private SimpleStringProperty text = new SimpleStringProperty();
+    private StringProperty categoryName = new SimpleStringProperty();
+    private CategoryType categoryType = CategoryType.NORMAL;
+    private List<Item> items = new ArrayList<Item>();
     
-    private ArrayList<Item> items = new ArrayList<Item>();
+    public Category(String myTitle,List<Item> myItems) {
+        categoryName.set(myTitle);
+        items = myItems;
+    }
+    public void setType(CategoryType type_arg) {
+        categoryType = type_arg;
+    }
+    public CategoryType getType(){
+        return categoryType;
+    }
     
     public void setText(String myText){
-        text.set(myText);
+        categoryName.set(myText);
     }
     
     public String getText(){
-        return text.getValue();
+        return categoryName.getValue();
     }
     
-    public ArrayList<Item> getItems(){
+    public List<Item> getItems(){
         return items;
     }
     

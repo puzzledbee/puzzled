@@ -521,6 +521,9 @@ noscript {display:none;} /* Fixes a feature in Firefox 1.5.0.2 where print previ
 </div>
 <!--POST-SHADOWAREA-->
 <div id="storeArea">
+<div title="Answers" creator="Fred" modifier="Fred" created="201511290246" changecount="1">
+<pre>Simple table of the answers, listing [[categories|Category]] in the column heading and all associated [[items|Item]] on each row.</pre>
+</div>
 <div title="CalendarPlugin" creator="Fred" modifier="Fred" created="201510290132" tags="systemConfig" changecount="1">
 <pre>/***
 |Name|CalendarPlugin|
@@ -934,19 +937,23 @@ config.macros.calendar.journalDateFmt=&quot;DDD MMM 0DD YYYY&quot;;
 <div title="Category" creator="Fred" modifier="Fred" created="201511290206" changecount="1">
 <pre>Name of a group of related [[items|Item]]</pre>
 </div>
-<div title="CategoryRules" modifier="Fred" created="200807202354" modified="200807211448" tags="Clue">
+<div title="CategoryRules" modifier="Fred" created="200807202354" modified="201512050411" tags="Clue" changecount="1">
 <pre>Type of text clue in which rules are specified between entire categories rather than between items.  Categories need to be considered by their numerical values.  The category rules need to be parsed into one or more RestrictedValues.
 *e.g. The number of pulleys is never the same as the number of levers
 *e.g. The end weight is no less than 10 pounds fewer than the starting weight
 CategoryRules can be of the NormalClue type but also of the SpecialClue type, meaning the rule needs to be re-examined later on during the solving process. The problem //~PocketPuzzle Logic Puzzles 1 Unhappy New Year (problem 16) has both:
 *e.g. (implicit) none of the women sent a card to herself (NormalClue)
-*e.g. (in the header) none of the women sent a card to the same person from which she received a card (SpecialClue)</pre>
+*e.g. (in the header) none of the women sent a card to the same person from which she received a card (SpecialClue)
+
+See also [[SpecialCategory]]</pre>
 </div>
-<div title="Clue" creator="Fred" modifier="Fred" created="201510290139" modified="201510290150" tags="Object Dependable" changecount="4">
+<div title="Clue" creator="Fred" modifier="Fred" created="201510290139" modified="201511290239" tags="Object Dependable" changecount="6">
 <pre>Object which represents a user-entered clue, in pseudo-english.
 Clues are retained in a [[ClueTable]] and sometimes may generate an entry in a [[HintsTable]].
 
-''Clues'' have a //list// of ''Relationship'' it impacts so that if a change is made, all relationships that were inferred need to be removed recursively and re-evaluated.</pre>
+''Clues'' have a //list// of ''Relationship'' it impacts so that if a change is made, all relationships that were inferred need to be removed recursively and re-evaluated.
+
+There should be a ''Clue Index'' showing circled clue number as clues are entered, in the bottom right of the grid. When [[investigating|Investigate]], arrows from [[GridCells|GridCell]] depending on clues should point to the clue index.</pre>
 </div>
 <div title="Clue Types" modifier="Fred" created="200807161535" modified="201510290105" tags="Clue menu">
 <pre>The basic categories of clues for the software are as follows:
@@ -1314,10 +1321,12 @@ function addRemindersToPopup(p,when,format)
 <div title="DefaultTiddlers" modifier="Fred" created="200807161402" modified="200807182049">
 <pre>[[Puzzled]]</pre>
 </div>
-<div title="Dependable" modifier="Fred" created="201510290103" modified="201511012307" changecount="5">
-<pre>Interface against which comply all objects which can be used to infer [[Relationship]], such as a [[Clue]], an [[interactive action]], and a [[Relationship]]. For example, if a user clicks the grid and sets a relationship to [[VALUE_YES]], the [[Cross|logic elements]] can be filled out using [[VALUE_NO]] which depend on the user interactive action. The first relationship itself depends on the [[interactive action]].
+<div title="Dependable" modifier="Fred" created="201510290103" modified="201511290241" changecount="7">
+<pre>Interface against which comply all objects which can be used to infer [[Relationship]], such as a [[Clue]], a [[Constraint]], and a [[Relationship]]. For example, if a user clicks the grid and sets a relationship to [[VALUE_YES]], the [[Cross|logic elements]] can be filled out using [[VALUE_NO]] which depend on the user interactive action. The first relationship itself depends on the [[constraint|Constraint]].
 
-What is the best data structure for dependencies? Is it one tree ࠬa blockchain, or is there a tree to/from each relationship? Is there such a thing as a double-linked tree (many to one to many)? E.g. each tree node has ArrayList of predecessors (derived from) and ArrayList of successors (impacting)?
+What is the best data structure for dependencies? Is it one tree, or is there a tree to/from each relationship? Is there such a thing as a double-linked tree (many to one to many)? E.g. each tree node has ArrayList of predecessors (derived from) and ArrayList of successors (impacting)?
+
+See [[Investigate]]
 
 </pre>
 </div>
@@ -1337,8 +1346,8 @@ What is the best data structure for dependencies? Is it one tree ࠬa blockchain
 <pre>It would be nice if the user had the option of viewing all entered text clues in a table and also have the ability to enable or disable certain clues to assess impact on the puzzle solving algorithms.
 Graphically entered relationships need to be listed as well.</pre>
 </div>
-<div title="Enumeration" modifier="Fred" created="200807182016" modified="201510290104" tags="Clue">
-<pre>Type of text clue which enumerates a list of elements.  The ''elements'' in the enumeration are independent and cannot be associated together.
+<div title="Enumeration" modifier="Fred" created="200807182016" modified="201512050413" tags="Clue" changecount="1">
+<pre>Type of text [[clue|Clue]] which enumerates a list of elements.  The ''elements'' in the enumeration are independent and cannot be associated together.
 *e.g.The four mothers are: Lucie, the one who dresses in blue, the one who eats cake and the one whose baby weights 9 pounds.
 *In the example, the following ''six'' VALUE_NO relationships need to be captured:
 ##Lucie does not wear blue
@@ -1363,11 +1372,11 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
-<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201511290205" changecount="8">
+<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201512050450" changecount="15">
 <pre>Ordered list of nice-to-have features:
-#Add look and feel options.... Look at p.159- for look and feel setting code.  
-#provide zoom in/zoom out capability
-#undo for [[Constraint]] with cascade down tree
+#when loading a problem from file, it would be interesting to have the option to step through processing of clues, or have it automatically process everything ([[Preferences]])
+#provide zoom in/zoom out capability (see example in Mastering... p.48) using buttons on the top left of the [[Grid]] (see [[Layout]])
+#undo for [[constraints|Constraint]] with cascade down tree. Could do undo for [[clues|Clue]] also?
 #set/change category or item labels from the [[Grid]] using [[Lightweight dialogs|http://fxexperience.com/controlsfx/features/dialogs/]]
 #provide &quot;pannable&quot; user interface
 #drag-and-drop {{{.lpf}}} file
@@ -1376,6 +1385,7 @@ Graphically entered relationships need to be listed as well.</pre>
 #export to {{{.png}}} snapshot
 #auto-complete when entering [[clues|Clue]], based on recognized [[items|Item]] or [[category|Category]] names
 #tool tips
+#Add look and feel options.... Look at p.159- for look and feel setting code.  
 </pre>
 </div>
 <div title="Gender" modifier="Fred" created="200807182037" modified="200807182039" tags="Clue">
@@ -1571,16 +1581,28 @@ config.formatters.push( {
 //}}}
 </pre>
 </div>
+<div title="Investigate" creator="Fred" modifier="Fred" created="201511290238" modified="201511290240" changecount="2">
+<pre>Feature which will help understand where any given relationship in the grid comes from (by showing arrows to other [[Dependable]] objects.
+
+For example when investigating, hovering over a [[GridCell]] could show arrows to other [[GridCells|GridCell]] or [[Clue]] indices in the bottom-right of the grid.
+
+Do we want to turn on investigating mode which would then allow you to click and show all dependencies at once? Or only one cell at a time by right click? Or hover long enough on a [[GridCell]] to show only its dependencies?</pre>
+</div>
 <div title="Item" creator="Fred" modifier="Fred" created="201511290206" changecount="1">
 <pre>element of a [[Category]]. A [[Relationship]] is defined between any two item from two different [[categories|Category]].</pre>
 </div>
-<div title="Layout" creator="Fred" modifier="Fred" created="201511230301" modified="201511290207" changecount="11">
+<div title="Layout" creator="Fred" modifier="Fred" created="201511230301" modified="201511290245" changecount="12">
 <pre>Application layout:
 *BorderPane for application
 *Menu and toolbar in a vertical FlowPane(10,10) in top
 *[[Tabs]] in centre
+**Grid
+***Zoom in/out buttons (top left)
+***main [[Grid]]
+***[[Clue indices|Clue]]
+**[[Answers]]
+**[[Clues|Clue]]
 *Clue number (label), clue input textfield and button in bottom FlowPane (10,10)Type the text for 'Layout'
-*bottom-right of the grid would be a number for each clue, which can be used when showing dependencies to a text clue (using arrows)
 
 For n categories, the layout of the grid is as follows:
 ||Cat 2|Cat n|Cat n-1|...|Cat 4|Cat 3|
@@ -1686,8 +1708,9 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201511230332" changecount="3">
-<pre>*Learn Java Collections Framework
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201511290247" changecount="4">
+<pre>*how to bind {{{properties}}} [[GridCell]] to [[Relationship]] (is the {{{enum}}} a good idea?)
+*Learn Java Collections Framework
 *Check out [[GridView|http://controlsfx.bitbucket.org/org/controlsfx/control/GridView.html]] from ControlsFX.
 *Learn what preferred size means in UI components
 *Work on the app [[Layout]]</pre>
@@ -1697,11 +1720,9 @@ HintsTable
 *e.g. Martin lives in the green house. (VALUE_YES)
 *e.g. Yohan does not drink tea. (VALUE_NO)</pre>
 </div>
-<div title="NumericalElements" modifier="Fred" created="200807182038" modified="200807182040" tags="Clue">
-<pre>Items which are to be considered at face value such as weight/age/year/cost/rank, etc
-e.g. a painting's production year is one of 2002,2003,2005,2006 and clue text reads:
-Spring was completed three years earlier than the painting by Max Dawkins
-* software needs to know if the value of the item is important for the deductions, or simply the position of the item in the category
+<div title="NumericalElements" modifier="Fred" created="200807182038" modified="201512050359" tags="Clue" changecount="2">
+<pre>Special case of [[SpecialCategory]] in which there is a mathematical relationship between [[items|Item]] or the numerical representation of textual [[items|Item]] (e.g. days of the week)
+* software needs to know if the value of the item is important for the deductions, or simply the position of the item in the category (or should it always treat numerically if the clues use the items as such?)
 * an option is to consider all numerical values as meaningful, but the user would need to know not to enter these items textually, which is counter intuitive for rankings such as first, second, third, fourth, fifth (would have to be entered 1,2,3,4,5)
 * any numerical item is subject to a set of mathematical expressions such as +,- but also the less common *,/ :
  eg. the weight of John's parcel is twice as heavy as the weight of Lucie's parcel.
@@ -1734,6 +1755,11 @@ See also [[Design considerations]]
 </div>
 <div title="Parser" modifier="Fred" created="200807211508" tags="Object">
 <pre>Object responsible to extract NormalClue or [[special clues|SpecialClue]] from the [[PseudoEnglish]] text entered.</pre>
+</div>
+<div title="Preferences" creator="Fred" modifier="Fred" created="201512050448" changecount="1">
+<pre>List of interesting application preferences, or options that could be all be interesting in different situations
+* step through processing of clues upon loading from file
+* </pre>
 </div>
 <div title="ProblemDatabase" modifier="Fred" created="200807160005" modified="201510290122" tags="menu" changecount="1">
 <pre>!Purpose
@@ -2279,6 +2305,35 @@ The relationship sequence is required to implement the RollBack feature.</pre>
 </div>
 <div title="SiteTitle" modifier="Fred" created="200807152355" modified="200807182054">
 <pre>Puzzled notes</pre>
+</div>
+<div title="SpecialCategory" creator="Fred" modifier="Fred" created="201512050351" modified="201512050412" changecount="6">
+<pre>Some categories are unusual and need specialized handling. Namely:
+*Mathematical categories (or [[NumericalElements]]), or categories in which items have a mathematical relationship between one another, ''which is used in the puzzle [[clues|Clue]]'' (''items can be unevenly spaced as in the examples given''):
+**numbers: 
+*** age
+***quantities (2,3,5,6,7)
+*** years (1990, 1992, 1993, 1995, 1996)
+*** office/house number
+*** prices
+*** weight
+*** score/marks
+**times: e.g. 8:15, 8:45, 9:45, 10:15, 10:45
+**textual [[items|Item]] for which there is a mathematical relationship between the numerical representation of the [[items|Item]]
+***days: e.g. Saturday, Sunday, Tuesday, Thursday, Friday (needs to be interpreted as 1-7 correctly)
+***months: e.g. January, March, June, July, August (needs to be converted to 1-12 correctly)
+***ranks: e.g. lieutenant, captain, lieutenant-colonel, general
+***ranking: first, third, fourth, fifth, sixth
+**dates: 14 July, 17 August, 18 November, 1 December, ...
+*text properties of the item used in [[clues|Clue]]
+**word length  (e.g. name with 7 letters)
+**word spelling 
+*repeating items:
+**within a category (e.g. two students prefer blue, two prefer red, and two prefer orange)
+**across categories (e.g. pet's names &amp; owner's names have the same items)
+*relationship across categories (e.g. both animals and parcels have weights and a clue reads like Lucie's dog weights twice as much as the parcel given to Paul)
+*a combination of types
+**e.g. (mathematical &amp; repeating items) two of the cost items are equal at $80, two other equal at $90, two other equal at $100.
+**e.g. (relationship across categories &amp; text properties) dog's name's first letter is not the same as the owner's name's first letter</pre>
 </div>
 <div title="SpecialClue" modifier="Fred" created="200807182003" modified="201510291107" tags="Clue" changecount="1">
 <pre>Contrary to a [[normal clue|NormalClue]], a [[special clue|SpecialClue]] is a text clue that needs to be reassessed periodically because it does not, at the onset, provide sufficient information to determine VALUE_YES relationships.
