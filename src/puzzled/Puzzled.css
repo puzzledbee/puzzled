@@ -11,5 +11,20 @@
 }
 
 .tool-bar .button:hover {
-       -fx-text-fill: #ff0000;
+    -fx-text-fill: #ff0000;
+}
+
+.gridmajor {
+    -fx-stroke: blue;
+}
+
+.gridminor {
+    -fx-stroke: black;
+}
+.x {
+    -fx-stroke: red;
+}
+
+.o {
+    -fx-stroke: blue;
 }

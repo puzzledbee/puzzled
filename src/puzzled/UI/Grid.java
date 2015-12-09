@@ -8,12 +8,11 @@ package puzzled.UI;
 import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import org.controlsfx.control.PopOver;
 import puzzled.Puzzled;
@@ -39,7 +38,8 @@ public class Grid extends StackPane {
         //super();
         //controller = myController;
         
-        Pane drawingPane = new Pane();
+        AnchorPane drawingPane = new AnchorPane();
+       
         
         int numCategories = logicProblem.getNumCategories();
         int numItems = logicProblem.getNumItems();
@@ -53,56 +53,56 @@ public class Grid extends StackPane {
         
         //from labels -> labels+gridmaxwidth, blue
         Line nextLine = new Line(cellwidth+labelwidth,0,cellwidth+labelwidth+gridmaxwidth,0);
-        nextLine.setStroke(Color.BLUE);
+        nextLine.getStyleClass().add("gridmajor");
         drawingPane.getChildren().add(nextLine);
 
         //from labels -> labels+gridmaxwidth, blue
         nextLine = new Line(cellwidth+labelwidth,cellwidth,cellwidth+labelwidth+gridmaxwidth,cellwidth);
-        nextLine.setStroke(Color.BLUE);
+        nextLine.getStyleClass().add("gridmajor");
         drawingPane.getChildren().add(nextLine);
 
         //from start -> labels+gridmaxwidth, blue
         nextLine = new Line(0,cellwidth+labelheight,cellwidth+labelwidth+gridmaxwidth,cellwidth+labelheight);
-        nextLine.setStroke(Color.BLUE);
+        nextLine.getStyleClass().add("gridmajor");
         drawingPane.getChildren().add(nextLine);
         
         for (int j=1;j<numCategories;j++) {
             for (int i=1;i<numItems;i++) {
              
                 nextLine = new Line(cellwidth,cellwidth+labelheight+(j-1)*numItems*cellwidth+i*cellwidth,cellwidth+labelwidth+gridmaxwidth-(j-1)*numItems*cellwidth,cellwidth+labelheight+(j-1)*numItems*cellwidth+i*cellwidth);
-                nextLine.setStroke(Color.BLACK);
+                nextLine.getStyleClass().add("gridminor");
                 drawingPane.getChildren().add(nextLine);          
             }
             nextLine = new Line(0,cellwidth+labelheight+j*numItems*cellwidth,cellwidth+labelwidth+gridmaxwidth-(j-1)*numItems*cellwidth,cellwidth+labelheight+j*numItems*cellwidth);
-            nextLine.setStroke(Color.BLUE);
+            nextLine.getStyleClass().add("gridmajor");
             drawingPane.getChildren().add(nextLine); 
         }
         //vertical, top to bottom
         
         //from labels -> labels+gridmaxwidth, blue
         nextLine = new Line(0,cellwidth+labelheight,0,cellwidth+labelheight+gridmaxheight);
-        nextLine.setStroke(Color.BLUE);
+        nextLine.getStyleClass().add("gridmajor");
         drawingPane.getChildren().add(nextLine);
 
         //from labels -> labels+gridmaxwidth, blue
         nextLine = new Line(cellwidth,cellwidth+labelheight,cellwidth,cellwidth+labelheight+gridmaxheight);
-        nextLine.setStroke(Color.BLUE);
+        nextLine.getStyleClass().add("gridmajor");
         drawingPane.getChildren().add(nextLine);
 
         //from start -> labels+gridmaxwidth, blue
         nextLine = new Line(cellwidth+labelwidth,0,cellwidth+labelwidth,cellwidth+labelheight+gridmaxheight);
-        nextLine.setStroke(Color.BLUE);
+        nextLine.getStyleClass().add("gridmajor");
         drawingPane.getChildren().add(nextLine);
         
         for (int j=1;j<numCategories;j++) {
             for (int i=1;i<numItems;i++) {
              
                 nextLine = new Line(cellwidth+labelwidth+(j-1)*numItems*cellwidth+(i)*cellwidth,cellwidth,cellwidth+labelwidth+(j-1)*numItems*cellwidth+(i)*cellwidth,cellwidth+labelheight+gridmaxheight-(j-1)*numItems*cellwidth);
-                nextLine.setStroke(Color.BLACK);
+                nextLine.getStyleClass().add("gridminor");
                 drawingPane.getChildren().add(nextLine);          
             }
             nextLine = new Line(cellwidth+labelwidth+j*numItems*cellwidth,0,cellwidth+labelwidth+j*numItems*cellwidth,cellwidth+labelheight+gridmaxheight-(j-1)*numItems*cellwidth);
-            nextLine.setStroke(Color.BLUE);
+            nextLine.getStyleClass().add("gridmajor");
             drawingPane.getChildren().add(nextLine); 
         }
         

@@ -51,16 +51,16 @@ public class GridCell extends StackPane {
         myRectangle.setStroke(Color.BLACK);
         
         circle.setMouseTransparent(true);
-        circle.setStroke(Color.BLUE);
+        circle.getStyleClass().add("o");
         //circle.relocate(5, 5);
         
         circle.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_YES));
         
         
         //line1.setMouseTransparent(true);
-        line1.setStroke(Color.RED);
+        line1.getStyleClass().add("x");
         line1.setMouseTransparent(true);
-        line2.setStroke(Color.RED);
+        line2.getStyleClass().add("x");
         line2.setMouseTransparent(true);
         //xPane.getChildren().addAll(line1,line2);
         line1.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_NO));
