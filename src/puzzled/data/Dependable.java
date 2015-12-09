@@ -5,11 +5,13 @@
  */
 package puzzled.data;
 
+import javafx.geometry.Point2D;
+
 /**
  *
  * @author Fred
  */
-public enum ClueType {
-    NORMAL,
-    SPECIAL //needs re-assessment, see notebook for SpecialClue
+public interface Dependable {
+    
+    public Point2D getCenterPosition();
 }

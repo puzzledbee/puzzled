@@ -9,17 +9,25 @@ import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import org.controlsfx.control.PopOver;
 import puzzled.Puzzled;
+import puzzled.data.LogicProblem;
 /**
  *
  * @author Fred
  */
-public class Grid extends HBox {
+public class Grid extends StackPane {
 
     //PuzzledController controller;
+    private static int cellwidth = 50;
+    private static int labelheight = 150; //for vertical item labels
+    private static int labelwidth = 150;  //for horizontal item labels
     
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
@@ -27,17 +35,87 @@ public class Grid extends HBox {
     
     private PopOver myPopOver = new PopOver(new Label("hello!"));
     
-    public Grid() {
+    public Grid(LogicProblem logicProblem) {
         //super();
         //controller = myController;
+        
+        Pane drawingPane = new Pane();
+        
+        int numCategories = logicProblem.getNumCategories();
+        int numItems = logicProblem.getNumItems();
+        
+        
+        //draw the grid
+        int gridmaxwidth=(numCategories-1)*numItems*cellwidth;
+        int gridmaxheight=(numCategories-1)*numItems*cellwidth;
+        //
+        //horizontal, top to bottom
+        
+        //from labels -> labels+gridmaxwidth, blue
+        Line nextLine = new Line(cellwidth+labelwidth,0,cellwidth+labelwidth+gridmaxwidth,0);
+        nextLine.setStroke(Color.BLUE);
+        drawingPane.getChildren().add(nextLine);
 
-        this.setAlignment(Pos.CENTER);
+        //from labels -> labels+gridmaxwidth, blue
+        nextLine = new Line(cellwidth+labelwidth,cellwidth,cellwidth+labelwidth+gridmaxwidth,cellwidth);
+        nextLine.setStroke(Color.BLUE);
+        drawingPane.getChildren().add(nextLine);
+
+        //from start -> labels+gridmaxwidth, blue
+        nextLine = new Line(0,cellwidth+labelheight,cellwidth+labelwidth+gridmaxwidth,cellwidth+labelheight);
+        nextLine.setStroke(Color.BLUE);
+        drawingPane.getChildren().add(nextLine);
+        
+        for (int j=1;j<numCategories;j++) {
+            for (int i=1;i<numItems;i++) {
+             
+                nextLine = new Line(cellwidth,cellwidth+labelheight+(j-1)*numItems*cellwidth+i*cellwidth,cellwidth+labelwidth+gridmaxwidth-(j-1)*numItems*cellwidth,cellwidth+labelheight+(j-1)*numItems*cellwidth+i*cellwidth);
+                nextLine.setStroke(Color.BLACK);
+                drawingPane.getChildren().add(nextLine);          
+            }
+            nextLine = new Line(0,cellwidth+labelheight+j*numItems*cellwidth,cellwidth+labelwidth+gridmaxwidth-(j-1)*numItems*cellwidth,cellwidth+labelheight+j*numItems*cellwidth);
+            nextLine.setStroke(Color.BLUE);
+            drawingPane.getChildren().add(nextLine); 
+        }
+        //vertical, top to bottom
+        
+        //from labels -> labels+gridmaxwidth, blue
+        nextLine = new Line(0,cellwidth+labelheight,0,cellwidth+labelheight+gridmaxheight);
+        nextLine.setStroke(Color.BLUE);
+        drawingPane.getChildren().add(nextLine);
+
+        //from labels -> labels+gridmaxwidth, blue
+        nextLine = new Line(cellwidth,cellwidth+labelheight,cellwidth,cellwidth+labelheight+gridmaxheight);
+        nextLine.setStroke(Color.BLUE);
+        drawingPane.getChildren().add(nextLine);
+
+        //from start -> labels+gridmaxwidth, blue
+        nextLine = new Line(cellwidth+labelwidth,0,cellwidth+labelwidth,cellwidth+labelheight+gridmaxheight);
+        nextLine.setStroke(Color.BLUE);
+        drawingPane.getChildren().add(nextLine);
+        
+        for (int j=1;j<numCategories;j++) {
+            for (int i=1;i<numItems;i++) {
+             
+                nextLine = new Line(cellwidth+labelwidth+(j-1)*numItems*cellwidth+(i)*cellwidth,cellwidth,cellwidth+labelwidth+(j-1)*numItems*cellwidth+(i)*cellwidth,cellwidth+labelheight+gridmaxheight-(j-1)*numItems*cellwidth);
+                nextLine.setStroke(Color.BLACK);
+                drawingPane.getChildren().add(nextLine);          
+            }
+            nextLine = new Line(cellwidth+labelwidth+j*numItems*cellwidth,0,cellwidth+labelwidth+j*numItems*cellwidth,cellwidth+labelheight+gridmaxheight-(j-1)*numItems*cellwidth);
+            nextLine.setStroke(Color.BLUE);
+            drawingPane.getChildren().add(nextLine); 
+        }
+        
+        
+        
+        
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
         //this.setSpacing(10);
         //HBox.setMargin(this,new Insets(50,50,50,50));
           
         VBox labels = new VBox(25);
         labels.setAlignment(Pos.CENTER);
-        
         
         
         for (int j = 0; j < 3; j++) {
@@ -48,15 +126,16 @@ public class Grid extends HBox {
         }      
         
 
-        
         TilePane tPane = new TilePane();
         tPane.setMaxWidth(155);
         tPane.setAlignment(Pos.CENTER);
         for (int i = 0; i < 9; i++) {
-            tPane.getChildren().add(new GridCell());
+            //Relationship rel = new Relationship(new Pair(logicProblem.getCategories().));
+            tPane.getChildren().add(new GridCell(cellwidth));
         }
         
-        getChildren().addAll(labels,tPane);
+        hbox.getChildren().addAll(labels,tPane);
+        this.getChildren().addAll(drawingPane,hbox);
     }
  
 }

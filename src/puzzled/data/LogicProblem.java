@@ -25,6 +25,7 @@ public class LogicProblem implements Serializable {
     private int numCategories;
     private int numItems;
     
+ 
     
     private List<Clue> clues;
     private BooleanProperty ordinal = new SimpleBooleanProperty(false);
@@ -35,12 +36,21 @@ public class LogicProblem implements Serializable {
         numCategories = category_number;
         numItems = item_number;
         categories = new ArrayList<Category>(numCategories);
+        
         //categories.add("Age");
         //categories.add("test");
     }
     
     public LogicProblem(int category_number, int item_number){
         this("",category_number,item_number);
+    }
+    
+    public int getNumItems(){
+        return numItems;
+    }
+    
+    public int getNumCategories(){
+        return numCategories;
     }
     
     
@@ -64,7 +74,7 @@ public class LogicProblem implements Serializable {
     public String toString(){
         String output = new String();
         
-        for(String quark: categories){
+        for(Category quark: categories){
              output += "categories: " + quark + "\n";
          }
         return output;

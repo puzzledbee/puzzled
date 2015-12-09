@@ -8,6 +8,7 @@ package puzzled.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import puzzled.data.Category.CategoryType;
 
 /**
  *
@@ -15,10 +16,12 @@ import java.util.List;
  */
 public class DemoProblem {
 
-    static LogicProblem demoProblem = new LogicProblem("my_demo_problem",5,5);
+    static LogicProblem demoProblem;
 
     //Penny Pres Original Logic Problems Mar 1999
     public static LogicProblem generateDemoProblem47() {
+       demoProblem = new LogicProblem("Problem 47",5,5);
+        
         List<Item> myItems = new ArrayList<Item>(5);
         
         myItems.addAll(Arrays.asList(new Item("Haley's Comet"), new Item("Into The Fire"), new Item("Never Again"), new Item("Passion Play"), new Item("Starburst")));
@@ -37,35 +40,11 @@ public class DemoProblem {
 
         return demoProblem;
     }
-    
-    
-    //PennyPress Original Logic Problems Special Collector's Edition December 2015
-    public static LogicProblem generateDemoProblem33() {
-        List<Item> myItems = new ArrayList<Item>(5);
+
         
-        myItems.addAll(Arrays.asList(new Item("2:30"), new Item("3:30"), new Item("4:30"), new Item("5:30"), new Item("6:30")));
-        Category firstCat = new Category("Time",myItems);
-        firstCat.setType(CategoryType.TIME);
-        demoProblem.addCategory(firstCat);
-
-        myItems.addAll(Arrays.asList(new Item("Emilio's Eatery"), new Item("Feeding Frenzy"), new Item("Hungry Hyena"), new Item("Nineteenth Hole"), new Item("Tony's Through")));
-        demoProblem.addCategory(new Category("Restaurant",myItems));
-
-        myItems.addAll(Arrays.asList(new Item("Aluminium"), new Item("Copper"), new Item("Gold"), new Item("Silver"), new Item("Zinc")));
-        demoProblem.addCategory(new Category("Metal",myItems));
-
-        myItems.addAll(Arrays.asList(new Item("3"), new Item("4"), new Item("5"), new Item("6"), new Item("7")));
-        Category fourthCat = new Category("People",myItems);
-        fourthCat.setType(CategoryType.NUMERICAL);
-        demoProblem.addCategory(fourthCat);
-        
-        return demoProblem;
-    }
-    
-    
-    
     //PennyPress Original Logic Problems Special Collector's Edition December 2015
     public static LogicProblem generateDemoProblem31() {
+        demoProblem = new LogicProblem("Problem 31",5,5);
         List<Item> myItems = new ArrayList<Item>(5);
         
         myItems.addAll(Arrays.asList(new Item("400"), new Item("415"), new Item("430"), new Item("445"), new Item("460")));
@@ -87,4 +66,29 @@ public class DemoProblem {
         return demoProblem;
     }
     
+    
+    //PennyPress Original Logic Problems Special Collector's Edition December 2015
+    public static LogicProblem generateDemoProblem33() {
+        demoProblem = new LogicProblem("Problem 33",5,5);
+        List<Item> myItems = new ArrayList<Item>(5);
+        
+        myItems.addAll(Arrays.asList(new Item("2:30"), new Item("3:30"), new Item("4:30"), new Item("5:30"), new Item("6:30")));
+        Category firstCat = new Category("Time",myItems);
+        firstCat.setType(CategoryType.TIME);
+        demoProblem.addCategory(firstCat);
+
+        myItems.addAll(Arrays.asList(new Item("Emilio's Eatery"), new Item("Feeding Frenzy"), new Item("Hungry Hyena"), new Item("Nineteenth Hole"), new Item("Tony's Through")));
+        demoProblem.addCategory(new Category("Restaurant",myItems));
+
+        myItems.addAll(Arrays.asList(new Item("Aluminium"), new Item("Copper"), new Item("Gold"), new Item("Silver"), new Item("Zinc")));
+        demoProblem.addCategory(new Category("Metal",myItems));
+
+        myItems.addAll(Arrays.asList(new Item("3"), new Item("4"), new Item("5"), new Item("6"), new Item("7")));
+        Category fourthCat = new Category("People",myItems);
+        fourthCat.setType(CategoryType.NUMERICAL);
+        demoProblem.addCategory(fourthCat);
+        
+        return demoProblem;
+    }
+ 
 }

@@ -947,13 +947,14 @@ CategoryRules can be of the NormalClue type but also of the SpecialClue type, me
 
 See also [[SpecialCategory]]</pre>
 </div>
-<div title="Clue" creator="Fred" modifier="Fred" created="201510290139" modified="201511290239" tags="Object Dependable" changecount="6">
+<div title="Clue" creator="Fred" modifier="Fred" created="201510290139" modified="201512090117" tags="Object Dependable" changecount="8">
 <pre>Object which represents a user-entered clue, in pseudo-english.
 Clues are retained in a [[ClueTable]] and sometimes may generate an entry in a [[HintsTable]].
 
 ''Clues'' have a //list// of ''Relationship'' it impacts so that if a change is made, all relationships that were inferred need to be removed recursively and re-evaluated.
 
-There should be a ''Clue Index'' showing circled clue number as clues are entered, in the bottom right of the grid. When [[investigating|Investigate]], arrows from [[GridCells|GridCell]] depending on clues should point to the clue index.</pre>
+There should be a ''Clue Index'' showing circled clue number as clues are entered, in the bottom right of the grid (known as glyph). When [[investigating|Investigate]], arrows from [[GridCells|GridCell]] depending on clues should point to the clue index.
+This row of clue indexes will need to be both the grid view and the [[HintsTable]] view ([[hints|Hint]] also depend upon [[clues|Clue]])</pre>
 </div>
 <div title="Clue Types" modifier="Fred" created="200807161535" modified="201510290105" tags="Clue menu">
 <pre>The basic categories of clues for the software are as follows:
@@ -969,12 +970,10 @@ Also follows a list of particularly interesting clues found in published logic p
 <div title="ClueTable" creator="Fred" modifier="Fred" created="201510290151" modified="201510290202" tags="Object" changecount="2">
 <pre>Numbered list of [[Clues|Clue]] entered by the user.</pre>
 </div>
-<div title="Constraint" creator="Fred" modifier="Fred" created="201510312009" modified="201511012308" changecount="5">
-<pre>A ''Constraint'' is a forced relationships (made from user interaction graphically, by right-clicking a cell in the grid). They are a member of the [[Puzzle]] class and are processed first when the [[Puzzle]] is loaded (ie, pushed into the [[RelationshipTable]]).
+<div title="Constraint" creator="Fred" modifier="Fred" created="201510312009" modified="201512090044" changecount="8">
+<pre>A ''Constraint'' is a forced relationships (made from user interaction graphically, by right-clicking a cell in the grid). An ArrayList of ''Constraint'' need to be stored as a field of a [[LogicProblem]] so that it can be processed first when the [[LogicProblem]] is loaded (ie, pushed into the [[RelationshipTable]]).
 
-Constraints must be retained in an ArrayList and are a field of a [[LogicProblem]].
-
-Context menu on grid cells to offer {{{set as positive}}}, {{{set as negative}}} or {{{clear}}}. However, it should be smart enough to gray out/disable options that result in conflict with earlier / uptree relationships.</pre>
+[[GridCell]]'s context menu should offer {{{set as positive}}}, {{{set as negative}}} or {{{clear}}}. However, it should be smart enough to gray out/disable options that result in conflict with earlier / uptree relationships.</pre>
 </div>
 <div title="DatePlugin" creator="Fred" modifier="Fred" created="201510290133" tags="systemConfig" changecount="1">
 <pre>/***
@@ -1321,14 +1320,22 @@ function addRemindersToPopup(p,when,format)
 <div title="DefaultTiddlers" modifier="Fred" created="200807161402" modified="200807182049">
 <pre>[[Puzzled]]</pre>
 </div>
-<div title="Dependable" modifier="Fred" created="201510290103" modified="201511290241" changecount="7">
-<pre>Interface against which comply all objects which can be used to infer [[Relationship]], such as a [[Clue]], a [[Constraint]], and a [[Relationship]]. For example, if a user clicks the grid and sets a relationship to [[VALUE_YES]], the [[Cross|logic elements]] can be filled out using [[VALUE_NO]] which depend on the user interactive action. The first relationship itself depends on the [[constraint|Constraint]].
+<div title="Dependable" modifier="Fred" created="201510290103" modified="201512090139" changecount="18">
+<pre>Interface against which comply all objects which can be used to infer [[Relationship]], such as a [[Clue]], a [[Constraint]], a [[Hint]], and a [[Relationship]]. For example, if a user clicks the grid and sets a [[constraint|Constraint]] to [[VALUE_YES]], the [[Cross|logic elements]] can be filled out using [[VALUE_NO]] which depend on the VALUE_YES [[relationship|Relationship]]. The first relationship itself depends on the [[constraint|Constraint]].
 
-What is the best data structure for dependencies? Is it one tree, or is there a tree to/from each relationship? Is there such a thing as a double-linked tree (many to one to many)? E.g. each tree node has ArrayList of predecessors (derived from) and ArrayList of successors (impacting)?
+What is the best data structure for dependencies? Each [[Relationship]] will need to maintain an ArrayList&lt;Dependable&gt; of predecessors (derived from); [[Relationship]] and [[Hint]] will both need to have an ArrayList&lt;Relationship&gt; of successors (impacting), with a view to avoid walking through the [[RelationshipTable]] when needing to recursively invalidate a set of [[relationships|Relationship]] after an undo operation (or constraint change).
+
+Dependable methods (bundling both methods needed for successors and predecessors):
+- center position of associated graph element (GridCell for [[Relationship]], [[Clue]] glyph, or [[Hint identifier|HintsTable]].)
 
 See [[Investigate]]
 
-</pre>
+
+|!Item|!Possible Predecessors|!Possible Successors|
+| [[Clue]] || [[Relationship]]/[[Hint]] |
+| [[Hint]] | [[Hint]]/[[Clue]] | [[Relationship]] |
+| [[Constraint]] || [[Relationship]] |
+| [[Relationship]] | [[Constraint]]/[[Clue]]/[[Hint]]/[[Relationship]] | [[Relationship]] |</pre>
 </div>
 <div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201511230259" changecount="13">
 <pre>Design considerations
@@ -1394,19 +1401,54 @@ e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesec
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201511231150" tags="Object" changecount="5">
+<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512090056" tags="Object" changecount="7">
 <pre>''Grid'' is a visual container of the category and item labels as well as the data structure of [[GridCell]].
 It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]].
 
 TilePane simpler to setup than the set of VBox containing HBox, but does not take the row/column distribution when application is maximized.
-Take a look at eGridPane also and the controlsFX GridView</pre>
+Take a look at eGridPane also and the controlsFX GridView
+
+!!!To draw the grid:
+{{{
+gridmaxwidth=(numCategories-1)*numItems*cellwidth
+gridmaxheigth=(numCategories-1)*numItems*cellheight
+
+//horizontal, top to bottom
+from labels -&gt; labels+gridmaxwidth, blue
+//category names
+from labels -&gt; labels+gridmaxwidth, blue
+//item names (vertical)
+from start -&gt; labels+gridmaxwidth, blue
+//bulk of grid
+j=1 to numCategories-1
+   i=1 to numItems-1
+      from start -&gt; labels+(numCategories-j)*numItems, black
+   from start -&gt; labels+(numCategories-j)*numItems, blue
+        
+//vertical, left to right
+from labels -&gt; labels+gridmaxheight, blue
+//category names (vertical)
+from labels -&gt; labels+gridmaxheight, blue
+//item names
+from start -&gt; labels+gridmaxheight, blue
+//bulk of grid
+j=1 to numCategories-1
+   i = 1 to numItems-1
+      from start -&gt; labels+(numCategories-j)*numItems, black
+   from start -&gt; labels+(numCategories-j)*numItems, blue
+}}}</pre>
 </div>
 <div title="GridCell" creator="Fred" modifier="Fred" created="201511230220" modified="201511231150" tags="Object" changecount="4">
 <pre>Class that extends StackPane which can be set to [[VALUE_YES]], [[VALUE_NO]] or [[VALUE_UNKNOWN]] like its corresponding [[Relationship]] object. It can draw a circle or a cross, and has a context menu allowing the user to set a [[Constraint]].
 
 Setting the visible property of the primitives appear or add/removing the primitives appear equivalent.</pre>
 </div>
-<div title="HintsTable" modifier="Fred" created="200807202011" modified="201510291107" tags="Object" changecount="2">
+<div title="Hint" creator="Fred" modifier="Fred" created="201512090039" changecount="1">
+<pre>A [[Dependable]] object which makes part of the [[HintsTable]].
+
+On project load, would be re-generated from the [[clues|Clue]].</pre>
+</div>
+<div title="HintsTable" modifier="Fred" created="200807202011" modified="201512090119" tags="Object" changecount="3">
 <pre>A table used to capture relationship between items that have a mathematical expression such as equal, less than, more than, n less than, n more than, unequal (where n is called [[offset]].  Once captured in the HintsTable, new relationships can be discovered using one of the three algebraic method discovered (see LogicElements).  A HintsTable looks like:
 |!Serial|!Text Clue|!unknow_x|!category_x|!item_x|!unknow_y|!category_y|!item_y|![[offset]]|
 | a. | 1. |levers|springs|5|pulleys|cheese|gorgonzola|0|
@@ -1420,6 +1462,7 @@ Setting the visible property of the primitives appear or add/removing the primit
 * This sample above is derived from the text clues of //~PennyPress Original Logic Problems Mar 1999 - Whodunit Part 2: The Big Cheese (problem 24)//
 * As a convention the offset is defined as what x has over y
 * The HintsTable need not to be sorted by [[offset]] value but it makes the discovery of new algebraic relationships much easier
+* The text clue number may not be necessary. We may consider a [[Investigate]] mode that, on hover, points to a [[Clue]] glyph.
 
 What about unknown offsets (e.g. A's older than B).... should they go into the ''HintsTable''?
 
@@ -1765,9 +1808,9 @@ See also [[Design considerations]]
 <pre>!Purpose
 This tiddler captures the various logic elements required to solve some real-life puzzled found in puzzle magazines and booklets.  It will be instrumental to test drive puzzle's [[Logic Elements]] as they are implemented.</pre>
 </div>
-<div title="Processor" modifier="Fred" created="200807211507" modified="201511012313" tags="Object" changecount="1">
-<pre>Object responsible to search for new relationships using the [[logic elements|LogicElements]] that are implemented.
-The ''Processor'' has a bunch of logic methods that apply various techniques on the [[RelationshipTable]] and [[HintsTable]] take to discover new [[Relationship]]. It also need to track if new [[Relationship]] are discovered, in which case it needs to loop through and do it again.</pre>
+<div title="Processor" modifier="Fred" created="200807211507" modified="201512090102" tags="Object" changecount="2">
+<pre>Class responsible to infer new relationships using the [[logic elements|LogicElement]] that are implemented.
+The ''Processor'' will include several utility static methods that apply various techniques on the [[RelationshipTable]] and [[HintsTable]] take to discover new [[Relationship]]. It also need to track if new [[Relationship]] are discovered by somehow setting the ''dirtyness'' flag which may cause, at the application level, subsequent processing...</pre>
 </div>
 <div title="Puzzled" modifier="Fred" created="200807182052" modified="201510290052">
 <pre>[[Puzzled|http://puzzled.sf.net]] is an open-source java application which will ultimately help you solve grid-type logic problems by understanding pseudo-english translation of the clues provided with the problem.
@@ -1775,29 +1818,41 @@ The ''Processor'' has a bunch of logic methods that apply various techniques on 
 
 This [[TiddlyWiki|http://www.tiddlywiki.com/]] is used by the [[Puzzled|http://puzzled.sf.net]] developer to keep notes about logic puzzles, the design decisions during the development phase of Puzzled, as well as generic notes about logic puzzles solved by the developer which present a challenge from a programming perspective.</pre>
 </div>
-<div title="Relationship" modifier="Fred" created="200807210011" modified="201511040254" tags="Object Dependable" changecount="7">
+<div title="Relationship" modifier="Fred" created="200807210011" modified="201512090030" tags="Object Dependable" changecount="8">
 <pre>Object which represents a relationship between two items of different categories. By default, a relationship is defined as a VALUE_UNKNOWN; it can also take the VALUE_YES or VALUE_NO.
-A relationship can be visually represented on the puzzle grid by a tile, and is listening to mouse events so the user can manually enter relationship values (using a UI pattern).
+A relationship can be visually represented on the puzzle grid by a [[GridCell]], which is listening to mouse events so the user can manually enter [[constraints|Constraint]]. 
 
---Relationships will have a 'visualRepresentation' field descendant-- use a UI design pattern to bind the visual representation to the value of the relationship. either a circle, a cross (itself a Path that inherits from Shape which includes 2 path elerments plus moveto or set translate?) or nothing (is that a null pointer or another object which renders as nothing? Will removing the member remove it from the scene). Changes to the relationship will force a change of the member, which should remove it from the scene and draw the new one.
+
 Conceptually this seems a better idea than having the relationship object inherit from Shape, with various on-screen renderings depending of its 'value'
 
-Relationship need to retain a list of [[Dependable]] objects on which it depends, as well as a list of objects which depend on it. It becomes possible to generate a map/tree of [[Dependable]] objects to understand how a relationship was derived and roll-back when a change is applied to a ''relationship'' which has dependents. 
+Relationship need to retain a list of [[Dependable]] objects on which it depends, as well as a list of other [[Relationships]] which depend on it.
 
 implements [[Dependable]]
 
 ''Relationships'' will have a //list// of [[Dependable]] objects and a //list// of ''Relationship'' it impacts.</pre>
 </div>
-<div title="RelationshipTable" creator="Fred" modifier="Fred" created="201511012313" modified="201511230252" changecount="6">
+<div title="RelationshipTable" creator="Fred" modifier="Fred" created="201511012313" modified="201512090052" changecount="18">
 <pre>Storage data structure of all [[Relationship]] objects.
 
-Should the problem context (''RelationshipTable'', dirtyness) be kept with the application and generated on load/create?
+It is preferable to not store the RelationshipTable as part of the [[LogicProblem]] object and simply re-generate it from the [[Clues]] and [[Constraints]], but instead be fields of the application [[Puzzled]] of the FSML controller, along with ''dirtyness''. There are no advantages to adding relationships in a chronological order in the data structure, with a view to simplify undo because e.g. there is no temporal relationship between two constraints. Instead the full table can be initialized when the problem is created or loaded.
 
-Rethink array structure.... Should we bother with the complex distorted array or look at a dictionary of some sort... I think the array is --out--..... 
-All you need is some conversion of the relationship indexes to the cell top left corner in the grid which will be the start of the coordinate system for the Shape descendant
+The most efficient data structure for the ''RelationshipTable'' seems to be a fixed HashMap where an [[Item]] pair is used as key (but somehow force so that a pair in any order is the same pair?!) and a [[Relationship]] object is used as value. A regular 2D array is very inefficient because of the triangular nature of the grid (see below).  Do we need to override the hashCode function to return the same value no matter what order the pair is given.... And maybe also the equals () method... Will that work?
+
+Some conversion of the relationship key to the [[GridCell]] location will be needed..
 
 When a problem is loaded, the application needs to create the entire ''RelationshipTable''. The [[Relationship]] object references (pointers) are passed around when adding to the double-linked lists. The ''RelationshipTable'' needs to be able to retrieve any [[Relationship]] object reference by specifying the &quot;coordinates&quot; of the values it represents.
-Relationships that are anchored (anywhere upstream) to a clue or a constraint are immutable and will site with a gray background. Constraints entered by the user will show their [[Relationship]] in red.</pre>
+Relationships that are anchored (anywhere upstream) to a clue or a constraint are immutable and will site with a gray background. Constraints entered by the user will show their [[Relationship]] in red.
+
+For a number //N// of categories of //n// items, the layout of the grid complies with the formula for triangular patterns such that:
+
+|!Number of Categories N|!Total grid width &amp; height&lt;br/&gt;(N-1)n|!Number of category squares&lt;br/&gt;N(N-1)/2|!Total number of relationships&lt;br/&gt;n^^2^^N(N-1)/2|
+| 2 | n | 1 | n^^2^^ |
+| 3 | 2n | 3 | 3n^^2^^ |
+| 4 | 3n | 6 | 6n^^2^^ |
+| 5 | 4n | 10 | 10n^^2^^ |
+| 6 | 5n | 15 | 15n^^2^^ |
+
+</pre>
 </div>
 <div title="RestrictedValues" modifier="Fred" created="200807181940" modified="200807211459">
 <pre>Restricted values are values that are impossible for a certain item in a certain category because of the text clues that have been provided.  It includes first and foremost the [[Extremes]] when items are compared quantitatively in numerical-like categories, but may also include other values depending of the relationship between items.

@@ -10,11 +10,23 @@ import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+
+
+
 /**
  *
  * @author Fred
  */
 public class Category {
+    
+    public enum CategoryType {
+        NORMAL,
+        NUMERICAL, //mathematical computation possible
+        TIME, //time handling
+        TEXT_NUMERICAL   //requires interpretation of text into value e.g. days/months/ranking
+    }
+    
+    
     private StringProperty categoryName = new SimpleStringProperty();
     private CategoryType categoryType = CategoryType.NORMAL;
     private List<Item> items = new ArrayList<Item>();
@@ -36,6 +48,11 @@ public class Category {
     
     public String getText(){
         return categoryName.getValue();
+    }
+    
+    @Override
+    public String toString() {
+        return "name="+categoryName.getValue();
     }
     
     public List<Item> getItems(){

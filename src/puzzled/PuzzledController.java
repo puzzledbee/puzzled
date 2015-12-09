@@ -18,6 +18,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,8 +31,12 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Pair;
 import puzzled.UI.Grid;
+import puzzled.data.DemoProblem;
+import puzzled.data.Item;
 import puzzled.data.LogicProblem;
+import puzzled.data.Relationship;
 
 /**
  *
@@ -46,6 +51,7 @@ public class PuzzledController implements Initializable {
     private BorderPane gridPane;
     
     private LogicProblem logicProblem;
+    private HashMap<Pair<Item,Item>,Relationship> relationships;
     
     
     private static final Logger fLogger =
@@ -60,10 +66,13 @@ public class PuzzledController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        gridPane.setCenter(new Grid());
+        logicProblem = DemoProblem.generateDemoProblem47();
+        gridPane.setCenter(new Grid(logicProblem));
         gridPane.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) setupDragNDrop(gridPane.getScene());
         });
+        
+    //    relationships = new HashMap<Pair<Item,Item>,Relationship>(logicProblem.getNumItems()*logicProblem.getNumItems()*(logicProblem.getNumCategories()-1)*logicProblem.getNumCategories()/2);
     }    
     
     
@@ -141,7 +150,8 @@ public class PuzzledController implements Initializable {
     
     public void openFile() {
         System.out.println("openFile called");
-        loadProblem("test.lpf");
+        //loadProblem("test.lpf");
+        logicProblem = DemoProblem.generateDemoProblem47();
     }
     
     public void saveFile(){
