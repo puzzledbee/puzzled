@@ -52,14 +52,15 @@
                            <children>
                               <AnchorPane fx:id="mainGrid" prefHeight="619.0" prefWidth="1276.0">
                                  <children>
-                                    <Button layoutX="8.0" mnemonicParsing="false" onAction="#zoomOutButtonAction" styleClass="cirlcebutton" text="-" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="0.0" />
-                                    <Button layoutX="47.0" mnemonicParsing="false" onAction="#zoomOutButtonAction" styleClass="cirlceglyph" text="+" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="0.0" />
+                                    <ScrollPane fx:id="mainScroll" prefHeight="628.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <Button layoutX="8.0" mnemonicParsing="false" onAction="#zoomOutButtonAction" styleClass="cirlcebutton" text="-" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="10.0" />
+                                    <Button layoutX="47.0" mnemonicParsing="false" onAction="#zoomOutButtonAction" styleClass="cirlceglyph" text="+" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="10.0" />
                                  </children>
                               </AnchorPane>
                            </children>
                         </StackPane>
-                        <HBox alignment="CENTER_RIGHT" layoutX="767.0" layoutY="588.0" prefHeight="37.0" prefWidth="513.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="0.0" />
-                        <HBox alignment="CENTER_RIGHT" layoutX="766.0" layoutY="540.0" prefHeight="41.0" prefWidth="514.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="0.0" />
+                        <HBox alignment="CENTER_RIGHT" layoutX="767.0" layoutY="588.0" prefHeight="37.0" prefWidth="513.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" />
+                        <HBox alignment="CENTER_RIGHT" layoutX="766.0" layoutY="540.0" prefHeight="41.0" prefWidth="514.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="20.0" />
                      </children>
                   </AnchorPane>
                </content>

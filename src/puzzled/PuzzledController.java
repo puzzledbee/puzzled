@@ -32,7 +32,6 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 import puzzled.UI.Grid;
@@ -55,6 +54,9 @@ public class PuzzledController implements Initializable {
 
     @FXML
     private StackPane mainStack;
+    
+    @FXML
+    private ScrollPane mainScroll;
     
     private LogicProblem logicProblem;
     private HashMap<Pair<Item,Item>,Relationship> relationships;
@@ -88,19 +90,19 @@ public class PuzzledController implements Initializable {
         logicProblem = DemoProblem.generateDemoProblem47();
         //logicProblem = DemoProblem.generateDemoProblem0();
         
-        ScrollPane scroll = new ScrollPane();
-        scroll.setBackground(Background.EMPTY);
+        //ScrollPane scroll = new ScrollPane();
+        //scroll.setBackground(Background.EMPTY);
         
-        //scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        //scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        scroll.setPannable(true);
+        //mainScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        //mainScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        mainScroll.setPannable(true);
         Grid logicProblemGrid = new Grid(logicProblem);
-        scroll.setContent(logicProblemGrid);
-        logicProblemGrid.setScaleX(0.8);
-        logicProblemGrid.setScaleY(0.8);
+        mainScroll.setContent(logicProblemGrid);
+        //logicProblemGrid.setScaleX(0.8);
+        //logicProblemGrid.setScaleY(0.8);
         
         
-        mainGrid.getChildren().add(scroll);
+        //mainGrid.getChildren().add(scroll);
         //gridPane.setCenter(new Grid(logicProblem));
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
