@@ -6,9 +6,11 @@
 package puzzled.UI;
 
 import java.util.logging.Logger;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -24,9 +26,9 @@ import puzzled.data.LogicProblem;
 public class Grid extends StackPane {
 
     //PuzzledController controller;
-    private static int cellwidth = 50;
-    private static int labelheight = 150; //for vertical item labels
-    private static int labelwidth = 150;  //for horizontal item labels
+    private static int cellwidth = 40;
+    private static int labelheight = 175; //for vertical item labels
+    private static int labelwidth = 175;  //for horizontal item labels
     
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
@@ -39,7 +41,7 @@ public class Grid extends StackPane {
         //controller = myController;
         
         AnchorPane drawingPane = new AnchorPane();
-       
+        //drawingPane.setAlignment(Pos.CENTER);
         
         int numCategories = logicProblem.getNumCategories();
         int numItems = logicProblem.getNumItems();
@@ -50,7 +52,7 @@ public class Grid extends StackPane {
         int gridmaxheight=(numCategories-1)*numItems*cellwidth;
         //
         //horizontal, top to bottom
-        
+        drawingPane.setBackground(Background.EMPTY);
         //from labels -> labels+gridmaxwidth, blue
         Line nextLine = new Line(cellwidth+labelwidth,0,cellwidth+labelwidth+gridmaxwidth,0);
         nextLine.getStyleClass().add("gridmajor");
@@ -135,6 +137,7 @@ public class Grid extends StackPane {
         }
         
         hbox.getChildren().addAll(labels,tPane);
+        StackPane.setMargin(drawingPane, new Insets(cellwidth));
         this.getChildren().addAll(drawingPane,hbox);
     }
  

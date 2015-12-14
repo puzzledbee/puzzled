@@ -28,3 +28,15 @@
 .o {
     -fx-stroke: blue;
 }
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.cirlcebutton {
+    -fx-border-radius: 4;
+}
+
+.cirlceglyph {
+    -fx-border-radius: 25;
+}

@@ -26,11 +26,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 import puzzled.UI.Grid;
 import puzzled.data.DemoProblem;
@@ -48,7 +51,10 @@ public class PuzzledController implements Initializable {
     private TextField clueField;
 
     @FXML
-    private BorderPane gridPane;
+    private AnchorPane mainGrid;
+
+    @FXML
+    private StackPane mainStack;
     
     private LogicProblem logicProblem;
     private HashMap<Pair<Item,Item>,Relationship> relationships;
@@ -62,14 +68,42 @@ public class PuzzledController implements Initializable {
         //System.out.println("You clicked me!");
         clueField.setText("Hello World!");
     }
+
+    @FXML
+    private void zoomInButtonAction(ActionEvent event) {
+        //System.out.println("You clicked me!");
+        clueField.setText("Hello World!");
+    }
+    
+    @FXML
+    private void zoomOutButtonAction(ActionEvent event) {
+        //System.out.println("You clicked me!");
+        clueField.setText("Hello World!");
+    }
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
         logicProblem = DemoProblem.generateDemoProblem47();
-        gridPane.setCenter(new Grid(logicProblem));
-        gridPane.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
-            if (newvalue!=null) setupDragNDrop(gridPane.getScene());
+        //logicProblem = DemoProblem.generateDemoProblem0();
+        
+        ScrollPane scroll = new ScrollPane();
+        scroll.setBackground(Background.EMPTY);
+        
+        //scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        //scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scroll.setPannable(true);
+        Grid logicProblemGrid = new Grid(logicProblem);
+        scroll.setContent(logicProblemGrid);
+        logicProblemGrid.setScaleX(0.8);
+        logicProblemGrid.setScaleY(0.8);
+        
+        
+        mainGrid.getChildren().add(scroll);
+        //gridPane.setCenter(new Grid(logicProblem));
+        mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
+            if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
         });
         
     //    relationships = new HashMap<Pair<Item,Item>,Relationship>(logicProblem.getNumItems()*logicProblem.getNumItems()*(logicProblem.getNumCategories()-1)*logicProblem.getNumCategories()/2);

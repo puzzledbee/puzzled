@@ -1401,12 +1401,26 @@ e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesec
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512090056" tags="Object" changecount="7">
+<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512140246" tags="Object" changecount="12">
 <pre>''Grid'' is a visual container of the category and item labels as well as the data structure of [[GridCell]].
 It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]].
 
-TilePane simpler to setup than the set of VBox containing HBox, but does not take the row/column distribution when application is maximized.
-Take a look at eGridPane also and the controlsFX GridView
+
+Possible structure:
+*anchor pane, in grid tab
+**stackpane (mainStack)
+***layer 1, anchorpane (mainGrid)
+****zoomIn, anchored top left
+****zoomOut, anchored top left
+****scrollpane, anchored top left, on top
+*****stackpane
+******layer 1, anchorpane, for the grid, labels
+******layer 2, anchorpane, for relationships (GridCells)
+****hbox for the clue glyphs, anchored bottom right
+****hbox for the hint glyphs, anchored bottom right
+***layer 2, anchorpane, for the dependencies (needs to be above the stackpane to show arrows to the glyphs
+
+
 
 !!!To draw the grid:
 {{{

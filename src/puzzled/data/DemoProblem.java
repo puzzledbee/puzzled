@@ -17,7 +17,26 @@ import puzzled.data.Category.CategoryType;
 public class DemoProblem {
 
     static LogicProblem demoProblem;
+    //Penny Pres Original Logic Problems Mar 1999
+    public static LogicProblem generateDemoProblem0() {
+       demoProblem = new LogicProblem("Problem 0",3,3);
+        
+        List<Item> myItems = new ArrayList<Item>(3);
+        
+        myItems.addAll(Arrays.asList(new Item("Haley's Comet"), new Item("Into The Fire"), new Item("Never Again")));
+        demoProblem.addCategory(new Category("Book",myItems));
 
+        myItems.addAll(Arrays.asList(new Item("Bettany"), new Item("Donovan"), new Item("Elizabeth")));
+        demoProblem.addCategory(new Category("School",myItems));
+
+        myItems.addAll(Arrays.asList(new Item("15"), new Item("16"), new Item("17")));
+        Category thirdCat = new Category("Pages",myItems);
+        thirdCat.setType(CategoryType.NUMERICAL);
+        demoProblem.addCategory(thirdCat);
+        
+        return demoProblem;
+    }
+    
     //Penny Pres Original Logic Problems Mar 1999
     public static LogicProblem generateDemoProblem47() {
        demoProblem = new LogicProblem("Problem 47",5,5);
@@ -28,15 +47,19 @@ public class DemoProblem {
         demoProblem.addCategory(new Category("Book",myItems));
 
         myItems.addAll(Arrays.asList(new Item("Bettany"), new Item("Donovan"), new Item("Elizabeth"), new Item("Frederick"), new Item("Peyton")));
-        demoProblem.addCategory(new Category("School",myItems));
+        demoProblem.addCategory(new Category("Author",myItems));
 
         myItems.addAll(Arrays.asList(new Item("15"), new Item("16"), new Item("17"), new Item("18"), new Item("19")));
         Category thirdCat = new Category("Pages",myItems);
         thirdCat.setType(CategoryType.NUMERICAL);
         demoProblem.addCategory(thirdCat);
+
+                
+        myItems.addAll(Arrays.asList(new Item("Biography"), new Item("Fantasy"), new Item("Mystery"), new Item("Romance"), new Item("Science-Fiction")));
+        demoProblem.addCategory(new Category("Genre",myItems));
         
-        myItems.addAll(Arrays.asList(new Item("Dr. Brusch"), new Item("Dr. Dentur"), new Item("Dr. Gengivis"), new Item("Dr. Moller"), new Item("Dr. Tartar")));
-        demoProblem.addCategory(new Category("Mentor",myItems));
+        myItems.addAll(Arrays.asList(new Item("Chapman"), new Item("Holden"), new Item("Koenig"), new Item("Rawlins"), new Item("Wright")));
+        demoProblem.addCategory(new Category("Last Name",myItems));
 
         return demoProblem;
     }
