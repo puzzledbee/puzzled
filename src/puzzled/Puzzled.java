@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 public class Puzzled extends Application {
     
 
+    public static final String version = "1.0";
     
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
@@ -53,7 +54,7 @@ public class Puzzled extends Application {
         //new Image(Puzzled.class.getResourceAsStream( "/icons/puzzle_32.png" ))); 
         
         primaryStage.setMaximized(true);
-        primaryStage.setTitle("Puzzled!");
+        primaryStage.setTitle("Puzzled! - Computer-aided logic problem solver - v."+Puzzled.version);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

@@ -29,14 +29,25 @@
     -fx-stroke: blue;
 }
 
+.l {
+    -fx-border-color: blueviolet;
+}
+
 .scroll-pane > .viewport {
    -fx-background-color: transparent;
 }
 
 .cirlcebutton {
-    -fx-border-radius: 4;
+    -fx-background-radius: 3em;
+    -fx-border-radius: 3em;
+    -fx-border-color: blueviolet;
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-font-weight: bold;
 }
 
 .cirlceglyph {
-    -fx-border-radius: 25;
+    -fx-border-radius: 10;
 }

@@ -26,6 +26,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
@@ -35,7 +36,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 import puzzled.UI.Grid;
-import puzzled.data.DemoProblem;
+import puzzled.data.DemoProblems;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
@@ -57,6 +58,9 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private ScrollPane mainScroll;
+    
+    @FXML
+    private CheckMenuItem hideLabelsMenuItem;
     
     private LogicProblem logicProblem;
     private HashMap<Pair<Item,Item>,Relationship> relationships;
@@ -84,11 +88,13 @@ public class PuzzledController implements Initializable {
     }
     
     
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        logicProblem = DemoProblem.generateDemoProblem47();
-        //logicProblem = DemoProblem.generateDemoProblem0();
+        logicProblem = DemoProblems.generateDemoProblem47();
+        //logicProblem = DemoProblems.generateDemoProblem0();
         
         //ScrollPane scroll = new ScrollPane();
         //scroll.setBackground(Background.EMPTY);
@@ -97,7 +103,12 @@ public class PuzzledController implements Initializable {
         //mainScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         mainScroll.setPannable(true);
         Grid logicProblemGrid = new Grid(logicProblem);
+        //bind labels layer visibility to checkMenuItem
+        logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
+        //bind relationships layer visibility to checkMenuItem        
+        //logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
         mainScroll.setContent(logicProblemGrid);
+        
         //logicProblemGrid.setScaleX(0.8);
         //logicProblemGrid.setScaleY(0.8);
         
@@ -187,7 +198,7 @@ public class PuzzledController implements Initializable {
     public void openFile() {
         System.out.println("openFile called");
         //loadProblem("test.lpf");
-        logicProblem = DemoProblem.generateDemoProblem47();
+        logicProblem = DemoProblems.generateDemoProblem47();
     }
     
     public void saveFile(){

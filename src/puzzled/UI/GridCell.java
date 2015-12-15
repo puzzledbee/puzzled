@@ -45,7 +45,6 @@ public class GridCell extends StackPane {
         Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );    
         
         
-        
         valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("GridCell valueProperty chaged to" + newValue));
         
         myRectangle.setStroke(Color.BLACK);

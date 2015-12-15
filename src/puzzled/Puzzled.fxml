@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -16,6 +17,10 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
+                        <MenuItem mnemonicParsing="false" text="New Logic Problem ..." />
+                        <MenuItem mnemonicParsing="false" text="Open Logic Problem ..." />
+                        <MenuItem mnemonicParsing="false" text="Save Logic Problem" />
+                        <MenuItem mnemonicParsing="false" text="Save Logic Problem As..." />
                     <MenuItem mnemonicParsing="false" text="Close" />
                   </items>
                 </Menu>
@@ -24,6 +29,14 @@
                     <MenuItem mnemonicParsing="false" text="Delete" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Options">
+                    <items>
+                        <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
+                        <CheckMenuItem fx:id="hideLabelsMenuItem" mnemonicParsing="false" text="Hide Labels" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Preferences..." />
+                    </items>
+                  </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
                     <MenuItem mnemonicParsing="false" text="About" />
@@ -53,8 +66,8 @@
                               <AnchorPane fx:id="mainGrid" prefHeight="619.0" prefWidth="1276.0">
                                  <children>
                                     <ScrollPane fx:id="mainScroll" prefHeight="628.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <Button layoutX="8.0" mnemonicParsing="false" onAction="#zoomOutButtonAction" styleClass="cirlcebutton" text="-" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="10.0" />
-                                    <Button layoutX="47.0" mnemonicParsing="false" onAction="#zoomOutButtonAction" styleClass="cirlceglyph" text="+" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="10.0" />
+                                    <Button mnemonicParsing="false" onAction="#zoomOutButtonAction" snapToPixel="false" styleClass="cirlcebutton" text="-" textAlignment="CENTER" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="10.0" />
+                                    <Button mnemonicParsing="false" onAction="#zoomOutButtonAction" snapToPixel="false" styleClass="cirlcebutton" text="+" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="10.0" />
                                  </children>
                               </AnchorPane>
                            </children>
