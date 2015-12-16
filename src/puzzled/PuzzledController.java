@@ -47,6 +47,8 @@ import puzzled.data.Relationship;
  */
 public class PuzzledController implements Initializable {
     
+    private static double zoomFactor = 1.3;
+    
     @FXML
     private TextField clueField;
 
@@ -78,13 +80,13 @@ public class PuzzledController implements Initializable {
     @FXML
     private void zoomInButtonAction(ActionEvent event) {
         //System.out.println("You clicked me!");
-        clueField.setText("Hello World!");
+        logicProblem.setScale(logicProblem.getScale()*zoomFactor);
     }
     
     @FXML
     private void zoomOutButtonAction(ActionEvent event) {
         //System.out.println("You clicked me!");
-        clueField.setText("Hello World!");
+        logicProblem.setScale(logicProblem.getScale()/zoomFactor);
     }
     
     

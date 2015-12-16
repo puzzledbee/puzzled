@@ -9,7 +9,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -20,6 +22,8 @@ import javafx.beans.property.StringProperty;
 public class LogicProblem implements Serializable {
     private StringProperty problemTitle = new SimpleStringProperty();
     private String problemSource;
+    private String notes;
+    private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     
     private List<Category> categories;
     private int numCategories;
@@ -68,6 +72,18 @@ public class LogicProblem implements Serializable {
     
     public void removeClue(Clue oldClue){
         clues.remove(oldClue);
+    }
+    
+    public DoubleProperty getScaleProperty(){
+        return scaleProperty;
+    }
+    
+    public void setScale(double newScale){
+        scaleProperty.set(newScale);
+    }
+    
+    public double getScale(){
+        return scaleProperty.doubleValue();
     }
         
     @Override

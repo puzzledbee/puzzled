@@ -19,7 +19,6 @@ import javafx.stage.Stage;
  */
 public class Puzzled extends Application {
     
-
     public static final String version = "1.0";
     
     private static final Logger fLogger =
@@ -38,13 +37,6 @@ public class Puzzled extends Application {
         
         Parent root = FXMLLoader.load(getClass().getResource("Puzzled.fxml"));
         
-        //BorderPane root = new BorderPane();
-        
-        //root.setTop(new PuzzledMenuBar(this));
-        
-        //gridPane.setCenter(new Grid(this));
-        //clueField.setText("test this");
-        
         Scene scene = new Scene(root);
         
         //setting application icon. Icon files are in resources/icons
@@ -58,8 +50,6 @@ public class Puzzled extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
-
 
     public Logger getLogger(){
         return fLogger;
@@ -75,5 +65,4 @@ public class Puzzled extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
 }

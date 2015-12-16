@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
+import javafx.scene.transform.Rotate;
 import org.controlsfx.control.PopOver;
 import puzzled.Puzzled;
 import puzzled.data.Category;
@@ -45,7 +46,8 @@ public class Grid extends StackPane {
         //fLogger.log(Level.INFO, hideLabels.getText());
         
         AnchorPane gridPane = drawGrid();
-       
+        this.scaleXProperty().bind(logicProblem.getScaleProperty());
+        this.scaleYProperty().bind(logicProblem.getScaleProperty());
         
         AnchorPane labelPane = new AnchorPane();
         List<Category> categories = logicProblem.getCategories();
@@ -57,19 +59,24 @@ public class Grid extends StackPane {
             Label myLabel = new Label(categories.get(cat-1).getText());
             myLabel.setPrefWidth(cellwidth*numItems);
             myLabel.setPrefHeight(cellwidth);
-            AnchorPane.setLeftAnchor(myLabel, -labelwidth/2.0+6);
-            AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat:cat-1)*numItems-labelheight/2.0+6);   
-
+            AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
+            AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat:cat-1)*numItems+0.0);   
+            
             myLabel.setAlignment(Pos.CENTER);
-            myLabel.setRotate(270);
+            //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
+            myLabel.getTransforms().add(new Rotate(270, 0, cellwidth));
+            //myLabel.setRotate(270);
             myLabel.getStyleClass().add("l");
             labelPane.getChildren().add(myLabel);
             //item labels
             for (int item=1;item<=numItems;item++){
                 myLabel = new Label(categories.get(cat-1).getItems().get(item-1).getText());
                 labelPane.getChildren().add(myLabel);
-                AnchorPane.setLeftAnchor(myLabel, cellwidth+5.0);
-                AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat-1:cat-2)*numItems+cellwidth*item+10.0);
+                myLabel.setPrefWidth(labelwidth);
+                myLabel.setPrefHeight(cellwidth);              
+                myLabel.getStyleClass().add("l");
+                AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
+                AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat-1:cat-2)*numItems+cellwidth*item+0.0);
             }
         }
 
@@ -87,12 +94,19 @@ public class Grid extends StackPane {
             myLabel.getStyleClass().add("l");
             labelPane.getChildren().add(myLabel);
             //item labels
-//            for (int item=1;item<=numItems;item++){
-//                myLabel = new Label(categories.get(cat-1).getItems().get(item-1).getText());
-//                labelPane.getChildren().add(myLabel);
-//                AnchorPane.setLeftAnchor(myLabel, cellwidth+5.0);
-//                AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat-1:cat-2)*numItems+cellwidth*item+10.0);
-//            }
+            for (int item=1;item<=numItems;item++){
+                myLabel = new Label(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).getText());
+                myLabel.setPrefWidth(labelheight);
+                myLabel.setPrefHeight(cellwidth);
+                myLabel.getStyleClass().add("l");
+                //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
+                myLabel.getTransforms().add(new Rotate(270, 0, 0));
+
+                AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+(cellwidth*(cat-1)*numItems)+(cellwidth*(item-1))+0.0);
+                AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth+0.0);
+                labelPane.getChildren().add(myLabel);
+
+            }
         }
         
         

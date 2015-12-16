@@ -1337,13 +1337,14 @@ See [[Investigate]]
 | [[Constraint]] || [[Relationship]] |
 | [[Relationship]] | [[Constraint]]/[[Clue]]/[[Hint]]/[[Relationship]] | [[Relationship]] |</pre>
 </div>
-<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201511230259" changecount="13">
+<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201512152359" changecount="18">
 <pre>Design considerations
-*use modern JavaFX components for the user interface; is it necessary to create a custom control for the grid cell. Try to bind the [[GridCell]] to the [[Relationship]] in a bi-directional fashion
+*use modern JavaFX components for the user interface; is it necessary to create a custom control for the grid cell. Try to bind the [[GridCell]] to the [[Relationship]] in a bi-directional fashion.
+*use as much FXML for the application shell (menu, [[Tabs]], status bar, [[Clue]] text field, etc, and Java code to draw the [[Grid]] / [[Answers]]
+*use cascading stylesheets (CSS) extensively, which makes it simpler to customize the appearance
 *use a modern data structure from the Java Collections Framework for the [[RelationshipTable]]
-*use FXML for the application shell (menu, [[Tabs]], status bar, [[Clue]] text field, etc, and Java code to draw the [[Grid]] / [[Answers]]
 *use lambda expressions for event handling, because the code is cleaner and shorter
-*keep as little as possible in the [[LogicProblem]] class, which is serializable and used for saving/loading the problem to file/from file. The [[RelationshipTable]], [[HintsTable]], etc. can be re-generated
+*keep as little as possible in the [[LogicProblem]] class, --which is serializable and-- used for saving/loading the problem to file/from file. The [[RelationshipTable]], [[HintsTable]], etc. can be re-generated. Aim to save the [[LogicProblem]] as an XML file which will make it easier for power users to rapidly create problems. Consider FAXB fro XML binding.
 *keep ordinals (months, days) text in a text file for each language. Entries should be in the right order so that numerical rules can be applied
 *should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (first level)... and also show all the relationships that depend on it (first level)...
 *try to keep classes small; however find a reasonable way to pass object pointers between classes for necessary application context information
@@ -1401,7 +1402,7 @@ e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesec
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512150225" tags="Object" changecount="16">
+<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512150419" tags="Object" changecount="17">
 <pre>''Grid'' is a visual container of the category and item labels as well as the data structure of [[GridCell]].
 It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]].
 
@@ -1414,7 +1415,7 @@ Possible structure:
 ****Button zoomOut, anchored top left
 ****ScrollPane, anchored top left, on top
 *****Grid extends StackPane (subject to ScaleX and ScaleY....)
-******layer 1, AnchorPane (drawingPane), for the grid
+******layer 1, AnchorPane (gridPane), for the grid
 ******layer 2, AnchorPane (labelPane), for labels (visibleProperty bound to CheckMenuItem)
 ******layer 3, AnchorPane (relationshipPane), for relationships (GridCells)  (visibleProperty bound to CheckMenuItem)
 ****HBox for the clue glyphs, anchored bottom right
@@ -1698,16 +1699,16 @@ For n categories, the layout of the grid is as follows:
 * [[VALUE_NO]] relationship discovered following the elimination of options as part of an enumeration.
 </pre>
 </div>
-<div title="LogicProblem" creator="Fred" modifier="Fred" created="201510312313" modified="201511100235" changecount="5">
-<pre>Main class describing the problem data. It is serializable and can be saved to, or loaded from, an {{{.lpf}}} file.
+<div title="LogicProblem" creator="Fred" modifier="Fred" created="201510312313" modified="201512152358" changecount="7">
+<pre>Main class describing the problem data. It --is serializable--  can be saved to / loaded from an XML {{{.lpf}}} file.
 Must contain as fields:
-*Title, source, notes
-*Categories as a String ArrayList?
-*Items as a String ArrayList?
+*Problem title, source, notes
+*List of [[categories|Category]]
+**Lists of [[items|Item]] (within the [[Category]] objects)
 *[[Clues|Clue]]
 *[[Constraints|Constraint]]
 
-[[Relationships|Relationship]] are not saved with the [[LogicProblem]].</pre>
+[[Relationships|Relationship]] and [[HintsTable]] are not saved with the [[LogicProblem]], but are instead regenerated from the [[constraints|Constraint]] and [[clues|Clue]].</pre>
 </div>
 <div title="MainMenu" modifier="Fred" created="200807152359" modified="201511230255" changecount="8">
 <pre>[[Puzzled|Puzzled]]
@@ -1766,12 +1767,11 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201511290247" changecount="4">
-<pre>*how to bind {{{properties}}} [[GridCell]] to [[Relationship]] (is the {{{enum}}} a good idea?)
-*Learn Java Collections Framework
-*Check out [[GridView|http://controlsfx.bitbucket.org/org/controlsfx/control/GridView.html]] from ControlsFX.
-*Learn what preferred size means in UI components
-*Work on the app [[Layout]]</pre>
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512160151" changecount="5">
+<pre>*FAXB work for XML load/save
+*become a layout king
+**learn what preferred size means in UI components
+</pre>
 </div>
 <div title="NormalClue" modifier="Fred" created="200807182006" modified="200808030006" tags="Clue">
 <pre>A normal clue is specific enough that further reassessments are not necessary, as it provides VALUE_NO or VALUE_YES relationships at the onset, and will not be provide additional information in the future.  It is distinct from a [[special clue|SpecialClue]].
