@@ -28,6 +28,7 @@ public class Grid extends StackPane {
     private static int cellwidth = 40;
     private static int labelheight = 175; //for vertical item labels
     private static int labelwidth = 175;  //for horizontal item labels
+    private LogicProblem logicProblem;
     
     private int numCategories;
     private int numItems;
@@ -38,9 +39,10 @@ public class Grid extends StackPane {
     
     private PopOver myPopOver = new PopOver(new Label("hello!"));
     
-    public Grid(LogicProblem logicProblem) {
+    public Grid(LogicProblem arg_logicProblem) {
         //super();
-        //controller = myController;
+        //controller = myController;    
+        logicProblem = arg_logicProblem;
         this.numCategories = logicProblem.getNumCategories();
         this.numItems = logicProblem.getNumItems();
         //fLogger.log(Level.INFO, hideLabels.getText());
@@ -49,65 +51,7 @@ public class Grid extends StackPane {
         this.scaleXProperty().bind(logicProblem.getScaleProperty());
         this.scaleYProperty().bind(logicProblem.getScaleProperty());
         
-        AnchorPane labelPane = new AnchorPane();
-        List<Category> categories = logicProblem.getCategories();
-        
-        //vertical labels
-        for (int cat=1;cat<=numCategories;cat++){
-            if (cat==2) continue; //second category appears first on the horizontal axis
-            //category labels
-            Label myLabel = new Label(categories.get(cat-1).getName());
-            myLabel.setPrefWidth(cellwidth*numItems);
-            myLabel.setPrefHeight(cellwidth);
-            AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
-            AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat:cat-1)*numItems+0.0);   
-            
-            myLabel.setAlignment(Pos.CENTER);
-            //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
-            myLabel.getTransforms().add(new Rotate(270, 0, cellwidth));
-            //myLabel.setRotate(270);
-            myLabel.getStyleClass().add("l");
-            labelPane.getChildren().add(myLabel);
-            //item labels
-            for (int item=1;item<=numItems;item++){
-                myLabel = new Label(categories.get(cat-1).getItems().get(item-1).getText());
-                labelPane.getChildren().add(myLabel);
-                myLabel.setPrefWidth(labelwidth);
-                myLabel.setPrefHeight(cellwidth);              
-                myLabel.getStyleClass().add("l");
-                AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
-                AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat-1:cat-2)*numItems+cellwidth*item+0.0);
-            }
-        }
-
-        //horizontal labels
-        for (int cat=1;cat<numCategories;cat++){
-            
-            //category labels
-            Label myLabel = new Label(categories.get((cat==1?1:numCategories-cat+1)).getName());
-            myLabel.setPrefWidth(cellwidth*numItems);
-            myLabel.setPrefHeight(cellwidth);
-            AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+cellwidth*numItems*(cat-1)+0.0);
-            AnchorPane.setTopAnchor(myLabel, 0.0);   
-
-            myLabel.setAlignment(Pos.CENTER);
-            myLabel.getStyleClass().add("l");
-            labelPane.getChildren().add(myLabel);
-            //item labels
-            for (int item=1;item<=numItems;item++){
-                myLabel = new Label(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).getText());
-                myLabel.setPrefWidth(labelheight);
-                myLabel.setPrefHeight(cellwidth);
-                myLabel.getStyleClass().add("l");
-                //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
-                myLabel.getTransforms().add(new Rotate(270, 0, 0));
-
-                AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+(cellwidth*(cat-1)*numItems)+(cellwidth*(item-1))+0.0);
-                AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth+0.0);
-                labelPane.getChildren().add(myLabel);
-
-            }
-        }
+        AnchorPane labelPane = labelPane();
         
         
 //        HBox hbox = new HBox();
@@ -209,5 +153,74 @@ public class Grid extends StackPane {
         return drawingPane;
         
     }
- 
+
+    private AnchorPane labelPane() {
+        
+        AnchorPane anchorPane = new AnchorPane();
+    
+        List<Category> categories = logicProblem.getCategories();
+        
+        //vertical labels
+        for (int cat=1;cat<=numCategories;cat++){
+            if (cat==2) continue; //second category appears first on the horizontal axis
+            //category labels
+            Label myLabel = new Label();
+            myLabel.textProperty().bind(categories.get(cat-1).nameProperty());
+            myLabel.setPrefWidth(cellwidth*numItems);
+            myLabel.setPrefHeight(cellwidth);
+            AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
+            AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat:cat-1)*numItems+0.0);   
+            
+            myLabel.setAlignment(Pos.CENTER);
+            //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
+            myLabel.getTransforms().add(new Rotate(270, 0, cellwidth));
+            //myLabel.setRotate(270);
+            myLabel.getStyleClass().add("l");
+            anchorPane.getChildren().add(myLabel);
+            //item labels
+            for (int item=1;item<=numItems;item++){
+                myLabel = new Label();
+                myLabel.textProperty().bind(categories.get(cat-1).getItems().get(item-1).nameProperty());
+                myLabel.setPrefWidth(labelwidth);
+                myLabel.setPrefHeight(cellwidth);              
+                myLabel.getStyleClass().add("l");
+                AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
+                AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat-1:cat-2)*numItems+cellwidth*item+0.0);
+                anchorPane.getChildren().add(myLabel);
+            }
+        }
+
+        //horizontal labels
+        for (int cat=1;cat<numCategories;cat++){
+            
+            //category labels
+            Label myLabel = new Label();
+            myLabel.textProperty().bind(categories.get((cat==1?1:numCategories-cat+1)).nameProperty());
+            myLabel.setPrefWidth(cellwidth*numItems);
+            myLabel.setPrefHeight(cellwidth);
+            AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+cellwidth*numItems*(cat-1)+0.0);
+            AnchorPane.setTopAnchor(myLabel, 0.0);   
+
+            myLabel.setAlignment(Pos.CENTER);
+            myLabel.getStyleClass().add("l");
+            anchorPane.getChildren().add(myLabel);
+            //item labels
+            for (int item=1;item<=numItems;item++){
+                myLabel = new Label();
+                myLabel.textProperty().bind(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).nameProperty());
+                myLabel.setPrefWidth(labelheight);
+                myLabel.setPrefHeight(cellwidth);
+                myLabel.getStyleClass().add("l");
+                //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
+                myLabel.getTransforms().add(new Rotate(270, 0, 0));
+
+                AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+(cellwidth*(cat-1)*numItems)+(cellwidth*(item-1))+0.0);
+                AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth+0.0);
+                anchorPane.getChildren().add(myLabel);
+
+            }
+        }
+
+        return anchorPane;
+    }
 }

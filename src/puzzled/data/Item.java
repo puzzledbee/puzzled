@@ -20,23 +20,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Item {
     
-    private StringProperty itemName = new SimpleStringProperty();
+    private StringProperty nameProperty = new SimpleStringProperty();
     
     //necessary for unmarshalling
     public Item() {
     }
     
     public Item(String mytext){
-        itemName.set(mytext);
+        nameProperty.set(mytext);
     }
     
-    public void setText(String newText) {
-        itemName.set(newText);
+    public void setName(String newText) {
+        nameProperty.set(newText);
     }
     
     @XmlElement
-    public String getText() {
-        return itemName.getValue();
+    public String getName() {
+        return nameProperty.getValue();
+    }
+    
+    public StringProperty nameProperty(){
+        return nameProperty;
     }
     
 }

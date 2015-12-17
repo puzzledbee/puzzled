@@ -133,7 +133,7 @@ public class LogicProblem {
         for(Category quark: categories){
              output += "category: " + quark + "\n";
              for (Item item: quark.getItems()){
-                 output += "\titem: " + item.getText() + "\n";
+                 output += "\titem: " + item.getName() + "\n";
              }
          }
         return output;

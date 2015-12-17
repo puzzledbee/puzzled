@@ -64,6 +64,10 @@ public class Category {
         return nameProperty.getValue();
     }
     
+    public StringProperty nameProperty(){
+        return nameProperty;
+    }
+    
     @Override
     public String toString() {
         return "name="+nameProperty.getValue();
