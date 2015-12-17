@@ -19,7 +19,7 @@ import javafx.stage.Stage;
  */
 public class Puzzled extends Application {
     
-    public static final String version = "1.0";
+    public static final String version = "2.0";
     
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());

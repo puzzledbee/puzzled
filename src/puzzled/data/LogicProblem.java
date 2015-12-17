@@ -5,38 +5,52 @@
  */
 package puzzled.data;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author Fred
  */
-public class LogicProblem implements Serializable {
-    private StringProperty problemTitle = new SimpleStringProperty();
+
+@XmlRootElement
+@XmlType(propOrder={"title","problemSource","notes","numItems","numCategories","scale","categories","clues"})
+
+public class LogicProblem {
+
+//    @XmlElement
+    private StringProperty titleProperty = new SimpleStringProperty();
+    @XmlElement
     private String problemSource;
+    @XmlElement
     private String notes;
+    
+    @XmlElement
+    private int numCategories; //is this necessary or can it not be recovered, what is the point???
+    @XmlElement
+    private int numItems; //is this necessary or can it not be recovered, what is the point???
+    @XmlElement
+    private List<Category> categories;
+    
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     
-    private List<Category> categories;
-    private int numCategories;
-    private int numItems;
-    
- 
-    
+    @XmlElement
     private List<Clue> clues;
-    private BooleanProperty ordinal = new SimpleBooleanProperty(false);
+    
+    //necessary for unmarshalling
+    public LogicProblem(){
+    }
     
     public LogicProblem(String title, int category_number, int item_number){
         System.out.println("constructor invoked");
-        problemTitle.set(title);
+        titleProperty.set(title);
         numCategories = category_number;
         numItems = item_number;
         categories = new ArrayList<Category>(numCategories);
@@ -48,7 +62,29 @@ public class LogicProblem implements Serializable {
     public LogicProblem(int category_number, int item_number){
         this("",category_number,item_number);
     }
+
+    @XmlElement
+    public String getTitle() {
+        return titleProperty.getValue();
+    }
+
+    public void setTitle(String newTitle) {
+        titleProperty.set(newTitle);
+    }
     
+    /**
+     *
+     * @return
+     */
+
+    public String getSource() {
+        return problemSource;
+    }
+    
+    public String getNotes() {
+        return notes;
+    }
+
     public int getNumItems(){
         return numItems;
     }
@@ -56,7 +92,6 @@ public class LogicProblem implements Serializable {
     public int getNumCategories(){
         return numCategories;
     }
-    
     
     public List<Category> getCategories() {
         return categories;
@@ -82,18 +117,25 @@ public class LogicProblem implements Serializable {
         scaleProperty.set(newScale);
     }
     
+    @XmlElement
     public double getScale(){
-        return scaleProperty.doubleValue();
+        return scaleProperty.get();
     }
         
     @Override
     public String toString(){
         String output = new String();
+        output += "Title:" + this.getTitle()+"\n";
+        output += "Scale:" + this.getScale()+"\n";
+        output += "numItems:" + this.getNumItems()+"\n";
+        output += "numItems:" + this.getNumCategories()+"\n";
         
         for(Category quark: categories){
-             output += "categories: " + quark + "\n";
+             output += "category: " + quark + "\n";
+             for (Item item: quark.getItems()){
+                 output += "\titem: " + item.getText() + "\n";
+             }
          }
         return output;
     }
-    
 }

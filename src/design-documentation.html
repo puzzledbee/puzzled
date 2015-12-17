@@ -1337,18 +1337,19 @@ See [[Investigate]]
 | [[Constraint]] || [[Relationship]] |
 | [[Relationship]] | [[Constraint]]/[[Clue]]/[[Hint]]/[[Relationship]] | [[Relationship]] |</pre>
 </div>
-<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201512152359" changecount="18">
+<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201512170343" changecount="21">
 <pre>Design considerations
 *use modern JavaFX components for the user interface; is it necessary to create a custom control for the grid cell. Try to bind the [[GridCell]] to the [[Relationship]] in a bi-directional fashion.
 *use as much FXML for the application shell (menu, [[Tabs]], status bar, [[Clue]] text field, etc, and Java code to draw the [[Grid]] / [[Answers]]
 *use cascading stylesheets (CSS) extensively, which makes it simpler to customize the appearance
 *use a modern data structure from the Java Collections Framework for the [[RelationshipTable]]
 *use lambda expressions for event handling, because the code is cleaner and shorter
-*keep as little as possible in the [[LogicProblem]] class, --which is serializable and-- used for saving/loading the problem to file/from file. The [[RelationshipTable]], [[HintsTable]], etc. can be re-generated. Aim to save the [[LogicProblem]] as an XML file which will make it easier for power users to rapidly create problems. Consider FAXB fro XML binding.
+*keep as little as possible in the [[LogicProblem]] class, --which is serializable and-- used for saving/loading the problem to file/from file. The [[RelationshipTable]], [[HintsTable]], etc. can be re-generated. Aim to save the [[LogicProblem]] as an XML file which will make it easier for power users to rapidly create problems, and (also opens the door to a command line interface in addition to the GUI, automated [[Processor]] testing,etc). Consider FAXB for [[XML binding]].
 *keep ordinals (months, days) text in a text file for each language. Entries should be in the right order so that numerical rules can be applied
 *should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (first level)... and also show all the relationships that depend on it (first level)...
 *try to keep classes small; however find a reasonable way to pass object pointers between classes for necessary application context information
-*log plenty, use modern flexible logging framework</pre>
+*log plenty, use modern flexible logging framework
+*provide modern notifications (e.g. file saved successfully) framework, such as using popover...</pre>
 </div>
 <div title="EnableDisableTextClues" modifier="Fred" created="200807181801" tags="Feature">
 <pre>It would be nice if the user had the option of viewing all entered text clues in a table and also have the ability to enable or disable certain clues to assess impact on the puzzle solving algorithms.
@@ -1380,7 +1381,7 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
-<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201512050450" changecount="15">
+<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201512170250" changecount="16">
 <pre>Ordered list of nice-to-have features:
 #when loading a problem from file, it would be interesting to have the option to step through processing of clues, or have it automatically process everything ([[Preferences]])
 #provide zoom in/zoom out capability (see example in Mastering... p.48) using buttons on the top left of the [[Grid]] (see [[Layout]])
@@ -1388,6 +1389,7 @@ Graphically entered relationships need to be listed as well.</pre>
 #set/change category or item labels from the [[Grid]] using [[Lightweight dialogs|http://fxexperience.com/controlsfx/features/dialogs/]]
 #provide &quot;pannable&quot; user interface
 #drag-and-drop {{{.lpf}}} file
+#improved validation on unmarshalling XML files
 #print API to print the grid with or without the [[Relationship]] (use CSS to hide them?)
 #mnemonic and shortcut keys for menu items
 #export to {{{.png}}} snapshot
@@ -2469,6 +2471,21 @@ It is necessary to create all the [[relationships|Relationship]] even before VAL
 *In [[puzzled|http://puzzled.sf.net]], its value is arbitrarily defined in the puzzled.data.Constants interface as 1.
 
 See also [[VALUE_NO]] and [[VALUE_UNKNOWN]].</pre>
+</div>
+<div title="XML binding" creator="Fred" modifier="Fred" created="201512170317" modified="201512170330" changecount="7">
+<pre>Early experiments indicate that FAXB can be used to marshall the [[LogicProblem]] object to file and unmarshall the object from file.
+Some observations:
+*Objects needing unmarshalling need to have a public default constructor with no argument defined
+*There are some default {{{XmlElements}}} that are added without the need to annotate them with {{{@XmlElement}}}. It is not clear which are default and which need annotation. For example, a {{{public double}}} {{{get/set}}} gets marshalled without annotation, whereas a {{{public int}}} {{{get/set}}} does not ?!!?
+*The default names assumed and marshalled are the {{{XX}}} in the {{{public}}} {{{getXX()}}} method, ''not'' the name of the {{{private}}} field and or {{{private}}} {{{Property}}} field?!?!?
+*It may be necessary to remove an annotation from the {{{private}}} fields if the matching {{{getXX()}}} method becomes added by default, to remove duplication
+*Some private fields can be annotated, but {{{Property}}} objects cannot; instead annotate the {{{getXX}}} method and if a {{{setXX}}} method is also present, the {{{Property}}} will be restored upon unmarshalling
+*There seems to be no issue annotating private {{{List&lt;Object&gt;}}} fields, and if the {{{Object}}} is also annotated, it will also be marshalled/unmarshalled.
+*I find it easier annotating fields than the matching {{{getXX}}} method. After all, the purpose of the marshalling process is to save the fields of the object to disk.
+*You can change the order of the output of the fields in the XML file using the {{{@XmlType(propOrder={&quot;name&quot;,&quot;type&quot;,&quot;items&quot;})}}} annotation
+
+[[FAXB marshalling/unmarshalling demo|http://www.mkyong.com/java/jaxb-hello-world-example/]]
+[[FAXB annotation reference|https://jaxb.java.net/tutorial]]</pre>
 </div>
 <div title="offset" modifier="Fred" created="200807202036" modified="200807210002">
 <pre>The numerical difference between two elements as written in the text rules.  It is the right-most column in a HintsTable and should be the sort key to ease algebraic type discoveries.

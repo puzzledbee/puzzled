@@ -10,25 +10,33 @@ package puzzled.data;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Fred
  */
+@XmlRootElement
 public class Item {
     
-    private StringProperty itemText = new SimpleStringProperty();
+    private StringProperty itemName = new SimpleStringProperty();
+    
+    //necessary for unmarshalling
+    public Item() {
+    }
     
     public Item(String mytext){
-        itemText.set(mytext);
+        itemName.set(mytext);
     }
     
     public void setText(String newText) {
-        itemText.set(newText);
+        itemName.set(newText);
     }
     
+    @XmlElement
     public String getText() {
-        return itemText.getValue();
+        return itemName.getValue();
     }
     
 }

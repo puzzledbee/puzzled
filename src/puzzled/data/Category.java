@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 
 
@@ -17,6 +20,8 @@ import javafx.beans.property.StringProperty;
  *
  * @author Fred
  */
+@XmlRootElement
+@XmlType(propOrder={"name","type","items"})
 public class Category {
     
     public enum CategoryType {
@@ -26,13 +31,21 @@ public class Category {
         TEXT_NUMERICAL   //requires interpretation of text into value e.g. days/months/ranking
     }
     
+//    @XmlElement
+    private StringProperty nameProperty = new SimpleStringProperty();
     
-    private StringProperty categoryName = new SimpleStringProperty();
+    
     private CategoryType categoryType = CategoryType.NORMAL;
+    @XmlElement
     private List<Item> items = new ArrayList<Item>();
     
+    //necessary for unmarshalling
+    public Category(){
+        
+    }
+    
     public Category(String myTitle,List<Item> myItems) {
-        categoryName.set(myTitle);
+        nameProperty.set(myTitle);
         items = myItems;
     }
     public void setType(CategoryType type_arg) {
@@ -42,17 +55,18 @@ public class Category {
         return categoryType;
     }
     
-    public void setText(String myText){
-        categoryName.set(myText);
+    public void setName(String myText){
+        nameProperty.set(myText);
     }
     
-    public String getText(){
-        return categoryName.getValue();
+    @XmlElement
+    public String getName(){
+        return nameProperty.getValue();
     }
     
     @Override
     public String toString() {
-        return "name="+categoryName.getValue();
+        return "name="+nameProperty.getValue();
     }
     
     public List<Item> getItems(){

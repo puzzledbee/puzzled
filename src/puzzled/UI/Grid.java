@@ -56,7 +56,7 @@ public class Grid extends StackPane {
         for (int cat=1;cat<=numCategories;cat++){
             if (cat==2) continue; //second category appears first on the horizontal axis
             //category labels
-            Label myLabel = new Label(categories.get(cat-1).getText());
+            Label myLabel = new Label(categories.get(cat-1).getName());
             myLabel.setPrefWidth(cellwidth*numItems);
             myLabel.setPrefHeight(cellwidth);
             AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
@@ -84,7 +84,7 @@ public class Grid extends StackPane {
         for (int cat=1;cat<numCategories;cat++){
             
             //category labels
-            Label myLabel = new Label(categories.get((cat==1?1:numCategories-cat+1)).getText());
+            Label myLabel = new Label(categories.get((cat==1?1:numCategories-cat+1)).getName());
             myLabel.setPrefWidth(cellwidth*numItems);
             myLabel.setPrefHeight(cellwidth);
             AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+cellwidth*numItems*(cat-1)+0.0);
