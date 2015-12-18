@@ -6,8 +6,8 @@
 package puzzled;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ScrollPane;
@@ -25,13 +26,15 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import puzzled.UI.Grid;
-import puzzled.data.DemoProblems;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
@@ -43,6 +46,9 @@ import puzzled.data.Relationship;
 public class PuzzledController implements Initializable {
     
     private static double zoomFactor = 1.3;
+
+    @FXML
+    Parent root;
     
     @FXML
     private TextField clueField;
@@ -61,6 +67,9 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private CheckMenuItem hideLabelsMenuItem;
+
+    @FXML
+    private CheckMenuItem hideRelationshipsMenuItem;
     
     private LogicProblem logicProblem;
     private HashMap<Pair<Item,Item>,Relationship> relationships;
@@ -92,28 +101,22 @@ public class PuzzledController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         
 //        logicProblem = DemoProblems.generateDemoProblem0();
-        logicProblem = loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
+        
         
         //ScrollPane scroll = new ScrollPane();
         //scroll.setBackground(Background.EMPTY);
-        
-        //mainScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        //mainScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+
         mainScroll.setPannable(true);
-        Grid logicProblemGrid = new Grid(logicProblem);
+//        Grid logicProblemGrid = new Grid(logicProblem);
         //bind labels layer visibility to checkMenuItem
-        logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
+//        logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
         //bind relationships layer visibility to checkMenuItem        
-        //logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
+//        logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
+
 //        mainScroll.setContent(logicProblemGrid);
-        mainGroup.getChildren().add(logicProblemGrid);
-        
-        //logicProblemGrid.setScaleX(0.8);
-        //logicProblemGrid.setScaleY(0.8);
-        
-        
-        //mainGrid.getChildren().add(scroll);
-        //gridPane.setCenter(new Grid(logicProblem));
+//        mainGroup.getChildren().add(logicProblemGrid);
+          
+        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
         });
@@ -151,8 +154,8 @@ public class PuzzledController implements Initializable {
                 .stream()
                 .forEach( file -> {
                     try {
-                    loadProblem(file.toURI().toURL().toString());
-                    } catch (MalformedURLException ex) {
+                    loadProblem(Paths.get(file.toURI()).toString());
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 });
@@ -170,30 +173,50 @@ public class PuzzledController implements Initializable {
     * the object from file
     * @param myFile string representing the filename to be loaded.
     */
-    private LogicProblem loadProblem(String myFile){
-        //check that there are no problem already loaded
+    private void loadProblem(String myFile){
         fLogger.log(Level.INFO, "loading logic problem file: " + myFile);
+        loadProblem(new File(myFile));
+    }
+        
+    private void loadProblem(File file){
+        //check that there are no problem already loaded
+        
         LogicProblem newProblem = null;
         try {
 
-		File file = new File(myFile);
 		JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
 
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
-		System.out.println(newProblem);
-
+                fLogger.log(Level.INFO, newProblem.toString());
+                logicProblem = newProblem;
+                Grid logicProblemGrid = new Grid(logicProblem);
+                mainGroup.getChildren().clear();
+                mainGroup.getChildren().add(logicProblemGrid);
+                logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
+                
 	  } catch (JAXBException e) {
 		e.printStackTrace();
 	  }
-        return newProblem;
+        
     }
     
     
     public void openFile() {
-        System.out.println("open File called");
-        //loadProblem("test.lpf");
-        logicProblem = DemoProblems.generateDemoProblem47();
+        fLogger.log(Level.INFO, "opening file invoked");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Logic Problem File");
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("Logic Problem Files", "*.lpf"));
+        Stage mainStage = (Stage) root.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(mainStage);
+        if (selectedFile != null) {
+            fLogger.log(Level.INFO, "file "+selectedFile.getName());
+            loadProblem(selectedFile);
+        } else {
+            fLogger.log(Level.INFO, "no file selected");
+        
+        }
     }
     
     public void saveFile(){
