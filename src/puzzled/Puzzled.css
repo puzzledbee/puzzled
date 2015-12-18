@@ -29,13 +29,11 @@
     -fx-stroke: blue;
 }
 
-.l {
+.gridLabel {
     -fx-border-color: blueviolet;
+    -fx-label-padding: 5px;
 }
 
-.scroll-pane > .viewport {
-   -fx-background-color: transparent;
-}
 
 .cirlcebutton {
     -fx-background-radius: 3em;
@@ -51,3 +49,4 @@
 .cirlceglyph {
     -fx-border-radius: 10;
 }
+

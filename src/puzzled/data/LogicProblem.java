@@ -21,21 +21,21 @@ import javax.xml.bind.annotation.XmlType;
  */
 
 @XmlRootElement
-@XmlType(propOrder={"title","problemSource","notes","numItems","numCategories","scale","categories","clues"})
+@XmlType(propOrder={"title","source","notes","scale","categories","clues"})
 
 public class LogicProblem {
 
 //    @XmlElement
     private StringProperty titleProperty = new SimpleStringProperty();
-    @XmlElement
+    
     private String problemSource;
     @XmlElement
     private String notes;
     
-    @XmlElement
-    private int numCategories; //is this necessary or can it not be recovered, what is the point???
-    @XmlElement
-    private int numItems; //is this necessary or can it not be recovered, what is the point???
+//    @XmlElement
+//    private int numCategories; //is this necessary or can it not be recovered, what is the point???
+//    @XmlElement
+//    private int numItems; //is this necessary or can it not be recovered, what is the point???
     @XmlElement
     private List<Category> categories;
     
@@ -48,20 +48,18 @@ public class LogicProblem {
     public LogicProblem(){
     }
     
-    public LogicProblem(String title, int category_number, int item_number){
+    public LogicProblem(String title){
         System.out.println("constructor invoked");
         titleProperty.set(title);
-        numCategories = category_number;
-        numItems = item_number;
-        categories = new ArrayList<Category>(numCategories);
+//        numCategories = category_number;
+//        numItems = item_number;
+        categories = new ArrayList<Category>();
         
         //categories.add("Age");
         //categories.add("test");
     }
     
-    public LogicProblem(int category_number, int item_number){
-        this("",category_number,item_number);
-    }
+
 
     @XmlElement
     public String getTitle() {
@@ -76,21 +74,28 @@ public class LogicProblem {
      *
      * @return
      */
-
+    @XmlElement //unnecessary
     public String getSource() {
         return problemSource;
+    }
+
+    
+    public void setSource(String arg_source) {
+        this.problemSource =arg_source;
     }
     
     public String getNotes() {
         return notes;
     }
-
+    
+    //somehow does not get registered as an XmlElement
     public int getNumItems(){
-        return numItems;
+        return categories.get(0).getNumItems();
     }
     
+    //somehow does not get registered as an XmlElement
     public int getNumCategories(){
-        return numCategories;
+        return categories.size();
     }
     
     public List<Category> getCategories() {
@@ -116,8 +121,8 @@ public class LogicProblem {
     public void setScale(double newScale){
         scaleProperty.set(newScale);
     }
-    
-    @XmlElement
+
+    @XmlElement //unnecessary
     public double getScale(){
         return scaleProperty.get();
     }

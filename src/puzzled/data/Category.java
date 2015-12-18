@@ -77,4 +77,8 @@ public class Category {
         return items;
     }
     
+    public int getNumItems(){
+        return items.size();
+    }
+    
 }

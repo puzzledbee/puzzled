@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ScrollPane;
@@ -54,6 +55,9 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private ScrollPane mainScroll;
+
+    @FXML
+    private Group mainGroup;
     
     @FXML
     private CheckMenuItem hideLabelsMenuItem;
@@ -83,14 +87,12 @@ public class PuzzledController implements Initializable {
         logicProblem.setScale(logicProblem.getScale()/zoomFactor);
     }
     
-    
-    
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        logicProblem = DemoProblems.generateDemoProblem47();
-        //logicProblem = DemoProblems.generateDemoProblem0();
+//        logicProblem = DemoProblems.generateDemoProblem0();
+        logicProblem = loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         
         //ScrollPane scroll = new ScrollPane();
         //scroll.setBackground(Background.EMPTY);
@@ -103,7 +105,8 @@ public class PuzzledController implements Initializable {
         logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
         //bind relationships layer visibility to checkMenuItem        
         //logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
-        mainScroll.setContent(logicProblemGrid);
+//        mainScroll.setContent(logicProblemGrid);
+        mainGroup.getChildren().add(logicProblemGrid);
         
         //logicProblemGrid.setScaleX(0.8);
         //logicProblemGrid.setScaleY(0.8);
@@ -167,22 +170,23 @@ public class PuzzledController implements Initializable {
     * the object from file
     * @param myFile string representing the filename to be loaded.
     */
-    private void loadProblem(String myFile){
+    private LogicProblem loadProblem(String myFile){
         //check that there are no problem already loaded
         fLogger.log(Level.INFO, "loading logic problem file: " + myFile);
-        
+        LogicProblem newProblem = null;
         try {
 
-		File file = new File("test.lpf");
+		File file = new File(myFile);
 		JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
 
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		LogicProblem newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
+		newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
 		System.out.println(newProblem);
 
 	  } catch (JAXBException e) {
 		e.printStackTrace();
 	  }
+        return newProblem;
     }
     
     

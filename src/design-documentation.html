@@ -1404,7 +1404,7 @@ e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesec
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512150419" tags="Object" changecount="17">
+<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512180232" tags="Object" changecount="18">
 <pre>''Grid'' is a visual container of the category and item labels as well as the data structure of [[GridCell]].
 It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]].
 
@@ -1415,11 +1415,12 @@ Possible structure:
 ***layer 1, AnchorPane (FXML id:mainGrid)
 ****Button zoomIn, anchored top left
 ****Button zoomOut, anchored top left
-****ScrollPane, anchored top left, on top
-*****Grid extends StackPane (subject to ScaleX and ScaleY....)
-******layer 1, AnchorPane (gridPane), for the grid
-******layer 2, AnchorPane (labelPane), for labels (visibleProperty bound to CheckMenuItem)
-******layer 3, AnchorPane (relationshipPane), for relationships (GridCells)  (visibleProperty bound to CheckMenuItem)
+****ScrollPane, anchored top left, on top (FXML id: mainScroll)
+*****Group (used to enable zoom in / zoom out) (FXML id: mainGroup)
+******Grid extends StackPane (subject to ScaleX and ScaleY....)
+*******layer 1, AnchorPane (gridPane), for the grid
+*******layer 2, AnchorPane (labelPane), for labels (visibleProperty bound to CheckMenuItem)
+*******layer 3, AnchorPane (relationshipPane), for relationships (GridCells)  (visibleProperty bound to CheckMenuItem)
 ****HBox for the clue glyphs, anchored bottom right
 ****HBox for the hint glyphs, anchored bottom right
 ***layer 2, AnchorPane, for the dependencies (needs to be above the stackpane to show arrows to the glyphs

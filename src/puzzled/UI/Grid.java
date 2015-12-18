@@ -165,6 +165,7 @@ public class Grid extends StackPane {
             if (cat==2) continue; //second category appears first on the horizontal axis
             //category labels
             Label myLabel = new Label();
+            
             myLabel.textProperty().bind(categories.get(cat-1).nameProperty());
             myLabel.setPrefWidth(cellwidth*numItems);
             myLabel.setPrefHeight(cellwidth);
@@ -175,7 +176,7 @@ public class Grid extends StackPane {
             //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
             myLabel.getTransforms().add(new Rotate(270, 0, cellwidth));
             //myLabel.setRotate(270);
-            myLabel.getStyleClass().add("l");
+            myLabel.getStyleClass().add("gridLabel");
             anchorPane.getChildren().add(myLabel);
             //item labels
             for (int item=1;item<=numItems;item++){
@@ -183,7 +184,7 @@ public class Grid extends StackPane {
                 myLabel.textProperty().bind(categories.get(cat-1).getItems().get(item-1).nameProperty());
                 myLabel.setPrefWidth(labelwidth);
                 myLabel.setPrefHeight(cellwidth);              
-                myLabel.getStyleClass().add("l");
+                myLabel.getStyleClass().add("gridLabel");
                 AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
                 AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat-1:cat-2)*numItems+cellwidth*item+0.0);
                 anchorPane.getChildren().add(myLabel);
@@ -202,7 +203,7 @@ public class Grid extends StackPane {
             AnchorPane.setTopAnchor(myLabel, 0.0);   
 
             myLabel.setAlignment(Pos.CENTER);
-            myLabel.getStyleClass().add("l");
+            myLabel.getStyleClass().add("gridLabel");
             anchorPane.getChildren().add(myLabel);
             //item labels
             for (int item=1;item<=numItems;item++){
@@ -210,7 +211,7 @@ public class Grid extends StackPane {
                 myLabel.textProperty().bind(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).nameProperty());
                 myLabel.setPrefWidth(labelheight);
                 myLabel.setPrefHeight(cellwidth);
-                myLabel.getStyleClass().add("l");
+                myLabel.getStyleClass().add("gridLabel");
                 //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
                 myLabel.getTransforms().add(new Rotate(270, 0, 0));
 

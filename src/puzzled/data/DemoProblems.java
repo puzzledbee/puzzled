@@ -17,9 +17,10 @@ import puzzled.data.Category.CategoryType;
 public class DemoProblems {
 
     static LogicProblem demoProblem;
-    //Penny Pres Original Logic Problems Mar 1999
+    
     public static LogicProblem generateDemoProblem0() {
-       demoProblem = new LogicProblem("Problem 0",3,3);
+       demoProblem = new LogicProblem("Problem 0");
+       demoProblem.setSource("Penny Pres Original Logic Problems Mar 1999");
         
         List<Item> myItems = new ArrayList<Item>(3);
         
@@ -39,9 +40,9 @@ public class DemoProblems {
         return demoProblem;
     }
     
-    //Penny Pres Original Logic Problems Mar 1999
     public static LogicProblem generateDemoProblem47() {
-       demoProblem = new LogicProblem("Problem 47",5,5);
+       demoProblem = new LogicProblem("Problem 47");
+       demoProblem.setSource("Penny Pres Original Logic Problems Mar 1999");
         
         List<Item> myItems = new ArrayList<Item>(5);
         
@@ -70,9 +71,9 @@ public class DemoProblems {
     }
 
         
-    //PennyPress Original Logic Problems Special Collector's Edition December 2015
     public static LogicProblem generateDemoProblem31() {
-        demoProblem = new LogicProblem("Problem 31",5,5);
+        demoProblem = new LogicProblem("Problem 31");
+        demoProblem.setSource("PennyPress Original Logic Problems Special Collector's Edition December 2015");
         List<Item> myItems = new ArrayList<Item>(5);
         
         myItems.addAll(Arrays.asList(new Item("400"), new Item("415"), new Item("430"), new Item("445"), new Item("460")));
@@ -98,9 +99,9 @@ public class DemoProblems {
     }
     
     
-    //PennyPress Original Logic Problems Special Collector's Edition December 2015
     public static LogicProblem generateDemoProblem33() {
-        demoProblem = new LogicProblem("Problem 33",5,5);
+        demoProblem = new LogicProblem("Problem 33");
+        demoProblem.setSource("PennyPress Original Logic Problems Special Collector's Edition December 2015");
         List<Item> myItems = new ArrayList<Item>(5);
         
         myItems.addAll(Arrays.asList(new Item("2:30"), new Item("3:30"), new Item("4:30"), new Item("5:30"), new Item("6:30")));

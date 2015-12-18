@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<logicProblem>
+    <title>Problem 31</title>
+    <source>PennyPress Original Logic Problems Special Collector's Edition December 2015</source>
+    <scale>1.0</scale>
+    <categories>
+        <name>Office</name>
+        <type>NUMERICAL</type>
+        <items>
+            <name>400</name>
+        </items>
+        <items>
+            <name>415</name>
+        </items>
+        <items>
+            <name>430</name>
+        </items>
+        <items>
+            <name>445</name>
+        </items>
+        <items>
+            <name>460</name>
+        </items>
+    </categories>
+    <categories>
+        <name>School</name>
+        <type>NORMAL</type>
+        <items>
+            <name>Cuspidoria</name>
+        </items>
+        <items>
+            <name>Denticus Maximus</name>
+        </items>
+        <items>
+            <name>Rinse &amp; Spit Academy</name>
+        </items>
+        <items>
+            <name>The Tooth School</name>
+        </items>
+        <items>
+            <name>University of Norway</name>
+        </items>
+    </categories>
+    <categories>
+        <name>Mentor</name>
+        <type>NORMAL</type>
+        <items>
+            <name>Dr. Brusch</name>
+        </items>
+        <items>
+            <name>Dr. Dentur</name>
+        </items>
+        <items>
+            <name>Dr. Gengivis</name>
+        </items>
+        <items>
+            <name>Dr. Moller</name>
+        </items>
+        <items>
+            <name>Dr. Tartar</name>
+        </items>
+    </categories>
+    <categories>
+        <name>Year</name>
+        <type>NUMERICAL</type>
+        <items>
+            <name>1998</name>
+        </items>
+        <items>
+            <name>2001</name>
+        </items>
+        <items>
+            <name>2004</name>
+        </items>
+        <items>
+            <name>2007</name>
+        </items>
+        <items>
+            <name>2010</name>
+        </items>
+    </categories>
+</logicProblem>
