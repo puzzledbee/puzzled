@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import org.controlsfx.control.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
@@ -10,114 +11,126 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@Puzzled.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="puzzled.PuzzledController">
-   <top>
-      <VBox prefHeight="75.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-         <children>
-            <MenuBar>
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                        <MenuItem mnemonicParsing="false" text="New Logic Problem ..." />
-                        <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open Logic Problem ...">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator></MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save Logic Problem">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator></MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Save Logic Problem As..." />
-                    <MenuItem mnemonicParsing="false" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                  <Menu mnemonicParsing="false" text="Options">
-                    <items>
-                        <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
-                        <CheckMenuItem fx:id="hideLabelsMenuItem" mnemonicParsing="false" text="Hide Labels" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Preferences..." />
-                    </items>
-                  </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-            <ToolBar prefHeight="40.0" prefWidth="200.0">
-              <items>
-                <Button id="btn_new" mnemonicParsing="false" text="New" />
-                  <Button id="btn_open" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Open" />
-                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Save" />
-              </items>
-            </ToolBar>
-         </children>
-      </VBox>
-   </top>
-   <center>
-      <TabPane prefHeight="294.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-        <tabs>
-          <Tab text="Grid">
-               <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <StackPane fx:id="mainStack" prefHeight="628.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <AnchorPane fx:id="mainGrid" prefHeight="619.0" prefWidth="1276.0">
-                                 <children>
-                                    <ScrollPane fx:id="mainScroll" prefHeight="628.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <content>
-                                          <Group fx:id="mainGroup" />
-                                       </content></ScrollPane>
-                                    <Button mnemonicParsing="false" onAction="#zoomOutButtonAction" snapToPixel="false" styleClass="cirlcebutton" text="-" textAlignment="CENTER" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="10.0" />
-                                    <Button mnemonicParsing="false" onAction="#zoomInButtonAction" snapToPixel="false" styleClass="cirlcebutton" text="+" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="10.0" />
-                                 </children>
-                              </AnchorPane>
-                           </children>
-                        </StackPane>
-                        <HBox alignment="CENTER_RIGHT" layoutX="767.0" layoutY="588.0" prefHeight="37.0" prefWidth="513.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" />
-                        <HBox alignment="CENTER_RIGHT" layoutX="766.0" layoutY="540.0" prefHeight="41.0" prefWidth="514.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="20.0" />
-                     </children>
-                  </AnchorPane>
-               </content>
-          </Tab>
-          <Tab text="Answers">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </Tab>
-            <Tab text="Clues">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-              </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-   </center>
-   <bottom>
-      <VBox prefHeight="30.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-         <children>
-            <Separator prefWidth="200.0" style="-fx-border-color: FF0000;" />
-            <FlowPane alignment="CENTER" hgap="10.0" prefHeight="45.0" prefWidth="600.0">
+<AnchorPane fx:id="root" stylesheets="@Puzzled.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="puzzled.PuzzledController">
+   <children>
+      <BorderPane fx:id="bPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <VBox prefHeight="75.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label prefHeight="21.0" prefWidth="49.0" text="Clue:" textAlignment="RIGHT" />
-                  <Label alignment="CENTER" prefHeight="21.0" prefWidth="22.0" text="1" textAlignment="CENTER" textFill="#1b2ab5" />
-                  <TextField id="textField" fx:id="clueField" prefHeight="31.0" prefWidth="816.0" promptText="enter a clue here" />
-                  <Button mnemonicParsing="false" onAction="#handleButtonAction" text="Submit" />
+                  <MenuBar>
+                    <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                        <items>
+                              <MenuItem mnemonicParsing="false" text="New Logic Problem ..." />
+                              <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open Logic Problem ...">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#loadMe" text="Load Sample Problem" visible="false">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save Logic Problem">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                              <MenuItem mnemonicParsing="false" text="Save Logic Problem As..." />
+                          <MenuItem mnemonicParsing="false" text="Close" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Edit">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="Delete" />
+                        </items>
+                      </Menu>
+                        <Menu mnemonicParsing="false" text="Options">
+                          <items>
+                              <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
+                              <CheckMenuItem fx:id="hideLabelsMenuItem" mnemonicParsing="false" text="Hide Labels" />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem mnemonicParsing="false" text="Preferences..." />
+                          </items>
+                        </Menu>
+                      <Menu mnemonicParsing="false" text="Help">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="About" />
+                        </items>
+                      </Menu>
+                    </menus>
+                  </MenuBar>
+                  <ToolBar prefHeight="40.0" prefWidth="200.0">
+                    <items>
+                      <Button id="btn_new" mnemonicParsing="false" text="New" />
+                        <Button id="btn_open" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Open" />
+                        <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Save" />
+                    </items>
+                  </ToolBar>
                </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" top="10.0" />
-               </padding>
-            </FlowPane>
-         </children>
-      </VBox>
-   </bottom>
-</BorderPane>
+            </VBox>
+         </top>
+         <center>
+            <TabPane prefHeight="294.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab text="Grid">
+                     <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <StackPane fx:id="mainStack" prefHeight="628.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <AnchorPane fx:id="mainGrid" prefHeight="619.0" prefWidth="1276.0">
+                                       <children>
+                                          <ScrollPane fx:id="mainScroll" prefHeight="628.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                <Group fx:id="mainGroup" />
+                                             </content>
+                                          </ScrollPane>
+                                          <Button mnemonicParsing="false" onAction="#zoomOutButtonAction" snapToPixel="false" styleClass="cirlcebutton" text="-" textAlignment="CENTER" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="10.0" />
+                                          <Button mnemonicParsing="false" onAction="#zoomInButtonAction" snapToPixel="false" styleClass="cirlcebutton" text="+" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="10.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </StackPane>
+                              <HBox alignment="CENTER_RIGHT" layoutX="767.0" layoutY="588.0" prefHeight="37.0" prefWidth="513.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" />
+                              <HBox alignment="CENTER_RIGHT" layoutX="766.0" layoutY="540.0" prefHeight="41.0" prefWidth="514.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="20.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                </Tab>
+                <Tab text="Answers">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+                  <Tab text="Clues">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </center>
+         <bottom>
+            <VBox prefHeight="30.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Separator prefWidth="200.0" style="-fx-border-color: FF0000;" />
+                  <FlowPane alignment="CENTER" hgap="10.0" prefHeight="45.0" prefWidth="600.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="49.0" text="Clue:" textAlignment="RIGHT" />
+                        <Label alignment="CENTER" prefHeight="21.0" prefWidth="22.0" text="1" textAlignment="CENTER" textFill="#1b2ab5" />
+                        <TextField id="textField" fx:id="clueField" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
+                        <Button mnemonicParsing="false" onAction="#addClueButtonAction" text="Add clue!" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" top="10.0" />
+                     </padding>
+                  </FlowPane>
+               </children>
+            </VBox>
+         </bottom>
+      </BorderPane>
+      <NotificationPane fx:id="nPane" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+   </children>
+</AnchorPane>

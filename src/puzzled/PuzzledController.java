@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,17 +25,20 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
@@ -46,9 +51,18 @@ import puzzled.data.Relationship;
 public class PuzzledController implements Initializable {
     
     private static double zoomFactor = 1.3;
+    private static double maxZoom = 2.3;
+    private static double minZoom = 0.4;
 
     @FXML
     Parent root;
+    
+    @FXML
+    Parent bPane;
+    
+    @FXML
+    NotificationPane nPane;
+    
     
     @FXML
     private TextField clueField;
@@ -78,34 +92,62 @@ public class PuzzledController implements Initializable {
     private static final Logger fLogger =
     Logger.getLogger(Puzzled.class.getPackage().getName());
     
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        //System.out.println("You clicked me!");
-        clueField.setText("Hello World!");
-    }
 
+
+    
     @FXML
-    private void zoomInButtonAction(ActionEvent event) {
-        //System.out.println("You clicked me!");
-        logicProblem.setScale(logicProblem.getScale()*zoomFactor);
+    private void loadMe(ActionEvent event) {
+        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
     }
     
     @FXML
+    private void zoomInButtonAction(ActionEvent event) {
+        
+        if (logicProblem.getScale() <= maxZoom) {
+            logicProblem.setScale(logicProblem.getScale()*zoomFactor);
+        } else {
+            nPane.show("maximum zoom level reached!");
+        }
+        fLogger.log(Level.INFO, "scale:"+logicProblem.getScale());
+    }    
+    
+    @FXML
     private void zoomOutButtonAction(ActionEvent event) {
-        //System.out.println("You clicked me!");
-        logicProblem.setScale(logicProblem.getScale()/zoomFactor);
+        if (logicProblem.getScale() >= minZoom) {
+            logicProblem.setScale(logicProblem.getScale()/zoomFactor);
+        } else {
+            nPane.show("minimum zoom level reached!");
+        }
+        fLogger.log(Level.INFO,"scale:"+logicProblem.getScale());
     }
+
+        
+    @FXML
+    private void addClueButtonAction(ActionEvent event) {
+        nPane.show("a clue was just added!");
+    }
+    
     
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-//        logicProblem = DemoProblems.generateDemoProblem0();
-        
-        
         //ScrollPane scroll = new ScrollPane();
         //scroll.setBackground(Background.EMPTY);
-
+        nPane.setContent(bPane);
+        //nPane.getStylesheets().add(getClass().getResource("Puzzled.css").toExternalForm());
+        nPane.setOnShown(e -> {
+            Timeline timeline = new Timeline();
+            timeline.getKeyFrames().add(
+                new KeyFrame(Duration.millis(2000), f -> nPane.hide()));
+            timeline.play();
+        });
+        nPane.setOnKeyPressed(e -> {
+             KeyCode key = e.getCode();
+             if (key == KeyCode.ESCAPE) {
+                 nPane.hide();
+             }
+        });
         mainScroll.setPannable(true);
 //        Grid logicProblemGrid = new Grid(logicProblem);
         //bind labels layer visibility to checkMenuItem
@@ -116,7 +158,7 @@ public class PuzzledController implements Initializable {
 //        mainScroll.setContent(logicProblemGrid);
 //        mainGroup.getChildren().add(logicProblemGrid);
           
-        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
+        //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
@@ -174,7 +216,7 @@ public class PuzzledController implements Initializable {
     * the object from file
     * @param myFile string representing the filename to be loaded.
     */
-    private void loadProblem(String myFile){
+    public void loadProblem(String myFile){
         fLogger.log(Level.INFO, "loading logic problem file: " + myFile);
         loadProblem(new File(myFile));
     }
@@ -194,7 +236,8 @@ public class PuzzledController implements Initializable {
                 Grid logicProblemGrid = new Grid(logicProblem);
                 mainGroup.getChildren().clear();
                 mainGroup.getChildren().add(logicProblemGrid);
-                logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
+                logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());  
+                nPane.show("Congratulations!");
                 
 	  } catch (JAXBException e) {
 		e.printStackTrace();

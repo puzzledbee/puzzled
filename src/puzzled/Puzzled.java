@@ -8,10 +8,8 @@ package puzzled;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
 
@@ -40,9 +38,12 @@ public class Puzzled extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         
-        Parent root = FXMLLoader.load(getClass().getResource("Puzzled.fxml"));
-        nPane = new NotificationPane(root);
-        Scene scene = new Scene(nPane);
+//        Parent root = FXMLLoader.load(getClass().getResource("Puzzled.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Puzzled.fxml"));
+        Scene scene = new Scene(loader.load());
+        PuzzledController controller = (PuzzledController)loader.getController();
+//        nPane = new NotificationPane(root);
+        
         
         //setting application icon. Icon files are in resources/icons
         primaryStage.getIcons().add(new Image("/icons/puzzle_16.png"));
@@ -54,24 +55,8 @@ public class Puzzled extends Application {
         primaryStage.setTitle("Puzzled! - Computer-aided logic problem solver - v."+Puzzled.version);
         primaryStage.setScene(scene);
         primaryStage.show();
-//        nPane.getStyleClass().add("npane");
-        nPane.getStylesheets().add(getClass().getResource("Puzzled.css").toExternalForm());
-//        nPane.setStyle(".notification-bar > .pane {-fx-background-color: slateblue; -fx-text-fill: white;}");
-//        nPane.getStyleClass().add(NotificationPane.STYLE_CLASS_DARK);
-//        nPane.showFromTopProperty().set(false);
-//        nPane.setOnShown(e -> {
-//            Timeline timeline = new Timeline();
-//            timeline.getKeyFrames().add(
-//                new KeyFrame(Duration.millis(2000), f -> nPane.hide()));
-//            timeline.play();
-//        });
-        nPane.setOnKeyPressed(e -> {
-             KeyCode key = e.getCode();
-             if (key == KeyCode.ESCAPE) {
-                 nPane.hide();
-             }
-        });
-        nPane.show("Good morning!");
+        controller.loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
+        
 
     }
 
