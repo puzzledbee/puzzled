@@ -50,3 +50,11 @@
     -fx-border-radius: 10;
 }
 
+
+.notification-pane .notification-bar > .pane {
+    -fx-background-color:slateblue;
+}
+
+.notification-pane .notification-bar > .pane > .label {
+    -fx-text-fill: white;
+}

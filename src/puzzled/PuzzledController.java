@@ -117,6 +117,7 @@ public class PuzzledController implements Initializable {
 //        mainGroup.getChildren().add(logicProblemGrid);
           
         loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
+        
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
         });
