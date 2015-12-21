@@ -34,6 +34,10 @@
     -fx-label-padding: 5px;
 }
 
+.gridLabel:hover {
+    -fx-border-color: red;
+    -fx-label-padding: 5px;
+}
 
 .cirlcebutton {
     -fx-background-radius: 3em;

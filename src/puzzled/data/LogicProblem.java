@@ -11,6 +11,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -41,8 +43,10 @@ public class LogicProblem {
     
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     
+    
+    private List<Clue> clueList = new ArrayList<Clue>();
     @XmlElement
-    private List<Clue> clues;
+    private ObservableList<Clue> clues = FXCollections.observableList(clueList);
     
     //necessary for unmarshalling
     public LogicProblem(){
@@ -82,6 +86,10 @@ public class LogicProblem {
     
     public void setSource(String arg_source) {
         this.problemSource =arg_source;
+    }
+
+    public ObservableList<Clue> getClues() {
+        return clues;
     }
     
     public String getNotes() {

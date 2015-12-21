@@ -13,6 +13,7 @@
 
 <AnchorPane fx:id="root" stylesheets="@Puzzled.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="puzzled.PuzzledController">
    <children>
+      <NotificationPane fx:id="nPane" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <BorderPane fx:id="bPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <VBox prefHeight="75.0" prefWidth="600.0" BorderPane.alignment="CENTER">
@@ -38,7 +39,10 @@
                                  </accelerator>
                               </MenuItem>
                               <MenuItem mnemonicParsing="false" text="Save Logic Problem As..." />
-                          <MenuItem mnemonicParsing="false" text="Close" />
+                          <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator></MenuItem>
                         </items>
                       </Menu>
                       <Menu mnemonicParsing="false" text="Edit">
@@ -119,8 +123,8 @@
                   <FlowPane alignment="CENTER" hgap="10.0" prefHeight="45.0" prefWidth="600.0">
                      <children>
                         <Label prefHeight="21.0" prefWidth="49.0" text="Clue:" textAlignment="RIGHT" />
-                        <Label alignment="CENTER" prefHeight="21.0" prefWidth="22.0" text="1" textAlignment="CENTER" textFill="#1b2ab5" />
-                        <TextField id="textField" fx:id="clueField" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
+                        <Label fx:id="clueCounter" alignment="CENTER" prefHeight="21.0" prefWidth="22.0" text="1" textAlignment="CENTER" textFill="#1b2ab5" />
+                        <TextField id="textField" fx:id="clueText" onAction="#addClueButtonAction" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
                         <Button mnemonicParsing="false" onAction="#addClueButtonAction" text="Add clue!" />
                      </children>
                      <padding>
@@ -131,6 +135,5 @@
             </VBox>
          </bottom>
       </BorderPane>
-      <NotificationPane fx:id="nPane" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

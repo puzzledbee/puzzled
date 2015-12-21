@@ -4,7 +4,7 @@
     <source>Penny Pres Original Logic Problems Mar 1999</source>
     <scale>1.0</scale>
     <categories>
-        <name>Book</name>
+        <name>fdasfasdBook</name>
         <type>NORMAL</type>
         <items>
             <name>Haley's Comet</name>
@@ -45,13 +45,13 @@
         <name>Pages</name>
         <type>NUMERICAL</type>
         <items>
-            <name>15</name>
+            <name>sadfsdsa15</name>
         </items>
         <items>
             <name>16</name>
         </items>
         <items>
-            <name>17</name>
+            <name>dfasd17</name>
         </items>
         <items>
             <name>18</name>
@@ -64,7 +64,7 @@
         <name>Genre</name>
         <type>NORMAL</type>
         <items>
-            <name>Biography</name>
+            <name>fdsafadsfBiography</name>
         </items>
         <items>
             <name>Fantasy</name>
@@ -80,7 +80,7 @@
         </items>
     </categories>
     <categories>
-        <name>Last Name</name>
+        <name>Fasdfads</name>
         <type>NORMAL</type>
         <items>
             <name>Chapman</name>

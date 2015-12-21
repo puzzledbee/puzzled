@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,8 +23,11 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
@@ -40,6 +45,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
+import puzzled.data.Clue;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
@@ -53,6 +59,24 @@ public class PuzzledController implements Initializable {
     private static double zoomFactor = 1.3;
     private static double maxZoom = 2.3;
     private static double minZoom = 0.4;
+    private static int notificationTimer = 3000;
+    
+    public enum WarningType {
+        SUCCESS ("success.png"), 
+        INFO ("info.png"), 
+        WARNING ("fail.png");
+        
+        private String imageName;
+        
+        WarningType(String image){
+            imageName = image;
+        }
+        
+        public String getImageName() {
+            return imageName;
+        }
+        
+    }
 
     @FXML
     Parent root;
@@ -65,7 +89,7 @@ public class PuzzledController implements Initializable {
     
     
     @FXML
-    private TextField clueField;
+    private TextField clueText;
 
     @FXML
     private AnchorPane mainGrid;
@@ -80,8 +104,10 @@ public class PuzzledController implements Initializable {
     private Group mainGroup;
     
     @FXML
-    private CheckMenuItem hideLabelsMenuItem;
+    private Label clueCounter;
 
+    @FXML
+    private CheckMenuItem hideLabelsMenuItem;
     @FXML
     private CheckMenuItem hideRelationshipsMenuItem;
     
@@ -106,7 +132,7 @@ public class PuzzledController implements Initializable {
         if (logicProblem.getScale() <= maxZoom) {
             logicProblem.setScale(logicProblem.getScale()*zoomFactor);
         } else {
-            nPane.show("maximum zoom level reached!");
+            notify(WarningType.WARNING, "Maximum zoom level reached!");
         }
         fLogger.log(Level.INFO, "scale:"+logicProblem.getScale());
     }    
@@ -116,7 +142,7 @@ public class PuzzledController implements Initializable {
         if (logicProblem.getScale() >= minZoom) {
             logicProblem.setScale(logicProblem.getScale()/zoomFactor);
         } else {
-            nPane.show("minimum zoom level reached!");
+            notify(WarningType.WARNING,"Minimum zoom level reached!");
         }
         fLogger.log(Level.INFO,"scale:"+logicProblem.getScale());
     }
@@ -124,7 +150,21 @@ public class PuzzledController implements Initializable {
         
     @FXML
     private void addClueButtonAction(ActionEvent event) {
-        nPane.show("a clue was just added!");
+        logicProblem.getClues().add(new Clue(clueText.getText()));
+        clueText.clear();
+        notify(WarningType.SUCCESS,"Clue "+logicProblem.getClues().size()+" was just added!");
+    }
+    
+    @FXML
+    private void quit(ActionEvent event) {
+        //make sure logicProblem is not dirty!
+        Platform.exit();
+    }
+    
+    public void notify(WarningType type, String text) {
+        nPane.setGraphic(new ImageView(new Image("/icons/"+type.getImageName())));  
+        nPane.setText(text);
+        nPane.show();
     }
     
     
@@ -133,27 +173,10 @@ public class PuzzledController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         
         //ScrollPane scroll = new ScrollPane();
-        //scroll.setBackground(Background.EMPTY);
-        nPane.setContent(bPane);
-        //nPane.getStylesheets().add(getClass().getResource("Puzzled.css").toExternalForm());
-        nPane.setOnShown(e -> {
-            Timeline timeline = new Timeline();
-            timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(2000), f -> nPane.hide()));
-            timeline.play();
-        });
-        nPane.setOnKeyPressed(e -> {
-             KeyCode key = e.getCode();
-             if (key == KeyCode.ESCAPE) {
-                 nPane.hide();
-             }
-        });
+        setupNotifier();
         mainScroll.setPannable(true);
 //        Grid logicProblemGrid = new Grid(logicProblem);
-        //bind labels layer visibility to checkMenuItem
-//        logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
-        //bind relationships layer visibility to checkMenuItem        
-//        logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
+
 
 //        mainScroll.setContent(logicProblemGrid);
 //        mainGroup.getChildren().add(logicProblemGrid);
@@ -233,16 +256,21 @@ public class PuzzledController implements Initializable {
 		newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
                 fLogger.log(Level.INFO, newProblem.toString());
                 logicProblem = newProblem;
-                Grid logicProblemGrid = new Grid(logicProblem);
+                Grid logicProblemGrid = new Grid(this,logicProblem);
                 mainGroup.getChildren().clear();
                 mainGroup.getChildren().add(logicProblemGrid);
-                logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());  
-                nPane.show("Congratulations!");
+                //bind labels layer visibility to checkMenuItem
+                logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
+                //bind relationships layer visibility to checkMenuItem        
+//                logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
+                fLogger.log(Level.WARNING, Integer.toString(logicProblem.getClues().size()));
+                clueCounter.textProperty().bind(Bindings.size(logicProblem.getClues()).add(1).asString().concat("->"));
+                notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
                 
 	  } catch (JAXBException e) {
-		e.printStackTrace();
+		notify(WarningType.WARNING, "Unable to load problem file "+file.getName()+ "!");
+                e.printStackTrace();
 	  }
-        
     }
     
     
@@ -266,9 +294,9 @@ public class PuzzledController implements Initializable {
     public void saveFile(){
         
         fLogger.log(Level.INFO, "saveFile invoked");
-        
+        File file = new File("test.lpf");
         try {
-                    File file = new File("test.lpf");
+                   
                     JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
                     Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
@@ -277,10 +305,30 @@ public class PuzzledController implements Initializable {
 
                     jaxbMarshaller.marshal(logicProblem, file);
                     jaxbMarshaller.marshal(logicProblem, System.out);
-
+                    notify(WarningType.SUCCESS, "File "+file.getName()+" saved successfully!");
         } catch (JAXBException e) {
+                    notify(WarningType.WARNING, "Unable to save file "+file.getName()+"!");
                     e.printStackTrace();
         }
     }
+
+    public void setupNotifier() {
+        nPane.setContent(bPane);
+        //nPane.getStylesheets().add(getClass().getResource("Puzzled.css").toExternalForm());
+        nPane.setOnShown(e -> {
+            Timeline timeline = new Timeline();
+            timeline.getKeyFrames().add(
+                new KeyFrame(Duration.millis(notificationTimer), f -> nPane.hide()));
+            timeline.play();
+        });
+        nPane.setOnKeyPressed(e -> {
+             KeyCode key = e.getCode();
+             if (key == KeyCode.ESCAPE) {
+                 nPane.hide();
+             }
+        });
+
+    }
+    
     
 }

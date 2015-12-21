@@ -6,16 +6,23 @@
 package puzzled.UI;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
 import org.controlsfx.control.PopOver;
 import puzzled.Puzzled;
+import puzzled.PuzzledController;
 import puzzled.data.Category;
 import puzzled.data.LogicProblem;
 /**
@@ -33,15 +40,48 @@ public class Grid extends StackPane {
     private int numCategories;
     private int numItems;
     
+    private PuzzledController controller;
+    
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
     
     
     private PopOver myPopOver = new PopOver(new Label("hello!"));
     
-    public Grid(LogicProblem arg_logicProblem) {
+    private EventHandler<MouseEvent> labelDoubleClickHandler = new EventHandler<MouseEvent>() {
+            
+            private TextInputDialog editDialog = new TextInputDialog();
+        
+            {
+              editDialog.setTitle("Change label name");
+              editDialog.setHeaderText(null);
+              editDialog.setContentText("Please enter the new name:");      
+              
+            }
+            
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                    if(mouseEvent.getClickCount() == 2){
+
+                        Label sourceLabel = (Label)mouseEvent.getSource();
+//                        controller.notify(WarningType.INFO, "Hello World "+ sourceLabel.getText());
+                        editDialog.getEditor().setText(sourceLabel.getText());
+                        Platform.runLater(() -> {
+                            editDialog.getEditor().selectAll();
+                            editDialog.getEditor().requestFocus();
+                        });
+                        
+                        Optional<String> result = editDialog.showAndWait();
+                        result.ifPresent(name -> sourceLabel.setText(name));
+                    }
+                }
+            }
+    };
+    
+    public Grid(PuzzledController arg_controller, LogicProblem arg_logicProblem) {
         //super();
-        //controller = myController;    
+        controller = arg_controller;    
         logicProblem = arg_logicProblem;
         this.numCategories = logicProblem.getNumCategories();
         this.numItems = logicProblem.getNumItems();
@@ -165,8 +205,9 @@ public class Grid extends StackPane {
             if (cat==2) continue; //second category appears first on the horizontal axis
             //category labels
             Label myLabel = new Label();
-            
-            myLabel.textProperty().bind(categories.get(cat-1).nameProperty());
+            myLabel.setOnMouseClicked(labelDoubleClickHandler);
+//            myLabel.textProperty().bind(categories.get(cat-1).nameProperty());
+            myLabel.textProperty().bindBidirectional(categories.get(cat-1).nameProperty());
             myLabel.setPrefWidth(cellwidth*numItems);
             myLabel.setPrefHeight(cellwidth);
             AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
@@ -181,7 +222,8 @@ public class Grid extends StackPane {
             //item labels
             for (int item=1;item<=numItems;item++){
                 myLabel = new Label();
-                myLabel.textProperty().bind(categories.get(cat-1).getItems().get(item-1).nameProperty());
+                myLabel.setOnMouseClicked(labelDoubleClickHandler);
+                myLabel.textProperty().bindBidirectional(categories.get(cat-1).getItems().get(item-1).nameProperty());
                 myLabel.setPrefWidth(labelwidth);
                 myLabel.setPrefHeight(cellwidth);              
                 myLabel.getStyleClass().add("gridLabel");
@@ -196,7 +238,8 @@ public class Grid extends StackPane {
             
             //category labels
             Label myLabel = new Label();
-            myLabel.textProperty().bind(categories.get((cat==1?1:numCategories-cat+1)).nameProperty());
+            myLabel.setOnMouseClicked(labelDoubleClickHandler);
+            myLabel.textProperty().bindBidirectional(categories.get((cat==1?1:numCategories-cat+1)).nameProperty());
             myLabel.setPrefWidth(cellwidth*numItems);
             myLabel.setPrefHeight(cellwidth);
             AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+cellwidth*numItems*(cat-1)+0.0);
@@ -208,7 +251,8 @@ public class Grid extends StackPane {
             //item labels
             for (int item=1;item<=numItems;item++){
                 myLabel = new Label();
-                myLabel.textProperty().bind(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).nameProperty());
+                myLabel.setOnMouseClicked(labelDoubleClickHandler);
+                myLabel.textProperty().bindBidirectional(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).nameProperty());
                 myLabel.setPrefWidth(labelheight);
                 myLabel.setPrefHeight(cellwidth);
                 myLabel.getStyleClass().add("gridLabel");
