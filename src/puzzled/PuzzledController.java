@@ -16,12 +16,15 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -79,14 +82,16 @@ public class PuzzledController implements Initializable {
     }
 
     @FXML
-    Parent root;
+    private Parent root;
     
     @FXML
-    Parent bPane;
+    private Parent bPane;
     
     @FXML
-    NotificationPane nPane;
+    private NotificationPane nPane;
     
+    @FXML
+    private Button addClueButton;
     
     @FXML
     private TextField clueText;
@@ -111,7 +116,8 @@ public class PuzzledController implements Initializable {
     @FXML
     private CheckMenuItem hideRelationshipsMenuItem;
     
-    private LogicProblem logicProblem;
+    ObjectProperty<LogicProblem> logicProblem = new SimpleObjectProperty<LogicProblem>();
+    
     private HashMap<Pair<Item,Item>,Relationship> relationships;
     
     
@@ -129,30 +135,30 @@ public class PuzzledController implements Initializable {
     @FXML
     private void zoomInButtonAction(ActionEvent event) {
         
-        if (logicProblem.getScale() <= maxZoom) {
-            logicProblem.setScale(logicProblem.getScale()*zoomFactor);
+        if (logicProblem.get().getScale() <= maxZoom) {
+            logicProblem.get().setScale(logicProblem.get().getScale()*zoomFactor);
         } else {
             notify(WarningType.WARNING, "Maximum zoom level reached!");
         }
-        fLogger.log(Level.INFO, "scale:"+logicProblem.getScale());
+        fLogger.log(Level.INFO, "scale:"+logicProblem.get().getScale());
     }    
     
     @FXML
     private void zoomOutButtonAction(ActionEvent event) {
-        if (logicProblem.getScale() >= minZoom) {
-            logicProblem.setScale(logicProblem.getScale()/zoomFactor);
+        if (logicProblem.get().getScale() >= minZoom) {
+            logicProblem.get().setScale(logicProblem.get().getScale()/zoomFactor);
         } else {
             notify(WarningType.WARNING,"Minimum zoom level reached!");
         }
-        fLogger.log(Level.INFO,"scale:"+logicProblem.getScale());
+        fLogger.log(Level.INFO,"scale:"+logicProblem.get().getScale());
     }
 
         
     @FXML
     private void addClueButtonAction(ActionEvent event) {
-        logicProblem.getClues().add(new Clue(clueText.getText()));
+        logicProblem.get().getClues().add(new Clue(clueText.getText()));
         clueText.clear();
-        notify(WarningType.SUCCESS,"Clue "+logicProblem.getClues().size()+" was just added!");
+        notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getClues().size()+" was just added!");
     }
     
     @FXML
@@ -182,6 +188,9 @@ public class PuzzledController implements Initializable {
 //        mainGroup.getChildren().add(logicProblemGrid);
           
         //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
+        clueText.editableProperty().bind(logicProblem.isNotNull());
+        addClueButton.disableProperty().bind(logicProblem.isNull());
+        
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
@@ -255,16 +264,15 @@ public class PuzzledController implements Initializable {
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
                 fLogger.log(Level.INFO, newProblem.toString());
-                logicProblem = newProblem;
-                Grid logicProblemGrid = new Grid(this,logicProblem);
+                logicProblem.set(newProblem);
+                Grid logicProblemGrid = new Grid(this,logicProblem.get());
                 mainGroup.getChildren().clear();
                 mainGroup.getChildren().add(logicProblemGrid);
                 //bind labels layer visibility to checkMenuItem
                 logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
                 //bind relationships layer visibility to checkMenuItem        
 //                logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
-                fLogger.log(Level.WARNING, Integer.toString(logicProblem.getClues().size()));
-                clueCounter.textProperty().bind(Bindings.size(logicProblem.getClues()).add(1).asString().concat("->"));
+                clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
                 
 	  } catch (JAXBException e) {

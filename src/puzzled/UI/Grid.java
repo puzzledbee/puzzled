@@ -20,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
+import javafx.stage.StageStyle;
 import org.controlsfx.control.PopOver;
 import puzzled.Puzzled;
 import puzzled.PuzzledController;
@@ -53,6 +54,7 @@ public class Grid extends StackPane {
             private TextInputDialog editDialog = new TextInputDialog();
         
             {
+              editDialog.initStyle(StageStyle.UTILITY);
               editDialog.setTitle("Change label name");
               editDialog.setHeaderText(null);
               editDialog.setContentText("Please enter the new name:");      
