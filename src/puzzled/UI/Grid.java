@@ -6,21 +6,15 @@
 package puzzled.UI;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
-import javafx.stage.StageStyle;
 import org.controlsfx.control.PopOver;
 import puzzled.Puzzled;
 import puzzled.PuzzledController;
@@ -45,41 +39,11 @@ public class Grid extends StackPane {
     
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
-    
+    private ContextMenu contextMenu = new ContextMenu();
     
     private PopOver myPopOver = new PopOver(new Label("hello!"));
     
-    private EventHandler<MouseEvent> labelDoubleClickHandler = new EventHandler<MouseEvent>() {
-            
-            private TextInputDialog editDialog = new TextInputDialog();
-        
-            {
-              editDialog.initStyle(StageStyle.UTILITY);
-              editDialog.setTitle("Change label name");
-              editDialog.setHeaderText(null);
-              editDialog.setContentText("Please enter the new name:");      
-              
-            }
-            
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    if(mouseEvent.getClickCount() == 2){
-
-                        Label sourceLabel = (Label)mouseEvent.getSource();
-//                        controller.notify(WarningType.INFO, "Hello World "+ sourceLabel.getText());
-                        editDialog.getEditor().setText(sourceLabel.getText());
-                        Platform.runLater(() -> {
-                            editDialog.getEditor().selectAll();
-                            editDialog.getEditor().requestFocus();
-                        });
-                        
-                        Optional<String> result = editDialog.showAndWait();
-                        result.ifPresent(name -> sourceLabel.setText(name));
-                    }
-                }
-            }
-    };
+    
     
     public Grid(PuzzledController arg_controller, LogicProblem arg_logicProblem) {
         //super();
@@ -92,6 +56,12 @@ public class Grid extends StackPane {
         AnchorPane gridPane = drawGrid();
         this.scaleXProperty().bind(logicProblem.getScaleProperty());
         this.scaleYProperty().bind(logicProblem.getScaleProperty());
+        
+        MenuItem item1 = new MenuItem("Edit...");
+//        item1.setOnAction(labelDoubleClickHandler);
+        contextMenu.getItems().add(item1);
+        
+        
         
         AnchorPane labelPane = labelPane();
         
@@ -206,29 +176,15 @@ public class Grid extends StackPane {
         for (int cat=1;cat<=numCategories;cat++){
             if (cat==2) continue; //second category appears first on the horizontal axis
             //category labels
-            Label myLabel = new Label();
-            myLabel.setOnMouseClicked(labelDoubleClickHandler);
-//            myLabel.textProperty().bind(categories.get(cat-1).nameProperty());
-            myLabel.textProperty().bindBidirectional(categories.get(cat-1).nameProperty());
-            myLabel.setPrefWidth(cellwidth*numItems);
-            myLabel.setPrefHeight(cellwidth);
+            Label myLabel = new GridLabel(categories.get(cat-1).nameProperty(),cellwidth*numItems,cellwidth);
             AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
             AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat:cat-1)*numItems+0.0);   
-            
-            myLabel.setAlignment(Pos.CENTER);
             //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
             myLabel.getTransforms().add(new Rotate(270, 0, cellwidth));
-            //myLabel.setRotate(270);
-            myLabel.getStyleClass().add("gridLabel");
             anchorPane.getChildren().add(myLabel);
             //item labels
             for (int item=1;item<=numItems;item++){
-                myLabel = new Label();
-                myLabel.setOnMouseClicked(labelDoubleClickHandler);
-                myLabel.textProperty().bindBidirectional(categories.get(cat-1).getItems().get(item-1).nameProperty());
-                myLabel.setPrefWidth(labelwidth);
-                myLabel.setPrefHeight(cellwidth);              
-                myLabel.getStyleClass().add("gridLabel");
+                myLabel = new GridLabel(categories.get(cat-1).getItems().get(item-1).nameProperty(),labelwidth,cellwidth);
                 AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
                 AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat-1:cat-2)*numItems+cellwidth*item+0.0);
                 anchorPane.getChildren().add(myLabel);
@@ -239,32 +195,19 @@ public class Grid extends StackPane {
         for (int cat=1;cat<numCategories;cat++){
             
             //category labels
-            Label myLabel = new Label();
-            myLabel.setOnMouseClicked(labelDoubleClickHandler);
-            myLabel.textProperty().bindBidirectional(categories.get((cat==1?1:numCategories-cat+1)).nameProperty());
-            myLabel.setPrefWidth(cellwidth*numItems);
-            myLabel.setPrefHeight(cellwidth);
+            Label myLabel = new GridLabel(categories.get((cat==1?1:numCategories-cat+1)).nameProperty(),cellwidth*numItems,cellwidth);
             AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+cellwidth*numItems*(cat-1)+0.0);
             AnchorPane.setTopAnchor(myLabel, 0.0);   
 
-            myLabel.setAlignment(Pos.CENTER);
-            myLabel.getStyleClass().add("gridLabel");
             anchorPane.getChildren().add(myLabel);
             //item labels
             for (int item=1;item<=numItems;item++){
-                myLabel = new Label();
-                myLabel.setOnMouseClicked(labelDoubleClickHandler);
-                myLabel.textProperty().bindBidirectional(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).nameProperty());
-                myLabel.setPrefWidth(labelheight);
-                myLabel.setPrefHeight(cellwidth);
-                myLabel.getStyleClass().add("gridLabel");
-                //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
+                myLabel = new GridLabel(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).nameProperty(),labelheight,cellwidth);
                 myLabel.getTransforms().add(new Rotate(270, 0, 0));
 
                 AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+(cellwidth*(cat-1)*numItems)+(cellwidth*(item-1))+0.0);
                 AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth+0.0);
                 anchorPane.getChildren().add(myLabel);
-
             }
         }
 

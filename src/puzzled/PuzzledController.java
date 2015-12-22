@@ -27,8 +27,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -110,7 +112,25 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private Label clueCounter;
-
+    
+    @FXML
+    private MenuItem saveMenuItem;
+    
+    @FXML
+    private MenuItem saveAsMenuItem;
+    
+    @FXML
+    private ToolBar toolbar;
+    
+    @FXML
+    private CheckMenuItem hideToolbarMenuItem;
+    
+    @FXML
+    private Button saveButton;
+    
+    @FXML
+    private MenuItem propertiesMenuItem;
+    
     @FXML
     private CheckMenuItem hideLabelsMenuItem;
     @FXML
@@ -190,6 +210,11 @@ public class PuzzledController implements Initializable {
         //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         clueText.disableProperty().bind(logicProblem.isNull());
         addClueButton.disableProperty().bind(logicProblem.isNull());
+        saveMenuItem.disableProperty().bind(logicProblem.isNull());
+        saveAsMenuItem.disableProperty().bind(logicProblem.isNull());
+        saveButton.disableProperty().bind(logicProblem.isNull());
+        propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
+        toolbar.visibleProperty().bind(hideToolbarMenuItem.selectedProperty().not());
         
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
@@ -202,6 +227,10 @@ public class PuzzledController implements Initializable {
     
     public Logger getLogger(){
         return fLogger;
+    }
+    
+    public ObjectProperty<LogicProblem> getLogicProblemProperty(){
+        return logicProblem;
     }
     
     
@@ -270,6 +299,7 @@ public class PuzzledController implements Initializable {
                 mainGroup.getChildren().add(logicProblemGrid);
                 //bind labels layer visibility to checkMenuItem
                 logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
+                
                 //bind relationships layer visibility to checkMenuItem        
 //                logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
                 clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));

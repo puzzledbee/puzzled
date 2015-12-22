@@ -7,6 +7,7 @@ package puzzled;
 
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -20,6 +21,7 @@ import org.controlsfx.control.NotificationPane;
  */
 public class Puzzled extends Application {
     
+    private static final String banner = "Puzzled! - Computer-aided logic problem solver";
     public static final String version = "2.0";
     
     private static final Logger fLogger =
@@ -52,7 +54,9 @@ public class Puzzled extends Application {
         //new Image(Puzzled.class.getResourceAsStream( "/icons/puzzle_32.png" ))); 
         
         primaryStage.setMaximized(true);
-        primaryStage.setTitle("Puzzled! - Computer-aided logic problem solver - v."+Puzzled.version);
+        
+        primaryStage.titleProperty().bind(Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ? banner+" v."+version : banner+" v."+version+" - "+controller.getLogicProblemProperty().get().getTitle(), controller.getLogicProblemProperty()));
+//        primaryStage.setTitle("Puzzled! - Computer-aided logic problem solver - v."+Puzzled.version);
         primaryStage.setScene(scene);
         primaryStage.show();
 //        controller.loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");

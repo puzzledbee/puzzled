@@ -16,7 +16,7 @@
       <NotificationPane fx:id="nPane" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <BorderPane fx:id="bPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <VBox prefHeight="75.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <VBox BorderPane.alignment="CENTER">
                <children>
                   <MenuBar>
                     <menus>
@@ -33,12 +33,12 @@
                                     <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save Logic Problem">
+                              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveFile" text="Save Logic Problem">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem mnemonicParsing="false" text="Save Logic Problem As..." />
+                              <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" text="Save Logic Problem As..." />
                           <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -47,11 +47,15 @@
                       </Menu>
                       <Menu mnemonicParsing="false" text="Edit">
                         <items>
-                          <MenuItem mnemonicParsing="false" text="Delete" />
+                          <MenuItem mnemonicParsing="false" text="Undo last operation" />
+                              <MenuItem mnemonicParsing="false" text="Reset problem ..." />
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem fx:id="propertiesMenuItem" mnemonicParsing="false" text="Problem properties ..." />
                         </items>
                       </Menu>
                         <Menu mnemonicParsing="false" text="Options">
                           <items>
+                              <CheckMenuItem fx:id="hideToolbarMenuItem" mnemonicParsing="false" text="Hide Toolbar" />
                               <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
                               <CheckMenuItem fx:id="hideLabelsMenuItem" mnemonicParsing="false" text="Hide Labels" />
                               <SeparatorMenuItem mnemonicParsing="false" />
@@ -65,11 +69,13 @@
                       </Menu>
                     </menus>
                   </MenuBar>
-                  <ToolBar prefHeight="40.0" prefWidth="200.0">
+                  <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="200.0">
                     <items>
                       <Button id="btn_new" mnemonicParsing="false" text="New" />
                         <Button id="btn_open" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Open" />
-                        <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Save" />
+                        <Button id="btn_save" fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Save" />
+                        <Button id="btn_undo" fx:id="resetButton" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Undo" />
+                        <Button id="btn_reset" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Reset" />
                     </items>
                   </ToolBar>
                </children>

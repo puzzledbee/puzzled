@@ -1,10 +1,23 @@
 #btn_new {          
-    -fx-graphic: url("/icons/puzzle_32.png");
+    -fx-graphic: url("/icons/new.png");
 }
 
 #btn_open {          
-    -fx-graphic: url("/icons/puzzle_16.png");
+    -fx-graphic: url("/icons/open.png");
 }
+
+#btn_save {          
+    -fx-graphic: url("/icons/save.png");
+}
+
+#btn_undo {
+    -fx-graphic: url("/icons/undo.png");
+}
+
+#btn_reset {
+    -fx-graphic: url("/icons/reset.png");
+}
+
 
 .tool-bar .button {
     -fx-text-fill: #673AB7;
