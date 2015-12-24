@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
 @XmlType(propOrder={"title","source","notes","scale","categories","clues"})
-
+//something is amiss
 public class LogicProblem {
 
 //    @XmlElement
