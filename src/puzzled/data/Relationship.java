@@ -38,6 +38,19 @@ public class Relationship implements Dependable {
         valueProperty.set(myType);
         valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty chaged to" + newValue));
     }
+    
+    public ObjectProperty<ValueType> valueProperty(){
+        return valueProperty;
+    }
+    
+    public ValueType getValue(){
+        return valueProperty.get();
+    }
+    
+    public void setValue(ValueType value){
+        valueProperty.set(value);
+    }
+    
     @Override
     public Point2D getCenterPosition(){
         return null;

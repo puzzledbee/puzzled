@@ -226,17 +226,14 @@ public class Grid extends StackPane {
             HashMap<TreeSet<Item>,Relationship> relationshipTable = logicProblem.getRelationshipTable();
             
             for (TreeSet<Item> key : relationshipTable.keySet()){
-                System.out.println("position cell for key "+key.first().getName()+ " <-> "+ key.last().getName());
-                GridCell cell = new GridCell(cellwidth);
+//                System.out.println("position cell for key "+key.first().getName()+ " <-> "+ key.last().getName());
+                GridCell cell = new GridCell(cellwidth, relationshipTable.get(key));
                 cells.getChildren().add(cell);
                 Point2D position = positionCell(key);
                 AnchorPane.setLeftAnchor(cell, position.getX());
                 AnchorPane.setTopAnchor(cell, position.getY());
              }
-            
-            
 
-            
             return cells;
     }
     
@@ -246,16 +243,16 @@ public class Grid extends StackPane {
         Item a = pair.first();
         Item b = pair.last();
         
-        System.out.println("a->"+a.getName()+", catIndex="+a.getCatIndex());
-        System.out.println("b->"+b.getName()+", catIndex="+b.getCatIndex());
+//        System.out.println("a->"+a.getName()+", catIndex="+a.getCatIndex());
+//        System.out.println("b->"+b.getName()+", catIndex="+b.getCatIndex());
         
         
         //if lowest catIndex is 0 (first Category), the relationships will be in the top row of the grid
         //if lowest catIndex is 1 (second Category), the relationships will be in the left most column of the grid
         int x = (a.getCatIndex()==1)?0:(b.getCatIndex()==1)?0:logicProblem.getNumCategories()-b.getCatIndex();
         int y = (a.getCatIndex()==0)?0:(a.getCatIndex()==1)?b.getCatIndex()-1:a.getCatIndex()-1;
-        System.out.println("x="+x);
-        System.out.println("y="+y);
+//        System.out.println("x="+x);
+//        System.out.println("y="+y);
         
         Double xPos = cellwidth*2+labelwidth+x*cellwidth*logicProblem.getNumItems()+a.getItemIndex()*cellwidth+0.0;
         Double yPos = cellwidth*2+labelheight+y*cellwidth*logicProblem.getNumItems()+b.getItemIndex()*cellwidth+0.0;

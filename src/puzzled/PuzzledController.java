@@ -53,6 +53,7 @@ import puzzled.UI.Grid;
 import puzzled.data.Clue;
 import puzzled.data.DemoProblems;
 import puzzled.data.Item;
+import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
 
@@ -309,9 +310,7 @@ public class PuzzledController implements Initializable {
                 logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
                 
             //bind relationships layer visibility to checkMenuItem        
-//                logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
-                
-
+                logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
                 
                 clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
@@ -338,6 +337,14 @@ public class PuzzledController implements Initializable {
             fLogger.log(Level.INFO, "no file selected");
         
         }
+    }
+    
+    
+    public void changeRelationship() {
+        logicProblem.get().getRelationshipTable().get(
+                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(0),
+                            logicProblem.get().getCategories().get(1).getItems().get(0))
+                ).setValue(Relationship.ValueType.VALUE_NO);
     }
     
     public void saveFile(){

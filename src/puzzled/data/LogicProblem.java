@@ -6,7 +6,6 @@
 package puzzled.data;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
@@ -99,7 +98,7 @@ public class LogicProblem {
         System.out.println("generating relationshipTable");
         relationshipTable = new HashMap<TreeSet<Item>,Relationship>();
         
-        TreeSet<Item> pair = new TreeSet<Item>(Comparator.comparing(p1 -> p1.getCatIndex()));
+        ItemPair pair;
         
         //fix parent references
         for (Category cat : getCategories()){
@@ -121,11 +120,9 @@ public class LogicProblem {
                 if (cat1 != cat2) {
                     for (Item item1 : cat1.getItems()) {
                         for (Item item2 : cat2.getItems()){
+
+                            pair = new ItemPair(item1,item2);
                             
-                            
-                            pair = new TreeSet<Item>(Comparator.comparing(p1 -> p1.getCatIndex()));
-                            pair.add(item1);
-                            pair.add(item2);
 //                            System.out.println("joining "+pair.first().getName()+" <-> "+ pair.last().getName());
                             if (!relationshipTable.containsKey(pair)){
                                 relationshipTable.put(pair,new Relationship());

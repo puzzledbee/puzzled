@@ -17,6 +17,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import puzzled.Puzzled;
+import puzzled.data.Relationship;
 import puzzled.data.Relationship.ValueType;
 
 /**
@@ -37,9 +38,10 @@ public class GridCell extends StackPane {
     //private Pane xPane = new Pane();
 
 
-    public GridCell(int cellwidth) {
+    public GridCell(int cellwidth, Relationship relationship) {
         Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
-    
+        valueProperty.bindBidirectional(relationship.valueProperty());
+        
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
         Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
         Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );    
