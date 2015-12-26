@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Item {
     
     private StringProperty nameProperty = new SimpleStringProperty();
+    @XmlTransient
     private Category parent;
     
     //necessary for unmarshalling
@@ -46,6 +48,13 @@ public class Item {
     
     public StringProperty nameProperty(){
         return nameProperty;
+    }
+    
+    public int getItemIndex() {
+        return parent.getItems().indexOf(this);
+    }
+    public int getCatIndex() {
+        return parent.getParent().getCategories().indexOf(parent);
     }
     
 }

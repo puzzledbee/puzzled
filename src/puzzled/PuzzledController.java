@@ -8,8 +8,10 @@ package puzzled;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
@@ -152,7 +154,24 @@ public class PuzzledController implements Initializable {
     @FXML
     private void loadMe(ActionEvent event) {
         loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
+        
+        TreeSet<Item> testSet = new TreeSet<Item>(Comparator.comparing(p1 -> p1.getCatIndex()));
+        testSet.add(logicProblem.get().getCategories().get(4).getItems().get(1));
+        testSet.add(logicProblem.get().getCategories().get(3).getItems().get(2));
+        positionGridCell(testSet);
+        
     }
+    
+    private void positionGridCell(TreeSet<Item> set){
+        Item a = set.first();
+        Item b = set.last();
+        
+        int x = (a.getCatIndex()==2)?0:(b.getCatIndex()==2)?0:1+logicProblem.get().getNumCategories()-b.getCatIndex();
+        int y = (a.getCatIndex()==1)?0:(a.getCatIndex()==2)?b.getCatIndex()-2:a.getCatIndex()-2;
+        System.out.println("x="+x);
+        System.out.println("y="+y);
+    }
+    
     
     @FXML
     private void zoomInButtonAction(ActionEvent event) {
@@ -217,6 +236,7 @@ public class PuzzledController implements Initializable {
         saveButton.disableProperty().bind(logicProblem.isNull());
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
         toolbar.visibleProperty().bind(hideToolbarMenuItem.selectedProperty().not());
+        
         
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {

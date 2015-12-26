@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -34,7 +35,8 @@ public class Category {
 //    @XmlElement
     private StringProperty nameProperty = new SimpleStringProperty();
     
-    private LogicProblem parent;
+
+    private  LogicProblem parent;
     
     private CategoryType categoryType = CategoryType.NORMAL;
     @XmlElement
@@ -53,12 +55,21 @@ public class Category {
     public void setParent(LogicProblem arg_parent){
         this.parent = arg_parent;
     }
+    
+    @XmlTransient
+    public LogicProblem getParent() {
+        return parent;
+    }
+    
     public void setType(CategoryType type_arg) {
         categoryType = type_arg;
     }
     public CategoryType getType(){
         return categoryType;
     }
+
+    
+    
     
     public void setName(String myText){
         nameProperty.set(myText);
