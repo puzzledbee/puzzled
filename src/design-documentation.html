@@ -1942,12 +1942,12 @@ implements [[Dependable]]
 
 ''Relationships'' will have a //list// of [[Dependable]] objects and a //list// of ''Relationship'' it impacts.</pre>
 </div>
-<div title="RelationshipTable" creator="Fred" modifier="Fred" created="201511012313" modified="201512090052" changecount="18">
+<div title="RelationshipTable" creator="Fred" modifier="Fred" created="201511012313" modified="201512241842" changecount="21">
 <pre>Storage data structure of all [[Relationship]] objects.
 
-It is preferable to not store the RelationshipTable as part of the [[LogicProblem]] object and simply re-generate it from the [[Clues]] and [[Constraints]], but instead be fields of the application [[Puzzled]] of the FSML controller, along with ''dirtyness''. There are no advantages to adding relationships in a chronological order in the data structure, with a view to simplify undo because e.g. there is no temporal relationship between two constraints. Instead the full table can be initialized when the problem is created or loaded.
+It is preferable to not store the RelationshipTable as part of the [[LogicProblem]] object and simply re-generate it from the [[Clues|Clue]] and [[Constraint|Constraint]], but instead be fields of the application [[Puzzled]] of the FSML controller, along with ''dirtyness''. There are no advantages to adding relationships in a chronological order in the data structure, with a view to simplify undo because e.g. there is no temporal relationship between two constraints. Instead the full table can be initialized when the problem is created or loaded.
 
-The most efficient data structure for the ''RelationshipTable'' seems to be a fixed HashMap where an [[Item]] pair is used as key (but somehow force so that a pair in any order is the same pair?!) and a [[Relationship]] object is used as value. A regular 2D array is very inefficient because of the triangular nature of the grid (see below).  Do we need to override the hashCode function to return the same value no matter what order the pair is given.... And maybe also the equals () method... Will that work?
+The most efficient data structure for the ''RelationshipTable'' seems to be a fixed HashMap where an [[Item]] HashSet of 2 elements is used as key (sets are not concerned about element ordering, contrary to pairs) and a [[Relationship]] object is used as value. A regular 2D array is very inefficient because of the triangular nature of the grid (see below). ''{{{HashMap&lt;TreeSet&lt;Item&gt;,Relationship&gt;}}}'' seems to be the best data structure (the {{{TreeSet}}} class is an ordered set. Since the [[positionGridCell]]{{{(TreeSet&lt;Item&gt;)}}} algorithm makes computation using the lower and higher of the two item (ordered determined by the [[Category]] each item belong -&gt; hence the {{{TreeSet}}} {{{Comparator}}} will use the same technique), it is best to have a two-member ordered set feeding it. It also helps for the ''RelationshipTable'' because no matter how the items are parsed from clues, they will result in the same {{{TreeSet}}} and hence the same mapped [[Relationship]].
 
 Some conversion of the relationship key to the [[GridCell]] location will be needed..
 
@@ -2585,6 +2585,21 @@ Some observations:
 <pre>The numerical difference between two elements as written in the text rules.  It is the right-most column in a HintsTable and should be the sort key to ease algebraic type discoveries.
 * In the HintsTable, the offset sign must be explicitly specified as unsigned offsets are offsets for which the direction in unknown.  Offsets of unknown sign are also called [[delta]] clues and cannot be used by the processor for algebraic discovneries until sign is know (only useful as RestrictedValues at the onset).
 **e.g. Mrs Choir's evening out is one day before or one day after Mrs Haddad's</pre>
+</div>
+<div title="positionGridCell" creator="Fred" modifier="Fred" created="201512241843" modified="201512241847" changecount="3">
+<pre>Determine the position of top right corner of the [[GridCell]] when given the two [[Item]] objects in a {{{TreeSet}}} structure.
+
+let {{{a}}} be the [[Category]] index of the first {{{TreeSet}}} [[Item]] member
+Let {{{b}}} be the [[Category]] index of the last {{{TreeSet}}} [[Item]] member
+
+Let {{{x}}} be the column of the grid where the [[GridCell]] needs to be placed, with 0 representing the first [[Category]] (top of the left hand labels)
+Let {{{y}}} be the row of the grid where the [[GridCell]] needs to be placed, with 0 representing the second [[Category]] (left-most [[Category]] on the top labels)
+
+{{{x}}}=(==)?:(==)?:;
+{{{y}}}=(==)?:(==)?:;
+
+posX=
+posY=</pre>
 </div>
 </div>
 <!--POST-STOREAREA-->

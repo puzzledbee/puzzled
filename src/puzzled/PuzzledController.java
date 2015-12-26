@@ -51,6 +51,7 @@ import javax.xml.bind.Unmarshaller;
 import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
 import puzzled.data.Clue;
+import puzzled.data.DemoProblems;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
@@ -340,9 +341,11 @@ public class PuzzledController implements Initializable {
 
                     // output pretty printed
                     jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-                    jaxbMarshaller.marshal(logicProblem, file);
-                    jaxbMarshaller.marshal(logicProblem, System.out);
+                    
+                    LogicProblem newProblem = DemoProblems.generateDemoProblem47();
+//                    jaxbMarshaller.marshal(logicProblem, file);
+                    
+                    jaxbMarshaller.marshal(logicProblem.get(), System.out);
                     notify(WarningType.SUCCESS, "File "+file.getName()+" saved successfully!");
         } catch (JAXBException e) {
                     notify(WarningType.WARNING, "Unable to save file "+file.getName()+"!");
