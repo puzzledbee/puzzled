@@ -56,6 +56,7 @@ import puzzled.data.Item;
 import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
+import puzzled.processor.Processor;
 
 /**
  *
@@ -344,7 +345,8 @@ public class PuzzledController implements Initializable {
         logicProblem.get().getRelationshipTable().get(
                 new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(0),
                             logicProblem.get().getCategories().get(1).getItems().get(0))
-                ).setValue(Relationship.ValueType.VALUE_NO);
+                ).setValue(Relationship.ValueType.VALUE_YES);
+        Processor.cross(logicProblem.get());
     }
     
     public void saveFile(){

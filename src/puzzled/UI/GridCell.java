@@ -83,7 +83,8 @@ public class GridCell extends StackPane {
         contextMenu.getItems().addAll(item1,item2, item3);
         
         myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));
-    
+        this.getStyleClass().add("gridCell");
+//        this.setMouseTransparent(false);
         this.getChildren().addAll(myRectangle,circle,line1,line2);
     }
 

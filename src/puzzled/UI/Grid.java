@@ -7,7 +7,6 @@ package puzzled.UI;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -23,6 +22,7 @@ import puzzled.Puzzled;
 import puzzled.PuzzledController;
 import puzzled.data.Category;
 import puzzled.data.Item;
+import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
 /**
@@ -223,9 +223,9 @@ public class Grid extends StackPane {
     
     private AnchorPane cellsPane() {
             AnchorPane cells = new AnchorPane();
-            HashMap<TreeSet<Item>,Relationship> relationshipTable = logicProblem.getRelationshipTable();
+            HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
             
-            for (TreeSet<Item> key : relationshipTable.keySet()){
+            for (ItemPair key : relationshipTable.keySet()){
 //                System.out.println("position cell for key "+key.first().getName()+ " <-> "+ key.last().getName());
                 GridCell cell = new GridCell(cellwidth, relationshipTable.get(key));
                 cells.getChildren().add(cell);
@@ -233,12 +233,12 @@ public class Grid extends StackPane {
                 AnchorPane.setLeftAnchor(cell, position.getX());
                 AnchorPane.setTopAnchor(cell, position.getY());
              }
-
+//            cells.setMouseTransparent(true);
             return cells;
     }
     
     
-    private Point2D positionCell(TreeSet<Item> pair) {
+    private Point2D positionCell(ItemPair pair) {
          
         Item a = pair.first();
         Item b = pair.last();

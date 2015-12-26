@@ -8,7 +8,6 @@ package puzzled.data;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -55,7 +54,7 @@ public class LogicProblem {
     public LogicProblem(){
     }
     
-    private HashMap<TreeSet<Item>,Relationship> relationshipTable;
+    private HashMap<ItemPair,Relationship> relationshipTable;
     
     public LogicProblem(String title){
         System.out.println("constructor invoked");
@@ -80,7 +79,7 @@ public class LogicProblem {
     }
     
     @XmlTransient
-    public HashMap<TreeSet<Item>,Relationship> getRelationshipTable(){
+    public HashMap<ItemPair,Relationship> getRelationshipTable(){
         return relationshipTable;
     }
     
@@ -96,7 +95,7 @@ public class LogicProblem {
     public void generateRelationships(){
         
         System.out.println("generating relationshipTable");
-        relationshipTable = new HashMap<TreeSet<Item>,Relationship>();
+        relationshipTable = new HashMap<ItemPair,Relationship>();
         
         ItemPair pair;
         

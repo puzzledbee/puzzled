@@ -75,3 +75,7 @@
 .notification-pane .notification-bar > .pane > .label {
     -fx-text-fill: white;
 }
+
+.gridCell:hover {
+    -fx-background-color: yellow;
+}
