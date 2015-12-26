@@ -6,7 +6,10 @@
 package puzzled.data;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -52,6 +56,8 @@ public class LogicProblem {
     public LogicProblem(){
     }
     
+    private HashMap<TreeSet<Item>,Relationship> relationshipTable;
+    
     public LogicProblem(String title){
         System.out.println("constructor invoked");
         titleProperty.set(title);
@@ -74,6 +80,11 @@ public class LogicProblem {
         titleProperty.set(newTitle);
     }
     
+    @XmlTransient
+    public HashMap<TreeSet<Item>,Relationship> getRelationshipTable(){
+        return relationshipTable;
+    }
+    
     /**
      *
      * @return
@@ -81,6 +92,55 @@ public class LogicProblem {
     @XmlElement //unnecessary
     public String getSource() {
         return problemSource;
+    }
+    
+    public void generateRelationships(){
+        
+        System.out.println("generating relationshipTable");
+        relationshipTable = new HashMap<TreeSet<Item>,Relationship>();
+        
+        TreeSet<Item> pair = new TreeSet<Item>(Comparator.comparing(p1 -> p1.getCatIndex()));
+        
+        //fix parent references
+        for (Category cat : getCategories()){
+            cat.setParent(this);
+            for (Item item : cat.getItems()) {
+                item.setParent(cat);
+            }
+        }
+        
+//        for (Category cat : getCategories()){
+//             for (Item item : cat.getItems()) {
+//                System.out.println("item:"+ item.getName()+" catIndex:"+item.getCatIndex()+"  itemIndex:"+item.getItemIndex());
+//            }
+//        }
+        
+//        int i=1;
+        for (Category cat1 : getCategories()) {
+            for (Category cat2 : getCategories()){
+                if (cat1 != cat2) {
+                    for (Item item1 : cat1.getItems()) {
+                        for (Item item2 : cat2.getItems()){
+                            
+                            
+                            pair = new TreeSet<Item>(Comparator.comparing(p1 -> p1.getCatIndex()));
+                            pair.add(item1);
+                            pair.add(item2);
+//                            System.out.println("joining "+pair.first().getName()+" <-> "+ pair.last().getName());
+                            if (!relationshipTable.containsKey(pair)){
+                                relationshipTable.put(pair,new Relationship());
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        
+//        testSet.add(this.getCategories().get(4).getItems().get(1));
+//        testSet.add(this.getCategories().get(3).getItems().get(2));
+//        positionGridCell(testSet);
     }
 
     

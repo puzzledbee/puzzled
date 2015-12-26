@@ -5,9 +5,12 @@
  */
 package puzzled.UI;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -19,7 +22,9 @@ import org.controlsfx.control.PopOver;
 import puzzled.Puzzled;
 import puzzled.PuzzledController;
 import puzzled.data.Category;
+import puzzled.data.Item;
 import puzzled.data.LogicProblem;
+import puzzled.data.Relationship;
 /**
  *
  * @author Fred
@@ -64,7 +69,7 @@ public class Grid extends StackPane {
         
         
         AnchorPane labelPane = labelPane();
-        
+        AnchorPane cellsPane = cellsPane();
         
 //        HBox hbox = new HBox();
 //        hbox.setAlignment(Pos.CENTER);
@@ -93,7 +98,7 @@ public class Grid extends StackPane {
 //        
 //        hbox.getChildren().addAll(labels,tPane);
         StackPane.setMargin(labelPane, new Insets(cellwidth));
-        this.getChildren().addAll(gridPane,labelPane);
+        this.getChildren().addAll(gridPane,labelPane,cellsPane);
     }
     
     
@@ -172,7 +177,7 @@ public class Grid extends StackPane {
     
         List<Category> categories = logicProblem.getCategories();
         
-        //vertical labels
+        //left labels
         for (int cat=1;cat<=numCategories;cat++){
             if (cat==2) continue; //second category appears first on the horizontal axis
             //category labels
@@ -190,8 +195,10 @@ public class Grid extends StackPane {
                 anchorPane.getChildren().add(myLabel);
             }
         }
+        
 
-        //horizontal labels
+
+        //top labels
         for (int cat=1;cat<numCategories;cat++){
             
             //category labels
@@ -202,7 +209,7 @@ public class Grid extends StackPane {
             anchorPane.getChildren().add(myLabel);
             //item labels
             for (int item=1;item<=numItems;item++){
-                myLabel = new GridLabel(categories.get((cat==1?1:numCategories-cat)).getItems().get(item-1).nameProperty(),labelheight,cellwidth);
+                myLabel = new GridLabel(categories.get((cat==1?1:numCategories-cat+1)).getItems().get(item-1).nameProperty(),labelheight,cellwidth);
                 myLabel.getTransforms().add(new Rotate(270, 0, 0));
 
                 AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+(cellwidth*(cat-1)*numItems)+(cellwidth*(item-1))+0.0);
@@ -212,5 +219,46 @@ public class Grid extends StackPane {
         }
 
         return anchorPane;
+    }
+    
+    private AnchorPane cellsPane() {
+            AnchorPane cells = new AnchorPane();
+            HashMap<TreeSet<Item>,Relationship> relationshipTable = logicProblem.getRelationshipTable();
+            
+            for (TreeSet<Item> key : relationshipTable.keySet()){
+                System.out.println("position cell for key "+key.first().getName()+ " <-> "+ key.last().getName());
+                GridCell cell = new GridCell(cellwidth);
+                cells.getChildren().add(cell);
+                Point2D position = positionCell(key);
+                AnchorPane.setLeftAnchor(cell, position.getX());
+                AnchorPane.setTopAnchor(cell, position.getY());
+             }
+            
+            
+
+            
+            return cells;
+    }
+    
+    
+    private Point2D positionCell(TreeSet<Item> pair) {
+         
+        Item a = pair.first();
+        Item b = pair.last();
+        
+        System.out.println("a->"+a.getName()+", catIndex="+a.getCatIndex());
+        System.out.println("b->"+b.getName()+", catIndex="+b.getCatIndex());
+        
+        
+        //if lowest catIndex is 0 (first Category), the relationships will be in the top row of the grid
+        //if lowest catIndex is 1 (second Category), the relationships will be in the left most column of the grid
+        int x = (a.getCatIndex()==1)?0:(b.getCatIndex()==1)?0:logicProblem.getNumCategories()-b.getCatIndex();
+        int y = (a.getCatIndex()==0)?0:(a.getCatIndex()==1)?b.getCatIndex()-1:a.getCatIndex()-1;
+        System.out.println("x="+x);
+        System.out.println("y="+y);
+        
+        Double xPos = cellwidth*2+labelwidth+x*cellwidth*logicProblem.getNumItems()+a.getItemIndex()*cellwidth+0.0;
+        Double yPos = cellwidth*2+labelheight+y*cellwidth*logicProblem.getNumItems()+b.getItemIndex()*cellwidth+0.0;
+        return new Point2D(xPos,yPos);
     }
 }

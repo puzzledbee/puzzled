@@ -8,10 +8,8 @@ package puzzled;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
@@ -52,7 +50,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
-import puzzled.data.Category;
 import puzzled.data.Clue;
 import puzzled.data.DemoProblems;
 import puzzled.data.Item;
@@ -155,21 +152,8 @@ public class PuzzledController implements Initializable {
     private void loadMe(ActionEvent event) {
         loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         
-        TreeSet<Item> testSet = new TreeSet<Item>(Comparator.comparing(p1 -> p1.getCatIndex()));
-        testSet.add(logicProblem.get().getCategories().get(4).getItems().get(1));
-        testSet.add(logicProblem.get().getCategories().get(3).getItems().get(2));
-        positionGridCell(testSet);
         
-    }
-    
-    private void positionGridCell(TreeSet<Item> set){
-        Item a = set.first();
-        Item b = set.last();
         
-        int x = (a.getCatIndex()==2)?0:(b.getCatIndex()==2)?0:1+logicProblem.get().getNumCategories()-b.getCatIndex();
-        int y = (a.getCatIndex()==1)?0:(a.getCatIndex()==2)?b.getCatIndex()-2:a.getCatIndex()-2;
-        System.out.println("x="+x);
-        System.out.println("y="+y);
     }
     
     
@@ -316,6 +300,8 @@ public class PuzzledController implements Initializable {
 		newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
                 fLogger.log(Level.INFO, newProblem.toString());
                 logicProblem.set(newProblem);
+                logicProblem.get().generateRelationships();
+                System.out.println(logicProblem.get().getRelationshipTable().size());
                 Grid logicProblemGrid = new Grid(this,logicProblem.get());
                 mainGroup.getChildren().clear();
                 mainGroup.getChildren().add(logicProblemGrid);
@@ -325,13 +311,7 @@ public class PuzzledController implements Initializable {
             //bind relationships layer visibility to checkMenuItem        
 //                logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
                 
-                //fix parent references
-                for (Category cat : logicProblem.get().getCategories()){
-                    cat.setParent(logicProblem.get());
-                    for (Item item : cat.getItems()) {
-                        item.setParent(cat);
-                    }
-                }
+
                 
                 clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");

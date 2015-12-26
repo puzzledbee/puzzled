@@ -30,7 +30,10 @@ public class Relationship implements Dependable {
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
 
-    
+    public Relationship() {
+//        System.out.println("creating relationship #" + index);
+        valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty chaged to" + newValue));
+    }
     public Relationship(ValueType myType) {
         valueProperty.set(myType);
         valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty chaged to" + newValue));

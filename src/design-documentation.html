@@ -2586,7 +2586,7 @@ Some observations:
 * In the HintsTable, the offset sign must be explicitly specified as unsigned offsets are offsets for which the direction in unknown.  Offsets of unknown sign are also called [[delta]] clues and cannot be used by the processor for algebraic discovneries until sign is know (only useful as RestrictedValues at the onset).
 **e.g. Mrs Choir's evening out is one day before or one day after Mrs Haddad's</pre>
 </div>
-<div title="positionGridCell" creator="Fred" modifier="Fred" created="201512241843" modified="201512260531" changecount="4">
+<div title="positionGridCell" creator="Fred" modifier="Fred" created="201512241843" modified="201512261436" changecount="10">
 <pre>Determine the position of top right corner of the [[GridCell]] when given the two [[Item]] objects in a {{{TreeSet}}} structure.
 
 let {{{a}}} be the [[Category]] index of the first {{{TreeSet}}} [[Item]] member
@@ -2595,11 +2595,13 @@ Let {{{b}}} be the [[Category]] index of the last {{{TreeSet}}} [[Item]] member
 Let {{{x}}} be the column of the grid where the [[GridCell]] needs to be placed, with 0 representing the first [[Category]] (top of the left hand labels)
 Let {{{y}}} be the row of the grid where the [[GridCell]] needs to be placed, with 0 representing the second [[Category]] (left-most [[Category]] on the top labels)
 
-{{{x}}}=(a==2)?0:(b==2)?0:1+numCat-b;
-{{{y}}}=(a==1)?0:(a==2)?b-2:a-2;
+//if lowest catIndex is 0 (first Category), the relationships will be in the top row of the grid
+//if lowest catIndex is 1 (second Category), the relationships will be in the left most column of the grid
+{{{x}}}=(a==1)?0:(b==1)?0:numCat-b;
+{{{y}}}=(a==0)?0:(a==1)?b-1:a-1;
 
-posX=cellWidth+labelwidth+y*cellWidth+itemIndex(last)
-posY=cellWidth+labelheight+x*cellWidth+itemIndex(first)</pre>
+xPos=cellwidth+labelwidth+x*cellwidth*logicProblem.getNumItems()+a.getItemIndex()*cellwidth;
+yPos=cellwidth+labelheight+y*cellwidth*logicProblem.getNumItems()+b.getItemIndex()*cellwidth</pre>
 </div>
 </div>
 <!--POST-STOREAREA-->
