@@ -348,17 +348,34 @@ public class PuzzledController implements Initializable {
 //                ).setValue(Relationship.ValueType.VALUE_YES);
         
         logicProblem.get().getRelationshipTable().get(
-                new ItemPair(logicProblem.get().getCategories().get(2).getItems().get(2),
+                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(4),
                             logicProblem.get().getCategories().get(1).getItems().get(2))
                 ).setValue(Relationship.ValueType.VALUE_NO);
+
+        logicProblem.get().getRelationshipTable().get(
+                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(1),
+                            logicProblem.get().getCategories().get(1).getItems().get(2))
+                ).setValue(Relationship.ValueType.VALUE_NO);
+        
+        logicProblem.get().getRelationshipTable().get(
+                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(0),
+                            logicProblem.get().getCategories().get(1).getItems().get(2))
+                ).setValue(Relationship.ValueType.VALUE_NO);
+
+        logicProblem.get().getRelationshipTable().get(
+                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(3),
+                            logicProblem.get().getCategories().get(1).getItems().get(2))
+                ).setValue(Relationship.ValueType.VALUE_NO);
+
+        
         
 //        logicProblem.get().getRelationshipTable().get(
 //                new ItemPair(logicProblem.get().getCategories().get(3).getItems().get(2),
 //                            logicProblem.get().getCategories().get(1).getItems().get(2))
 //                ).setValue(Relationship.ValueType.VALUE_YES);
-        
+          Processor.findUnique(logicProblem.get());
         Processor.cross(logicProblem.get());
-        Processor.transpose(logicProblem.get());
+//        Processor.transpose(logicProblem.get());
     }
     
     public void saveFile(){
