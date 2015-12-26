@@ -29,20 +29,69 @@ public class Processor {
                     for (Item item1 : cat1.getItems()){
                         for (Item item2 : cat2.getItems()){
                             if (relationshipTable.get(new ItemPair(item1,item2)).getValue()==Relationship.ValueType.VALUE_YES) {
-                                System.out.println("discovered VALUE_YES, setting up the cross");
+//                                System.out.println("discovered VALUE_YES, setting up the cross");
                                     for (Item itemA : cat1.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(itemA,item2));
-                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN)  rel.setValue(Relationship.ValueType.VALUE_NO);
+                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN)  {
+                                            //setDirty
+                                            rel.setValue(Relationship.ValueType.VALUE_NO);
+                                        }
                                     }
                                     for (Item itemB : cat2.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
-                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN)  rel.setValue(Relationship.ValueType.VALUE_NO);
+                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                                            //setDirty
+                                            rel.setValue(Relationship.ValueType.VALUE_NO);
+                                        }
                                     }
                             }
                         }
                     }
                 }
             }  
+        }
+    }
+    
+    public static void transpose(LogicProblem logicProblem) {
+        System.out.println("transpose invoked");
+        HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
+        
+//        int i = 1;
+        
+        for (Category cat1 : logicProblem.getCategories()){
+            for (Category cat2 : logicProblem.getCategories()){
+                if (cat1!=cat2) {
+                    for (Item item1 : cat1.getItems()){
+                        for (Item item2 : cat2.getItems()){
+                            if (relationshipTable.get(new ItemPair(item1,item2)).getValue()==Relationship.ValueType.VALUE_YES) {
+//                                System.out.println("transposing for "+item1.getName()+" and "+item2.getName());
+                                for (Category catA : logicProblem.getCategories()){
+                                    if (catA != cat1 && catA !=cat2) {
+                                        for (Item itemA : catA.getItems()) {
+                                            Relationship relBase = relationshipTable.get(new ItemPair(itemA,item2));
+                                            System.out.println("testing "+i++ + " ->"+itemA.getName()+" and "+item2.getName());
+                                            if (relBase.getValue()!=Relationship.ValueType.VALUE_UNKNOWN) {
+                                                //need to copy
+                                                Relationship relCopy = relationshipTable.get(new ItemPair(itemA,item1));
+                                                if (relCopy.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                                                    //setDirty
+                                                    relCopy.setValue(relBase.getValue());
+                                                }
+                                            } else if (relBase.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                                                Relationship relCopy = relationshipTable.get(new ItemPair(itemA,item1));
+                                                if (relCopy.getValue()!=Relationship.ValueType.VALUE_UNKNOWN) {
+                                                    //setDirty
+                                                    relBase.setValue(relCopy.getValue());
+                                                }
+                                            }
+                                        }                                        
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     

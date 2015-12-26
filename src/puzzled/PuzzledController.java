@@ -342,11 +342,23 @@ public class PuzzledController implements Initializable {
     
     
     public void changeRelationship() {
+//        logicProblem.get().getRelationshipTable().get(
+//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(2),
+//                            logicProblem.get().getCategories().get(1).getItems().get(2))
+//                ).setValue(Relationship.ValueType.VALUE_YES);
+        
         logicProblem.get().getRelationshipTable().get(
-                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(0),
-                            logicProblem.get().getCategories().get(1).getItems().get(0))
-                ).setValue(Relationship.ValueType.VALUE_YES);
+                new ItemPair(logicProblem.get().getCategories().get(2).getItems().get(2),
+                            logicProblem.get().getCategories().get(1).getItems().get(2))
+                ).setValue(Relationship.ValueType.VALUE_NO);
+        
+//        logicProblem.get().getRelationshipTable().get(
+//                new ItemPair(logicProblem.get().getCategories().get(3).getItems().get(2),
+//                            logicProblem.get().getCategories().get(1).getItems().get(2))
+//                ).setValue(Relationship.ValueType.VALUE_YES);
+        
         Processor.cross(logicProblem.get());
+        Processor.transpose(logicProblem.get());
     }
     
     public void saveFile(){
