@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Item {
     
     private StringProperty nameProperty = new SimpleStringProperty();
+    private Category parent;
     
     //necessary for unmarshalling
     public Item() {
@@ -28,6 +29,10 @@ public class Item {
     
     public Item(String mytext){
         nameProperty.set(mytext);
+    }
+    
+    public void setParent(Category arg_parent){
+        this.parent = arg_parent;
     }
     
     public void setName(String newText) {

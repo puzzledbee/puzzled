@@ -34,6 +34,7 @@ public class Category {
 //    @XmlElement
     private StringProperty nameProperty = new SimpleStringProperty();
     
+    private LogicProblem parent;
     
     private CategoryType categoryType = CategoryType.NORMAL;
     @XmlElement
@@ -47,6 +48,10 @@ public class Category {
     public Category(String myTitle,List<Item> myItems) {
         nameProperty.set(myTitle);
         items = myItems;
+    }
+    
+    public void setParent(LogicProblem arg_parent){
+        this.parent = arg_parent;
     }
     public void setType(CategoryType type_arg) {
         categoryType = type_arg;

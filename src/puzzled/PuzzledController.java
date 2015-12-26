@@ -50,6 +50,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
+import puzzled.data.Category;
 import puzzled.data.Clue;
 import puzzled.data.DemoProblems;
 import puzzled.data.Item;
@@ -301,8 +302,17 @@ public class PuzzledController implements Initializable {
                 //bind labels layer visibility to checkMenuItem
                 logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
                 
-                //bind relationships layer visibility to checkMenuItem        
+            //bind relationships layer visibility to checkMenuItem        
 //                logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
+                
+                //fix parent references
+                for (Category cat : logicProblem.get().getCategories()){
+                    cat.setParent(logicProblem.get());
+                    for (Item item : cat.getItems()) {
+                        item.setParent(cat);
+                    }
+                }
+                
                 clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
                 
@@ -343,7 +353,7 @@ public class PuzzledController implements Initializable {
                     jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                     
                     LogicProblem newProblem = DemoProblems.generateDemoProblem47();
-//                    jaxbMarshaller.marshal(logicProblem, file);
+                    jaxbMarshaller.marshal(logicProblem.get(), file);
                     
                     jaxbMarshaller.marshal(logicProblem.get(), System.out);
                     notify(WarningType.SUCCESS, "File "+file.getName()+" saved successfully!");
