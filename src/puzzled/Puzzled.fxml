@@ -51,9 +51,14 @@
                               <MenuItem mnemonicParsing="false" text="Reset problem ..." />
                               <SeparatorMenuItem mnemonicParsing="false" />
                               <MenuItem fx:id="propertiesMenuItem" mnemonicParsing="false" text="Problem properties ..." />
-                              <MenuItem mnemonicParsing="false" onAction="#changeRelationship" text="Do Something" visible="false">
+                              <MenuItem mnemonicParsing="false" onAction="#process" text="process" visible="false">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#transpose" text="transpose" visible="false">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
                         </items>

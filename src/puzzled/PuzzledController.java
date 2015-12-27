@@ -152,6 +152,7 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private void loadMe(ActionEvent event) {
+//        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem0.lpf");
         loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         
         
@@ -222,7 +223,7 @@ public class PuzzledController implements Initializable {
         saveButton.disableProperty().bind(logicProblem.isNull());
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
         toolbar.visibleProperty().bind(hideToolbarMenuItem.selectedProperty().not());
-        
+        toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
         
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
@@ -341,31 +342,35 @@ public class PuzzledController implements Initializable {
     }
     
     
-    public void changeRelationship() {
+    public void process() {
+        
+        System.out.println("item1: "+logicProblem.get().getCategories().get(0).getItems().get(0).getName()+", item2: "+
+                logicProblem.get().getCategories().get(1).getItems().get(2).getName());
+        
+        logicProblem.get().getRelationshipTable().get(
+                new ItemPair(logicProblem.get().getCategories().get(2).getItems().get(0),
+                            logicProblem.get().getCategories().get(3).getItems().get(2))
+                ).setValue(Relationship.ValueType.VALUE_NO);
+        
 //        logicProblem.get().getRelationshipTable().get(
-//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(2),
+//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(4),
 //                            logicProblem.get().getCategories().get(1).getItems().get(2))
-//                ).setValue(Relationship.ValueType.VALUE_YES);
-        
-        logicProblem.get().getRelationshipTable().get(
-                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(4),
-                            logicProblem.get().getCategories().get(1).getItems().get(2))
-                ).setValue(Relationship.ValueType.VALUE_NO);
-
-        logicProblem.get().getRelationshipTable().get(
-                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(1),
-                            logicProblem.get().getCategories().get(1).getItems().get(2))
-                ).setValue(Relationship.ValueType.VALUE_NO);
-        
-        logicProblem.get().getRelationshipTable().get(
-                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(0),
-                            logicProblem.get().getCategories().get(1).getItems().get(2))
-                ).setValue(Relationship.ValueType.VALUE_NO);
-
-        logicProblem.get().getRelationshipTable().get(
-                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(3),
-                            logicProblem.get().getCategories().get(1).getItems().get(2))
-                ).setValue(Relationship.ValueType.VALUE_NO);
+//                ).setValue(Relationship.ValueType.VALUE_NO);
+//
+//        logicProblem.get().getRelationshipTable().get(
+//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(1),
+//                            logicProblem.get().getCategories().get(1).getItems().get(2))
+//                ).setValue(Relationship.ValueType.VALUE_NO);
+//        
+//        logicProblem.get().getRelationshipTable().get(
+//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(0),
+//                            logicProblem.get().getCategories().get(1).getItems().get(2))
+//                ).setValue(Relationship.ValueType.VALUE_NO);
+//
+//        logicProblem.get().getRelationshipTable().get(
+//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(3),
+//                            logicProblem.get().getCategories().get(1).getItems().get(2))
+//                ).setValue(Relationship.ValueType.VALUE_NO);
 
         
         
@@ -373,9 +378,13 @@ public class PuzzledController implements Initializable {
 //                new ItemPair(logicProblem.get().getCategories().get(3).getItems().get(2),
 //                            logicProblem.get().getCategories().get(1).getItems().get(2))
 //                ).setValue(Relationship.ValueType.VALUE_YES);
-          Processor.findUnique(logicProblem.get());
+        Processor.findUnique(logicProblem.get());
         Processor.cross(logicProblem.get());
-//        Processor.transpose(logicProblem.get());
+        
+    }
+    
+    public void transpose() {
+        Processor.transpose(logicProblem.get());
     }
     
     public void saveFile(){

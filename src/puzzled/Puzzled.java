@@ -27,7 +27,6 @@ public class Puzzled extends Application {
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
     
-    private boolean dirtyProblem = false;
     
     private NotificationPane nPane;
     
@@ -55,7 +54,11 @@ public class Puzzled extends Application {
         
         primaryStage.setMaximized(true);
         
-        primaryStage.titleProperty().bind(Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ? banner+" v."+version : banner+" v."+version+" - "+controller.getLogicProblemProperty().get().getTitle(), controller.getLogicProblemProperty()));
+        primaryStage.titleProperty().bind(Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ? 
+                        banner+" v."+version : 
+                        banner+" v."+version+" - "+controller.getLogicProblemProperty().get().getTitle()+(controller.getLogicProblemProperty().get().isDirty()?"*":""),
+                controller.getLogicProblemProperty()));
+        
 //        primaryStage.setTitle("Puzzled! - Computer-aided logic problem solver - v."+Puzzled.version);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -68,9 +71,6 @@ public class Puzzled extends Application {
         return fLogger;
     }
     
-    public boolean getDirtyProblem(){
-        return dirtyProblem;
-    }
     
     /**
      * @param args the command line arguments

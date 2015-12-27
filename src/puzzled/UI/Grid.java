@@ -98,6 +98,7 @@ public class Grid extends StackPane {
 //        
 //        hbox.getChildren().addAll(labels,tPane);
         StackPane.setMargin(labelPane, new Insets(cellwidth));
+        StackPane.setMargin(cellsPane, new Insets(cellwidth));
         this.getChildren().addAll(gridPane,labelPane,cellsPane);
     }
     
@@ -254,8 +255,8 @@ public class Grid extends StackPane {
 //        System.out.println("x="+x);
 //        System.out.println("y="+y);
         
-        Double xPos = cellwidth*2+labelwidth+x*cellwidth*logicProblem.getNumItems()+a.getItemIndex()*cellwidth+0.0;
-        Double yPos = cellwidth*2+labelheight+y*cellwidth*logicProblem.getNumItems()+b.getItemIndex()*cellwidth+0.0;
+        Double xPos = cellwidth+labelwidth+x*cellwidth*logicProblem.getNumItems()+((a.getCatIndex()==1)?a.getItemIndex():b.getItemIndex())*cellwidth+0.0;
+        Double yPos = cellwidth+labelheight+y*cellwidth*logicProblem.getNumItems()+((a.getCatIndex()==1)?b.getItemIndex():a.getItemIndex())*cellwidth+0.0;
         return new Point2D(xPos,yPos);
     }
 }

@@ -33,14 +33,14 @@ public class Processor {
                                     for (Item itemA : cat1.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(itemA,item2));
                                         if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN)  {
-                                            //setDirty
+                                            logicProblem.setDirty(true);
                                             rel.setValue(Relationship.ValueType.VALUE_NO);
                                         }
                                     }
                                     for (Item itemB : cat2.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
                                         if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                            //setDirty
+                                            logicProblem.setDirty(true);
                                             rel.setValue(Relationship.ValueType.VALUE_NO);
                                         }
                                     }
@@ -64,26 +64,26 @@ public class Processor {
                     for (Item item1 : cat1.getItems()){
                         for (Item item2 : cat2.getItems()){
                             if (relationshipTable.get(new ItemPair(item1,item2)).getValue()==Relationship.ValueType.VALUE_YES) {
-//                                System.out.println("transposing for "+item1.getName()+" and "+item2.getName());
+                                System.out.println("transposing for "+item1.getName()+" and "+item2.getName());
                                 for (Category catA : logicProblem.getCategories()){
-                                    if (catA != cat1 && catA !=cat2) {
+                                    if (catA != cat1 && catA != cat2) {
                                         for (Item itemA : catA.getItems()) {
-                                            Relationship relBase = relationshipTable.get(new ItemPair(itemA,item2));
-                                            System.out.println("testing " + " ->"+itemA.getName()+" and "+item2.getName());
-                                            if (relBase.getValue()!=Relationship.ValueType.VALUE_UNKNOWN) {
+                                            Relationship relBase = relationshipTable.get(new ItemPair(item1,itemA));
+                                            Relationship relCopy = relationshipTable.get(new ItemPair(itemA,item2));
+                                            System.out.println("testing->"+item1.getName()+" and "+itemA.getName()+" with value "+relBase.getValue());
+                                            if (relBase.getValue()!=Relationship.ValueType.VALUE_UNKNOWN && relCopy.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                                                System.out.println("this value needs transposing ->"+item1.getName()+" and "+itemA.getName());
                                                 //need to copy
-                                                Relationship relCopy = relationshipTable.get(new ItemPair(itemA,item1));
-                                                if (relCopy.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                                    //setDirty
-                                                    relCopy.setValue(relBase.getValue());
-                                                }
-                                            } else if (relBase.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                                Relationship relCopy = relationshipTable.get(new ItemPair(itemA,item1));
-                                                if (relCopy.getValue()!=Relationship.ValueType.VALUE_UNKNOWN) {
-                                                    //setDirty
-                                                    relBase.setValue(relCopy.getValue());
-                                                }
-                                            }
+                                               
+                                                logicProblem.setDirty(true);
+                                                relCopy.setValue(relBase.getValue());
+                                                
+                                            } else if (relBase.getValue()==Relationship.ValueType.VALUE_UNKNOWN && relCopy.getValue()!=Relationship.ValueType.VALUE_UNKNOWN) {
+                                            
+                                                logicProblem.setDirty(true);
+                                                relBase.setValue(relCopy.getValue());
+                                                
+                                            } 
                                         }                                        
                                     }
                                 }
@@ -120,7 +120,7 @@ public class Processor {
 //                            System.out.println("discovered unique possibility at " + item1.getName()+" and "+cat2.getName());
                             for (Item itemB : cat2.getItems()){
                                 if (relationshipTable.get(new ItemPair(item1,itemB)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                    //setDirty
+                                    logicProblem.setDirty(true);
                                     relationshipTable.get(new ItemPair(item1,itemB)).setValue(Relationship.ValueType.VALUE_YES);
                                 }
                             }

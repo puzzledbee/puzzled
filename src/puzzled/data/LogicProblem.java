@@ -8,7 +8,9 @@ package puzzled.data;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -31,6 +33,8 @@ public class LogicProblem {
 
 //    @XmlElement
     private StringProperty titleProperty = new SimpleStringProperty();
+    
+    private BooleanProperty dirtyProperty = new SimpleBooleanProperty(false);
     
     private String problemSource;
     @XmlElement
@@ -67,7 +71,19 @@ public class LogicProblem {
         //categories.add("test");
     }
     
-
+    public BooleanProperty dirtyProperty(){
+        return this.dirtyProperty;
+    }
+    
+    @XmlTransient
+    public boolean isDirty(){
+        return this.dirtyProperty.getValue();
+    }
+    public void setDirty(boolean dirtyness){
+        System.out.println("is this problem now dirty? "+dirtyness);
+        this.dirtyProperty.set(dirtyness);
+    }
+    
 
     @XmlElement
     public String getTitle() {

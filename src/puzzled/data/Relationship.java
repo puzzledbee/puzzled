@@ -32,11 +32,11 @@ public class Relationship implements Dependable {
 
     public Relationship() {
 //        System.out.println("creating relationship #" + index);
-        valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty chaged to" + newValue));
+        valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty chansged to: " + newValue));
     }
     public Relationship(ValueType myType) {
         valueProperty.set(myType);
-        valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty chaged to" + newValue));
+        valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty changed to: " + newValue));
     }
     
     public ObjectProperty<ValueType> valueProperty(){
