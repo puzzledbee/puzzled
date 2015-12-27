@@ -235,6 +235,7 @@ public class Grid extends StackPane {
                 AnchorPane.setTopAnchor(cell, position.getY());
              }
 //            cells.setMouseTransparent(true);
+            cells.setPickOnBounds(false);
             return cells;
     }
     

@@ -34,7 +34,8 @@ public class LogicProblem {
 //    @XmlElement
     private StringProperty titleProperty = new SimpleStringProperty();
     
-    private BooleanProperty dirtyProperty = new SimpleBooleanProperty(false);
+    private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(false);
+    private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty(false);
     
     private String problemSource;
     @XmlElement
@@ -71,18 +72,32 @@ public class LogicProblem {
         //categories.add("test");
     }
     
-    public BooleanProperty dirtyProperty(){
-        return this.dirtyProperty;
+    public BooleanProperty dirtyLogicProperty(){
+        return this.dirtyLogicProperty;
     }
     
     @XmlTransient
-    public boolean isDirty(){
-        return this.dirtyProperty.getValue();
+    public boolean isLogicDirty(){
+        return this.dirtyLogicProperty.getValue();
     }
-    public void setDirty(boolean dirtyness){
+    public void setLogicDirty(boolean dirtyness){
         System.out.println("is this problem now dirty? "+dirtyness);
-        this.dirtyProperty.set(dirtyness);
+        this.dirtyLogicProperty.set(dirtyness);
     }
+    
+     public BooleanProperty dirtyFileProperty(){
+        return this.dirtyFileProperty;
+    }
+    
+    @XmlTransient
+    public boolean isFileDirty(){
+        return this.dirtyFileProperty.getValue();
+    }
+    public void setFileDirty(boolean dirtyness){
+        System.out.println("is this problem now dirty? "+dirtyness);
+        this.dirtyFileProperty.set(dirtyness);
+    }
+    
     
 
     @XmlElement
@@ -140,7 +155,7 @@ public class LogicProblem {
                             
 //                            System.out.println("joining "+pair.first().getName()+" <-> "+ pair.last().getName());
                             if (!relationshipTable.containsKey(pair)){
-                                relationshipTable.put(pair,new Relationship());
+                                relationshipTable.put(pair,new Relationship(this));
                             }
                         }
                     }

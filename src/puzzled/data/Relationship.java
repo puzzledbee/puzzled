@@ -29,10 +29,16 @@ public class Relationship implements Dependable {
     
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
+    
+    private LogicProblem logicProblem;
 
-    public Relationship() {
+    public Relationship(LogicProblem arg_parent) {
 //        System.out.println("creating relationship #" + index);
-        valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty chansged to: " + newValue));
+        logicProblem = arg_parent;
+        valueProperty.addListener( (e,oldValue,newValue) -> {
+            fLogger.info("Relationship valueProperty chansged to: " + newValue);
+            logicProblem.setLogicDirty(true);
+                });
     }
     public Relationship(ValueType myType) {
         valueProperty.set(myType);

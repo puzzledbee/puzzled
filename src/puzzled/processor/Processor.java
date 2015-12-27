@@ -33,14 +33,14 @@ public class Processor {
                                     for (Item itemA : cat1.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(itemA,item2));
                                         if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN)  {
-                                            logicProblem.setDirty(true);
+                                            
                                             rel.setValue(Relationship.ValueType.VALUE_NO);
                                         }
                                     }
                                     for (Item itemB : cat2.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
                                         if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                            logicProblem.setDirty(true);
+                                            
                                             rel.setValue(Relationship.ValueType.VALUE_NO);
                                         }
                                     }
@@ -75,12 +75,12 @@ public class Processor {
                                                 System.out.println("this value needs transposing ->"+item1.getName()+" and "+itemA.getName());
                                                 //need to copy
                                                
-                                                logicProblem.setDirty(true);
+                                                
                                                 relCopy.setValue(relBase.getValue());
                                                 
                                             } else if (relBase.getValue()==Relationship.ValueType.VALUE_UNKNOWN && relCopy.getValue()!=Relationship.ValueType.VALUE_UNKNOWN) {
                                             
-                                                logicProblem.setDirty(true);
+                                                
                                                 relBase.setValue(relCopy.getValue());
                                                 
                                             } 
@@ -120,7 +120,7 @@ public class Processor {
 //                            System.out.println("discovered unique possibility at " + item1.getName()+" and "+cat2.getName());
                             for (Item itemB : cat2.getItems()){
                                 if (relationshipTable.get(new ItemPair(item1,itemB)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                    logicProblem.setDirty(true);
+                                    
                                     relationshipTable.get(new ItemPair(item1,itemB)).setValue(Relationship.ValueType.VALUE_YES);
                                 }
                             }

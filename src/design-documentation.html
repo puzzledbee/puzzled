@@ -1743,9 +1743,9 @@ For n categories, the layout of the grid is as follows:
 |Cat n||||~|~|~|
 </pre>
 </div>
-<div title="Logic Elements" modifier="Fred" created="200807160004" modified="201510290122" changecount="2">
+<div title="Logic Elements" modifier="Fred" created="200807160004" modified="201512270424" changecount="3">
 <pre>This tiddler describes the various logic elements used by puzzled.
-!Manual
+![[Constraint]]
 *entered graphically by the user using the Graphical User Interface
 !From Clue
 * determined by the parser from the text entered
@@ -1838,23 +1838,25 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512262015" changecount="14">
-<pre>*debug transpose, probably because of the too restrictive test applied to the categories
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512270425" changecount="18">
+<pre>*constraint binding changeevent triggers isDirty
 *bind application title to multiple properties concatenated
+*add dependencies to Processor logic element
+*add / remove event listener for dirty property
+**onSetDirty-&gt; 
+***disable event listener
+***while (isDirty) loop
+****go through each logic element
+***once no more changes are applied, re-enable event listener
 *become a layout king
 **zone transparency in StackPane layers
 **learn what preferred size means in UI components
-**hiding toolbar pushes everything else up
-*get some icons for the toolbar, menu items
 *right-click on label with simpleContextMenu
 *try the funky circular contextmenu for gridcells
 *start tracking [[constraints|Constraint]]
-*[[Clues|Clue]], display glyphs, display clue list
 *problem properties dialog
 *new problem dialogs
-*.lps handling
-*processor
-**cross first</pre>
+*.lps handling</pre>
 </div>
 <div title="NormalClue" modifier="Fred" created="200807182006" modified="200808030006" tags="Clue">
 <pre>A normal clue is specific enough that further reassessments are not necessary, as it provides VALUE_NO or VALUE_YES relationships at the onset, and will not be provide additional information in the future.  It is distinct from a [[special clue|SpecialClue]].
@@ -2588,7 +2590,7 @@ Some observations:
 * In the HintsTable, the offset sign must be explicitly specified as unsigned offsets are offsets for which the direction in unknown.  Offsets of unknown sign are also called [[delta]] clues and cannot be used by the processor for algebraic discovneries until sign is know (only useful as RestrictedValues at the onset).
 **e.g. Mrs Choir's evening out is one day before or one day after Mrs Haddad's</pre>
 </div>
-<div title="positionGridCell" creator="Fred" modifier="Fred" created="201512241843" modified="201512261436" changecount="10">
+<div title="positionGridCell" creator="Fred" modifier="Fred" created="201512241843" modified="201512270424" changecount="11">
 <pre>Determine the position of top right corner of the [[GridCell]] when given the two [[Item]] objects in a {{{TreeSet}}} structure.
 
 let {{{a}}} be the [[Category]] index of the first {{{TreeSet}}} [[Item]] member
@@ -2602,8 +2604,8 @@ Let {{{y}}} be the row of the grid where the [[GridCell]] needs to be placed, wi
 {{{x}}}=(a==1)?0:(b==1)?0:numCat-b;
 {{{y}}}=(a==0)?0:(a==1)?b-1:a-1;
 
-xPos=cellwidth+labelwidth+x*cellwidth*logicProblem.getNumItems()+a.getItemIndex()*cellwidth;
-yPos=cellwidth+labelheight+y*cellwidth*logicProblem.getNumItems()+b.getItemIndex()*cellwidth</pre>
+xPos=cellwidth+labelwidth+x*cellwidth*logicProblem.getNumItems()+(a.getCatIndex()==1?b.getItemIndex():a.getItemIndex())*cellwidth;
+yPos=cellwidth+labelheight+y*cellwidth*logicProblem.getNumItems()+(a.getCatIndex()==1?a.getItemIndex():b.getItemIndex())*cellwidth</pre>
 </div>
 </div>
 <!--POST-STOREAREA-->

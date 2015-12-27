@@ -56,7 +56,7 @@ public class Puzzled extends Application {
         
         primaryStage.titleProperty().bind(Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ? 
                         banner+" v."+version : 
-                        banner+" v."+version+" - "+controller.getLogicProblemProperty().get().getTitle()+(controller.getLogicProblemProperty().get().isDirty()?"*":""),
+                        banner+" v."+version+" - "+controller.getLogicProblemProperty().get().getTitle()+(controller.getLogicProblemProperty().get().isFileDirty()?"*":""),
                 controller.getLogicProblemProperty()));
         
 //        primaryStage.setTitle("Puzzled! - Computer-aided logic problem solver - v."+Puzzled.version);

@@ -222,7 +222,7 @@ public class PuzzledController implements Initializable {
         saveAsMenuItem.disableProperty().bind(logicProblem.isNull());
         saveButton.disableProperty().bind(logicProblem.isNull());
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
-        toolbar.visibleProperty().bind(hideToolbarMenuItem.selectedProperty().not());
+        //toolbar.visibleProperty().bind(hideToolbarMenuItem.selectedProperty().not());
         toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
         
         

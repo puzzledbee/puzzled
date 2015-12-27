@@ -66,8 +66,8 @@
                         <Menu mnemonicParsing="false" text="Options">
                           <items>
                               <CheckMenuItem fx:id="hideToolbarMenuItem" mnemonicParsing="false" text="Hide Toolbar" />
-                              <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
                               <CheckMenuItem fx:id="hideLabelsMenuItem" mnemonicParsing="false" text="Hide Labels" />
+                              <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
                               <SeparatorMenuItem mnemonicParsing="false" />
                               <MenuItem mnemonicParsing="false" text="Preferences..." />
                           </items>
