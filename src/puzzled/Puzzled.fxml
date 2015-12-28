@@ -114,7 +114,7 @@
                                  </children>
                               </StackPane>
                               <HBox alignment="CENTER_RIGHT" layoutX="767.0" layoutY="588.0" prefHeight="37.0" prefWidth="513.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" />
-                              <HBox fx:id="clueGlyphBox" alignment="CENTER_RIGHT" layoutX="766.0" layoutY="540.0" prefHeight="41.0" prefWidth="514.0" spacing="5.0" style="-fx-background-color: yellow;" styleClass="glyphbox" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="20.0">
+                              <HBox fx:id="clueGlyphBox" alignment="CENTER_RIGHT" layoutX="766.0" layoutY="540.0" prefHeight="41.0" prefWidth="514.0" spacing="5.0" styleClass="glyphbox" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="20.0">
                                  <padding>
                                     <Insets left="5.0" right="5.0" />
                                  </padding></HBox>
@@ -122,16 +122,16 @@
                         </AnchorPane>
                      </content>
                 </Tab>
-                <Tab text="Answers">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
                   <Tab text="Clues">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                     </content>
                   </Tab>
+                <Tab text="Answers">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
               </tabs>
             </TabPane>
          </center>

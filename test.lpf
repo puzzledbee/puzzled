@@ -1,101 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <logicProblem>
-    <title>Problem 47</title>
-    <source>Penny Press Original Logic Problems Mar 1999</source>
+    <title>problem title here</title>
     <scale>1.0</scale>
     <categories>
-        <name>Book</name>
+        <name>category 1</name>
         <type>NORMAL</type>
         <items>
-            <name>Haley's Comet</name>
+            <name>item 11</name>
         </items>
         <items>
-            <name>Into The Fire</name>
+            <name>item 12</name>
         </items>
         <items>
-            <name>Never Again</name>
-        </items>
-        <items>
-            <name>Passion Play</name>
-        </items>
-        <items>
-            <name>Starburst</name>
+            <name>item 13</name>
         </items>
     </categories>
     <categories>
-        <name>Author</name>
+        <name>category 2</name>
         <type>NORMAL</type>
         <items>
-            <name>Bettany</name>
+            <name>item 21</name>
         </items>
         <items>
-            <name>Donovan</name>
+            <name>item 22</name>
         </items>
         <items>
-            <name>Elizabeth</name>
-        </items>
-        <items>
-            <name>Frederick</name>
-        </items>
-        <items>
-            <name>Peyton</name>
+            <name>item 23</name>
         </items>
     </categories>
     <categories>
-        <name>Pages</name>
-        <type>NUMERICAL</type>
-        <items>
-            <name>15</name>
-        </items>
-        <items>
-            <name>16</name>
-        </items>
-        <items>
-            <name>17</name>
-        </items>
-        <items>
-            <name>18</name>
-        </items>
-        <items>
-            <name>19</name>
-        </items>
-    </categories>
-    <categories>
-        <name>Genre</name>
+        <name>category 3</name>
         <type>NORMAL</type>
         <items>
-            <name>Biography</name>
+            <name>item 31</name>
         </items>
         <items>
-            <name>Fantasy</name>
+            <name>item 32</name>
         </items>
         <items>
-            <name>Mystery</name>
-        </items>
-        <items>
-            <name>Romance</name>
-        </items>
-        <items>
-            <name>Science-Fiction</name>
+            <name>item 33</name>
         </items>
     </categories>
-    <categories>
-        <name>Last Name</name>
-        <type>NORMAL</type>
-        <items>
-            <name>Chapman</name>
-        </items>
-        <items>
-            <name>Holden</name>
-        </items>
-        <items>
-            <name>Koenig</name>
-        </items>
-        <items>
-            <name>Rawlins</name>
-        </items>
-        <items>
-            <name>Wright</name>
-        </items>
-    </categories>
+    <clues/>
+    <clues/>
 </logicProblem>

@@ -6,9 +6,14 @@
 package puzzled;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +58,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
+import puzzled.data.Category;
 import puzzled.data.Clue;
 import puzzled.data.DemoProblems;
 import puzzled.data.Item;
@@ -305,34 +311,87 @@ public class PuzzledController implements Initializable {
         //check that there are no problem already loaded
         
         LogicProblem newProblem = null;
-        try {
+        String extension = file.getName().replaceAll("^.*\\.([^.]+)$", "$1");
+        if (extension.equalsIgnoreCase("lpf")) {
+            try {
 
-		JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
+                    JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
 
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
-                fLogger.log(Level.INFO, newProblem.toString());
+                    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                    newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
+                    fLogger.log(Level.INFO, newProblem.toString());
+                    logicProblem.set(newProblem);
+                    initializeProblem();
+                    notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
+              } catch (JAXBException e) {
+                    notify(WarningType.WARNING, "Unable to load problem file "+file.getName()+ "!");
+                    e.printStackTrace();
+              }
+        } else if (extension.equalsIgnoreCase("lps")) {
+            System.out.println("trying to load Logic Problem Shorthand");
+            try {
+                List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+                System.out.println("problem "+lines.get(0)+" with "+ lines.size());
+                System.out.println("last line "+lines.get(lines.size()-1));
+                newProblem = new LogicProblem(lines.get(0));
+                int i=1;
+                int catIndex=1;
+//                ArrayList<Clue> clues = new ArrayList<Clue>();
+                while (i < lines.size()) {
+                    if (i < lines.size()-1 && lines.get(i+1).startsWith("\t")) {
+                        i++;
+                        ArrayList<Item> items = new ArrayList<Item>();
+                        while (i< lines.size() && lines.get(i).startsWith("\t")) {
+                            System.out.println("adding item "+lines.get(i).trim()+" ("+i+")");
+                            items.add(new Item(lines.get(i++).trim()));
+                        }
+                        System.out.println("adding category "+lines.get(catIndex)+" ("+catIndex+")");
+                        Category newCat = new Category(lines.get(catIndex),items);
+                        catIndex = i;
+                        newProblem.addCategory(newCat);
+                    } else {
+                        if (i<lines.size()) {
+                            System.out.println("adding clue "+lines.get(i)+" ("+i+")");
+                            newProblem.addClue(new Clue(lines.get(i++)));
+                        } //else there are no clues present
+                    }
+                }
+                System.out.println("out of the woods");
                 logicProblem.set(newProblem);
-                logicProblem.get().generateRelationships();
-                System.out.println(logicProblem.get().getRelationshipTable().size());
-                Grid logicProblemGrid = new Grid(this,logicProblem.get());
-                mainGroup.getChildren().clear();
-                mainGroup.getChildren().add(logicProblemGrid);
-                //bind labels layer visibility to checkMenuItem
-                logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
-                
-            //bind relationships layer visibility to checkMenuItem        
-                logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
-                
-                clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
+                initializeProblem();
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
-                
-	  } catch (JAXBException e) {
-		notify(WarningType.WARNING, "Unable to load problem file "+file.getName()+ "!");
+            
+            } catch (IOException e) {
+                notify(WarningType.WARNING, "Unable to load shorthand problem file "+file.getName()+ "!");
                 e.printStackTrace();
-	  }
+            }
+        }
     }
     
+    
+    private void initializeProblem(){
+        
+            logicProblem.get().generateRelationships();
+//                    System.out.println(logicProblem.get().getRelationshipTable().size());
+            Grid logicProblemGrid = new Grid(this,logicProblem.get());
+            mainGroup.getChildren().clear();
+            mainGroup.getChildren().add(logicProblemGrid);
+            //bind labels layer visibility to checkMenuItem
+            logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
+
+        //bind relationships layer visibility to checkMenuItem        
+            logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
+
+            clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
+            
+            for (Clue clue : logicProblem.get().getClues()){
+                Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
+                label.setTooltip(new Tooltip(clue.getText()));
+                clueGlyphBox.getChildren().add(label);
+            }
+            
+            
+    }
     
     public void openFile() {
         fLogger.log(Level.INFO, "opening file invoked");

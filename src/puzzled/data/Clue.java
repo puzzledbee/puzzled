@@ -29,8 +29,17 @@ public class Clue implements Dependable {
     private SimpleStringProperty clueText = new SimpleStringProperty();
     private ClueType clueType = ClueType.NORMAL;
     
+    //necessary for iterator?
+    public Clue(){
+        
+    }
+    
     public Clue(String clueText_arg) {
         clueText.set(clueText_arg);
+    }
+    
+    public String getText(){
+        return clueText.getValue();
     }
     
     
