@@ -39,7 +39,7 @@ public class Relationship implements Dependable {
 //        System.out.println("creating relationship #" + index);
         logicProblem = arg_parent;
         valueProperty.addListener( (e,oldValue,newValue) -> {
-            fLogger.info("Relationship valueProperty chansged to: " + newValue);
+//            fLogger.info("Relationship valueProperty chansged to: " + newValue);
             logicProblem.setLogicDirty(true);
                 });
     }

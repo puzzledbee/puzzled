@@ -21,12 +21,13 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -62,9 +63,9 @@ import puzzled.data.Category;
 import puzzled.data.Clue;
 import puzzled.data.DemoProblems;
 import puzzled.data.Item;
-import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
+import puzzled.processor.Parser;
 import puzzled.processor.Processor;
 
 /**
@@ -154,11 +155,12 @@ public class PuzzledController implements Initializable {
     ObjectProperty<LogicProblem> logicProblem = new SimpleObjectProperty<LogicProblem>();
     
     private HashMap<Pair<Item,Item>,Relationship> relationships;
-    
+    private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty();
     
     private static final Logger fLogger =
     Logger.getLogger(Puzzled.class.getPackage().getName());
     
+    private boolean processing = false;
 
 
     
@@ -166,8 +168,6 @@ public class PuzzledController implements Initializable {
     private void loadMe(ActionEvent event) {
 //        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem0.lpf");
         loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
-        
-        
         
     }
     
@@ -203,6 +203,7 @@ public class PuzzledController implements Initializable {
         clueGlyphBox.getChildren().add(label);
         clueText.clear();
         notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getClues().size()+" was just added!");
+        Parser.parse(logicProblem.get());
     }
     
     @FXML
@@ -240,6 +241,7 @@ public class PuzzledController implements Initializable {
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
         //toolbar.visibleProperty().bind(hideToolbarMenuItem.selectedProperty().not());
         toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
+        
         
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
@@ -379,9 +381,14 @@ public class PuzzledController implements Initializable {
             //bind labels layer visibility to checkMenuItem
             logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
 
-        //bind relationships layer visibility to checkMenuItem        
+            //bind relationships layer visibility to checkMenuItem        
             logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
-
+            this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
+            
+            this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
+                System.out.println("change detected to dirtyLogicProperty");
+                this.process();
+                    });
             clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
             
             for (Clue clue : logicProblem.get().getClues()){
@@ -398,7 +405,9 @@ public class PuzzledController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Logic Problem File");
         fileChooser.getExtensionFilters().addAll(
-                new ExtensionFilter("Logic Problem Files", "*.lpf"));
+                new ExtensionFilter("Logic Problem Files", "*.lpf"),
+                new ExtensionFilter("Logic Problem Shorthand", "*.lps"),
+                new ExtensionFilter("Logic Problem Clues", "*.lpc"));
         Stage mainStage = (Stage) root.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(mainStage);
         if (selectedFile != null) {
@@ -412,19 +421,21 @@ public class PuzzledController implements Initializable {
     
     
     public void process() {
-        
-        System.out.println("item1: "+logicProblem.get().getCategories().get(0).getItems().get(0).getName()+", item2: "+
-                logicProblem.get().getCategories().get(1).getItems().get(2).getName());
-        
-        Bounds bound = logicProblem.get().getRelationshipTable().get(
-                new ItemPair(logicProblem.get().getCategories().get(2).getItems().get(0),
-                            logicProblem.get().getCategories().get(3).getItems().get(2))
-                ).boundProperty().get();
-        System.out.println("minX: "+bound.getMinX());
-        System.out.println("minY: "+bound.getMinY());
-        System.out.println("maxX: "+bound.getMaxX());
-        System.out.println("maxY: "+bound.getMaxY());
-        
+        System.out.println("process invoked");
+        if (!processing) {//prevents the changeHandler from triggering multiple
+            //concurrent processing loops
+            processing = true;
+            System.out.println("entering processing loop");
+            while (logicProblem.get().isLogicDirty()){
+                System.out.println("executing processing loop");
+                logicProblem.get().setLogicDirty(false);
+                Processor.cross(logicProblem.get());
+                Processor.findUnique(logicProblem.get());
+                Processor.transpose(logicProblem.get());
+            }
+            processing = false;
+        }
+            
 //        logicProblem.get().getRelationshipTable().get(
 //                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(4),
 //                            logicProblem.get().getCategories().get(1).getItems().get(2))
@@ -451,8 +462,17 @@ public class PuzzledController implements Initializable {
 //                new ItemPair(logicProblem.get().getCategories().get(3).getItems().get(2),
 //                            logicProblem.get().getCategories().get(1).getItems().get(2))
 //                ).setValue(Relationship.ValueType.VALUE_YES);
-        Processor.findUnique(logicProblem.get());
-        Processor.cross(logicProblem.get());
+//                System.out.println("item1: "+logicProblem.get().getCategories().get(0).getItems().get(0).getName()+", item2: "+
+//                        logicProblem.get().getCategories().get(1).getItems().get(2).getName());
+//
+//                Bounds bound = logicProblem.get().getRelationshipTable().get(
+//                        new ItemPair(logicProblem.get().getCategories().get(2).getItems().get(0),
+//                                    logicProblem.get().getCategories().get(3).getItems().get(2))
+//                        ).boundProperty().get();
+//                System.out.println("minX: "+bound.getMinX());
+//                System.out.println("minY: "+bound.getMinY());
+//                System.out.println("maxX: "+bound.getMaxX());
+//                System.out.println("maxY: "+bound.getMaxY());
         
     }
     

@@ -68,6 +68,7 @@ public class LogicProblem {
 //        numItems = item_number;
         categories = new ArrayList<Category>();
         
+        this.dirtyLogicProperty.addListener( (e, oldvalue, newvalue) -> System.out.println("change triggered in LogicProblem"));
         //categories.add("Age");
         //categories.add("test");
     }
@@ -81,7 +82,7 @@ public class LogicProblem {
         return this.dirtyLogicProperty.getValue();
     }
     public void setLogicDirty(boolean dirtyness){
-        System.out.println("is this problem now dirty? "+dirtyness);
+        System.out.println("logic problem set to dirty "+dirtyness);
         this.dirtyLogicProperty.set(dirtyness);
     }
     

@@ -521,35 +521,49 @@ noscript {display:none;} /* Fixes a feature in Firefox 1.5.0.2 where print previ
 </div>
 <!--POST-SHADOWAREA-->
 <div id="storeArea">
-<div title=".lps" creator="Fred" modifier="Fred" created="201512190050" modified="201512190058" changecount="5">
-<pre>Logic Problem Shorthand, a faster way to input problems into Puzzled than generating an XML {{{.lpf}}} file or using the GUI.
+<div title=".lpc" creator="Fred" modifier="Fred" created="201512281237" modified="201512281241" changecount="3">
+<pre>''Logic Problem Clues''. Simple text file of clues. Used mainly for testing of the processor instead of manually entering clues. It is convenient after resetting the problem, which clears the [[RelationshipTable]], the [[Clue]] list, and [[Hint]] table. It is not necessary for normal operations as the [[.lpf]] or [[.lps]] files can already contain clues.
+
+''{{{.lpc}}} specifications''
+
+{{{
+clue 1 text[; type]
+clue 2 text[; type]
+clue 3 text[; type]
+}}}</pre>
+</div>
+<div title=".lpf" creator="Fred" modifier="Fred" created="201512281238" modified="201512281239" changecount="2">
+<pre>''Logic Problem File''. XML-based filetype used to save (or load) [[LogicProblem]] data. See also [[.lps]] and [[.lpc]].</pre>
+</div>
+<div title=".lps" creator="Fred" modifier="Fred" created="201512190050" modified="201512281240" changecount="12">
+<pre>''Logic Problem Shorthand''. simple text file used to rapidly input problems into Puzzled, faster than manually generating an XML [[.lpf]] file or using the GUI to input all persistent [LogicProblem]] data. It is convenient for command-line operations and testing. See also [[.lpc]].
 
 ''{{{.lps}}} specifications''
-*title followed by category names and item names for each category, preceded by a tab character. 
-*optional [[clues|Clue]] and constraints sections follow.
-*the [[constraints|Constraint]] are specified by a pair of category#,item# and a value. Note that [[constraints|Constraint]] are normally only entered via the GUI and that a [[clue|Clue]] could be written instead
+*title followed by category names and item names for each category, preceded by a tab character
+*optional [[clues|Clue]] section follow. [[Clues|Clue]] will be distinguished from [[categories|Category]] simply because no tab-led [[item|Item]] follow
+*the [[constraints|Constraint]] should be entered as clues
 *loaded {{{.lps}}} file become normal data structures which can then be saved as an XML-based {{{.lpf}}}
 {{{
-problem title text
-category 1 name[, type]
+problem title text[; source]
+category 1 name[; type]
     item 1 name
     item 2 name
     item 3 name
     item 4 name
     item 5 name
-category 2 name[, type]
+category 2 name[; type]
     item 1 name
     item 2 name
     item 3 name
     item 4 name
     item 5 name
-category 3 name[, type]
+category 3 name[; type]
     item 1 name
     item 2 name
     item 3 name
     item 4 name
     item 5 name
-category 4 name[, type]
+category 4 name[; type]
     item 1 name
     item 2 name
     item 3 name
@@ -561,14 +575,9 @@ category 5 name[, type]
     item 3 name
     item 4 name
     item 5 name
-[clues:
-clue 1 text[, type]
-clue 2 text[, type]
-clue 3 text[, type]]
-[constraints:
-1,1,3,2,yes
-4,1,5,1,no
-2,1,4,2,no]
+clue 1 text[; type]
+clue 2 text[; type]
+clue 3 text[; type]
 }}}</pre>
 </div>
 <div title="Answers" creator="Fred" modifier="Fred" created="201511290246" changecount="1">
@@ -1770,8 +1779,8 @@ For n categories, the layout of the grid is as follows:
 * [[VALUE_NO]] relationship discovered following the elimination of options as part of an enumeration.
 </pre>
 </div>
-<div title="LogicProblem" creator="Fred" modifier="Fred" created="201510312313" modified="201512152358" changecount="7">
-<pre>Main class describing the problem data. It --is serializable--  can be saved to / loaded from an XML {{{.lpf}}} file.
+<div title="LogicProblem" creator="Fred" modifier="Fred" created="201510312313" modified="201512281238" changecount="8">
+<pre>Main class describing the problem data. It --is serializable--  can be saved to / loaded from an XML [[.lpf]] file.
 Must contain as fields:
 *Problem title, source, notes
 *List of [[categories|Category]]
@@ -1838,9 +1847,9 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512280342" changecount="22">
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512280456" changecount="23">
 <pre>*bind application title to multiple properties concatenated, including FileDirtyProperty
-*.lps handling
+*[[.lps]] handling
 *add dependencies to Processor logic element
 *work on clue tab and answer tab
 *add / remove event listener for dirty property

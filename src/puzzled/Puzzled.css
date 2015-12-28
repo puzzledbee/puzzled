@@ -75,7 +75,17 @@
     -fx-max-height: 34px;
     -fx-font-weight: bold;
     -fx-text-fill: blueviolet;
-    -fx-alignment:CENTER
+    -fx-alignment:CENTER;
+}
+
+.glyphbox .label:hover {
+    -fx-border-color: blueviolet;
+    -fx-background-color: blueviolet;
+    -fx-text-fill: white;
+}
+
+.tooltip {
+    -fx-background-color: blueviolet;
 }
 
 
