@@ -14,4 +14,12 @@ import javafx.geometry.Point2D;
 public interface Dependable {
     
     public Point2D getCenterPosition();
+    
+    //public void addSuccessor(Dependable successor);
+    
+    //public Set getSuccessors();
+    
+    //public void addDependency(Dependable dependency);
+    
+    //public void getDependencies();
 }

@@ -20,7 +20,7 @@ public class Processor {
     
     
     public static void cross(LogicProblem logicProblem){
-        System.out.println("cross invoked");
+//        System.out.println("cross invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
         for (Category cat1 : logicProblem.getCategories()){
@@ -53,7 +53,7 @@ public class Processor {
     }
     
     public static void transpose(LogicProblem logicProblem) {
-        System.out.println("transpose invoked");
+//        System.out.println("transpose invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
 //        int i = 1;
@@ -64,15 +64,15 @@ public class Processor {
                     for (Item item1 : cat1.getItems()){
                         for (Item item2 : cat2.getItems()){
                             if (relationshipTable.get(new ItemPair(item1,item2)).getValue()==Relationship.ValueType.VALUE_YES) {
-                                System.out.println("transposing for "+item1.getName()+" and "+item2.getName());
+//                                System.out.println("transposing for "+item1.getName()+" and "+item2.getName());
                                 for (Category catA : logicProblem.getCategories()){
                                     if (catA != cat1 && catA != cat2) {
                                         for (Item itemA : catA.getItems()) {
                                             Relationship relBase = relationshipTable.get(new ItemPair(item1,itemA));
                                             Relationship relCopy = relationshipTable.get(new ItemPair(itemA,item2));
-                                            System.out.println("testing->"+item1.getName()+" and "+itemA.getName()+" with value "+relBase.getValue());
+//                                            System.out.println("testing->"+item1.getName()+" and "+itemA.getName()+" with value "+relBase.getValue());
                                             if (relBase.getValue()!=Relationship.ValueType.VALUE_UNKNOWN && relCopy.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                                System.out.println("this value needs transposing ->"+item1.getName()+" and "+itemA.getName());
+//                                                System.out.println("this value needs transposing ->"+item1.getName()+" and "+itemA.getName());
                                                 //need to copy
                                                
                                                 
@@ -97,7 +97,7 @@ public class Processor {
     
     
     public static void findUnique(LogicProblem logicProblem) {
-        System.out.println("findUnique invoked");
+//        System.out.println("findUnique invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
         

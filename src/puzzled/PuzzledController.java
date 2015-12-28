@@ -21,6 +21,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,6 +32,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -38,6 +40,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -91,6 +94,9 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private Parent bPane;
+    
+    @FXML
+    private HBox clueGlyphBox;
     
     @FXML
     private NotificationPane nPane;
@@ -184,7 +190,11 @@ public class PuzzledController implements Initializable {
         
     @FXML
     private void addClueButtonAction(ActionEvent event) {
+        
         logicProblem.get().getClues().add(new Clue(clueText.getText()));
+        Label label = new Label(Integer.toString(logicProblem.get().getClues().size()));
+        label.setTooltip(new Tooltip(clueText.getText()));
+        clueGlyphBox.getChildren().add(label);
         clueText.clear();
         notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getClues().size()+" was just added!");
     }
@@ -347,10 +357,14 @@ public class PuzzledController implements Initializable {
         System.out.println("item1: "+logicProblem.get().getCategories().get(0).getItems().get(0).getName()+", item2: "+
                 logicProblem.get().getCategories().get(1).getItems().get(2).getName());
         
-        logicProblem.get().getRelationshipTable().get(
+        Bounds bound = logicProblem.get().getRelationshipTable().get(
                 new ItemPair(logicProblem.get().getCategories().get(2).getItems().get(0),
                             logicProblem.get().getCategories().get(3).getItems().get(2))
-                ).setValue(Relationship.ValueType.VALUE_NO);
+                ).boundProperty().get();
+        System.out.println("minX: "+bound.getMinX());
+        System.out.println("minY: "+bound.getMinY());
+        System.out.println("maxX: "+bound.getMaxX());
+        System.out.println("maxY: "+bound.getMaxY());
         
 //        logicProblem.get().getRelationshipTable().get(
 //                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(4),

@@ -61,10 +61,21 @@
     -fx-max-width: 34px;
     -fx-max-height: 34px;
     -fx-font-weight: bold;
+    
 }
 
-.cirlceglyph {
-    -fx-border-radius: 10;
+.glyphbox .label {
+    
+    -fx-background-radius: 3em;
+    -fx-border-radius: 3em;
+    -fx-border-color: blueviolet;
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-font-weight: bold;
+    -fx-text-fill: blueviolet;
+    -fx-alignment:CENTER
 }
 
 

@@ -41,6 +41,7 @@ public class GridCell extends StackPane {
     public GridCell(int cellwidth, Relationship relationship) {
         Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
         valueProperty.bindBidirectional(relationship.valueProperty());
+        relationship.boundProperty().bind(this.boundsInParentProperty());
         
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
         Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
