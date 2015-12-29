@@ -29,6 +29,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
+import javafx.print.PrinterJob;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -52,6 +57,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -140,6 +146,9 @@ public class PuzzledController implements Initializable {
     private MenuItem saveAsMenuItem;
     
     @FXML
+    private MenuItem printMenuItem;
+    
+    @FXML
     private ToolBar toolbar;
     
     @FXML
@@ -164,6 +173,7 @@ public class PuzzledController implements Initializable {
     private static final Logger fLogger =
     Logger.getLogger(Puzzled.class.getPackage().getName());
     
+    Grid logicProblemGrid;
     private boolean processing = false;
 
 
@@ -197,6 +207,28 @@ public class PuzzledController implements Initializable {
         fLogger.log(Level.INFO,"scale:"+logicProblem.get().getScale());
     }
 
+    @FXML
+    private void print(ActionEvent event) {
+        Printer printer = Printer.getDefaultPrinter();
+        PageLayout pageLayout = printer.createPageLayout(Paper.NA_LETTER, PageOrientation.LANDSCAPE, Printer.MarginType.EQUAL);
+        double scaleX = pageLayout.getPrintableWidth() / this.logicProblemGrid.getBoundsInParent().getWidth();
+        double scaleY = pageLayout.getPrintableHeight() / this.logicProblemGrid.getBoundsInParent().getHeight();
+        Scale scaler = new Scale(scaleX,scaleY);
+        this.logicProblemGrid.getTransforms().add(scaler);
+       
+        PrinterJob printerJob = PrinterJob.createPrinterJob();
+        if (printerJob != null) {
+            printerJob.getJobSettings().setPageLayout(pageLayout);
+            boolean success = printerJob.printPage(this.logicProblemGrid);
+            if (success) {
+                printerJob.endJob();
+                notify(WarningType.SUCCESS,"Printing successful!");
+            } else {
+                notify(WarningType.WARNING,"Printing not successful!");
+            }
+            this.logicProblemGrid.getTransforms().remove(scaler);
+        }
+    }
         
     @FXML
     private void addClueButtonAction(ActionEvent event) {
@@ -242,7 +274,7 @@ public class PuzzledController implements Initializable {
         saveAsMenuItem.disableProperty().bind(logicProblem.isNull());
         saveButton.disableProperty().bind(logicProblem.isNull());
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
-        //toolbar.visibleProperty().bind(hideToolbarMenuItem.selectedProperty().not());
+        printMenuItem.disableProperty().bind(logicProblem.isNull());
         toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
         
         
@@ -410,7 +442,7 @@ public class PuzzledController implements Initializable {
         
             logicProblem.get().generateRelationships();
 //                    System.out.println(logicProblem.get().getRelationshipTable().size());
-            Grid logicProblemGrid = new Grid(this,logicProblem.get());
+            logicProblemGrid = new Grid(this,logicProblem.get());
             mainGroup.getChildren().clear();
             mainGroup.getChildren().add(logicProblemGrid);
             //bind labels layer visibility to checkMenuItem

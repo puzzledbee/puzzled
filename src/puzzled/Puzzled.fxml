@@ -39,6 +39,11 @@
                                  </accelerator>
                               </MenuItem>
                               <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" text="Save Logic Problem As..." />
+                              <MenuItem fx:id="printMenuItem" mnemonicParsing="false" onAction="#print" text="Print">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
                           <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
