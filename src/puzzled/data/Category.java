@@ -15,8 +15,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 
-
-
 /**
  *
  * @author Fred

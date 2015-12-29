@@ -58,6 +58,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -149,6 +150,12 @@ public class PuzzledController implements Initializable {
     private MenuItem printMenuItem;
     
     @FXML
+    private MenuItem zoomInMenuItem;
+    
+    @FXML
+    private MenuItem zoomOutMenuItem;
+    
+    @FXML
     private ToolBar toolbar;
     
     @FXML
@@ -156,6 +163,12 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private Button saveButton;
+    
+    @FXML
+    private Button zoomOutButton;
+    
+    @FXML
+    private Button zoomInButton;
     
     @FXML
     private MenuItem propertiesMenuItem;
@@ -210,15 +223,34 @@ public class PuzzledController implements Initializable {
     @FXML
     private void print(ActionEvent event) {
         Printer printer = Printer.getDefaultPrinter();
-        PageLayout pageLayout = printer.createPageLayout(Paper.NA_LETTER, PageOrientation.LANDSCAPE, Printer.MarginType.EQUAL);
+        PageLayout pageLayout = printer.createPageLayout(Paper.NA_LETTER, PageOrientation.LANDSCAPE, Printer.MarginType.EQUAL_OPPOSITES);
         double scaleX = pageLayout.getPrintableWidth() / this.logicProblemGrid.getBoundsInParent().getWidth();
         double scaleY = pageLayout.getPrintableHeight() / this.logicProblemGrid.getBoundsInParent().getHeight();
         Scale scaler = new Scale(scaleX,scaleY);
+        
+        System.out.println("pagewidth="+pageLayout.getPrintableWidth());
+        System.out.println("pageheight="+pageLayout.getPrintableHeight());
+        System.out.println("imagewidth="+this.logicProblemGrid.getBoundsInParent().getWidth());
+        System.out.println("imagewidth="+this.logicProblemGrid.getBoundsInParent().getHeight());
+        System.out.println("scaleX="+scaleX);
+        System.out.println("scaleY="+scaleY);
+        
+        int numcats = this.logicProblem.get().getNumCategories()-1;
+        System.out.println("numCats="+numcats);
+        int numcells = numcats * this.logicProblem.get().getNumItems() + 1;
+        System.out.println("\nnumCells="+numcells);
+        int totalwidth = numcells*this.logicProblemGrid.cellwidth+this.logicProblemGrid.labelwidth;
+        System.out.println("totalwidth="+totalwidth);
+        double scaled = totalwidth*scaleX;
+        System.out.println("scaled="+scaled);
         this.logicProblemGrid.getTransforms().add(scaler);
-       
+        //center grid in page
+        Translate translator = new Translate((pageLayout.getPrintableWidth()-scaled)/2,0);
+        this.logicProblemGrid.getTransforms().add(translator);
         PrinterJob printerJob = PrinterJob.createPrinterJob();
         if (printerJob != null) {
             printerJob.getJobSettings().setPageLayout(pageLayout);
+            
             boolean success = printerJob.printPage(this.logicProblemGrid);
             if (success) {
                 printerJob.endJob();
@@ -276,8 +308,12 @@ public class PuzzledController implements Initializable {
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
         printMenuItem.disableProperty().bind(logicProblem.isNull());
         toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
-        
-        
+//        zoomInMenuItem.disableProperty().bind(logicProblem.isNull().or(logicProblem.get().scaleProperty().greaterThanOrEqualTo(maxZoom)));
+//        zoomOutMenuItem.disableProperty().bind(logicProblem.isNull().or(logicProblem.get().scaleProperty().greaterThanOrEqualTo(minZoom)));
+        zoomInMenuItem.disableProperty().bind(logicProblem.isNull());
+        zoomOutMenuItem.disableProperty().bind(logicProblem.isNull());
+        zoomInButton.disableProperty().bind(logicProblem.isNull());
+        zoomOutButton.disableProperty().bind(logicProblem.isNull());
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) setupDragNDrop(mainGrid.getScene());

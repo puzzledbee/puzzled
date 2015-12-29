@@ -100,7 +100,9 @@ public class LogicProblem {
         this.dirtyFileProperty.set(dirtyness);
     }
     
-    
+    public DoubleProperty scaleProperty() {
+        return this.scaleProperty;
+    }
 
     @XmlElement
     public String getTitle() {

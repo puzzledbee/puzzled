@@ -32,9 +32,9 @@ import puzzled.data.Relationship;
 public class Grid extends StackPane {
 
     //PuzzledController controller;
-    private static int cellwidth = 40;
+    public final static int cellwidth = 40;
     private static int labelheight = 175; //for vertical item labels
-    private static int labelwidth = 175;  //for horizontal item labels
+    public static int labelwidth = 175;  //for horizontal item labels
     private LogicProblem logicProblem;
     
     private int numCategories;

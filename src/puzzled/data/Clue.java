@@ -8,11 +8,19 @@ package puzzled.data;
 import java.util.HashSet;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Point2D;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author Fred
  */
+
+@XmlRootElement
+@XmlType(propOrder={"text","type"})
+
 public class Clue implements Dependable {
     private HashSet<Dependable> successors = new HashSet<Dependable>();
     private HashSet<Dependable> predecessors = new HashSet<Dependable>();
@@ -44,12 +52,17 @@ public class Clue implements Dependable {
         clueText.set(clueText_arg);
     }
     
+    @XmlElement
     public String getText(){
         return clueText.getValue();
     }
     
+    @XmlElement
+    public ClueType getType(){
+        return clueType;
+    }
     
-    
+    @XmlTransient
     public Point2D getCenterPosition(){
         return null;
     }
