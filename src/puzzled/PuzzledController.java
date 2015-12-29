@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +32,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -51,6 +55,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import javax.xml.bind.JAXBContext;
@@ -65,7 +70,6 @@ import puzzled.data.DemoProblems;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
-import puzzled.processor.Parser;
 import puzzled.processor.Processor;
 
 /**
@@ -203,7 +207,6 @@ public class PuzzledController implements Initializable {
         clueGlyphBox.getChildren().add(label);
         clueText.clear();
         notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getClues().size()+" was just added!");
-        Parser.parse(logicProblem.get());
     }
     
     @FXML
@@ -330,11 +333,11 @@ public class PuzzledController implements Initializable {
                     e.printStackTrace();
               }
         } else if (extension.equalsIgnoreCase("lps")) {
-            System.out.println("trying to load Logic Problem Shorthand");
+//            System.out.println("trying to load Logic Problem Shorthand");
             try {
                 List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-                System.out.println("problem "+lines.get(0)+" with "+ lines.size());
-                System.out.println("last line "+lines.get(lines.size()-1));
+//                System.out.println("problem "+lines.get(0)+" with "+ lines.size());
+//                System.out.println("last line "+lines.get(lines.size()-1));
                 newProblem = new LogicProblem(lines.get(0));
                 int i=1;
                 int catIndex=1;
@@ -347,7 +350,7 @@ public class PuzzledController implements Initializable {
                             System.out.println("adding item "+lines.get(i).trim()+" ("+i+")");
                             items.add(new Item(lines.get(i++).trim()));
                         }
-                        System.out.println("adding category "+lines.get(catIndex)+" ("+catIndex+")");
+//                        System.out.println("adding category "+lines.get(catIndex)+" ("+catIndex+")");
                         Category newCat = new Category(lines.get(catIndex),items);
                         catIndex = i;
                         newProblem.addCategory(newCat);
@@ -358,7 +361,7 @@ public class PuzzledController implements Initializable {
                         } //else there are no clues present
                     }
                 }
-                System.out.println("out of the woods");
+                
                 logicProblem.set(newProblem);
                 initializeProblem();
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
@@ -367,9 +370,41 @@ public class PuzzledController implements Initializable {
                 notify(WarningType.WARNING, "Unable to load shorthand problem file "+file.getName()+ "!");
                 e.printStackTrace();
             }
+        } else if (extension.equalsIgnoreCase("lpc")) {
+            try {
+                List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+                for (String clueText : lines) {
+                    Clue newClue = new Clue(clueText);
+                    logicProblem.get().addClue(newClue);
+                    Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(newClue)+1));
+                    label.setTooltip(new Tooltip(newClue.getText()));
+                    clueGlyphBox.getChildren().add(label);
+                }
+            } catch (IOException e) {
+                notify(WarningType.WARNING, "Unable to load problem clues file "+file.getName()+ "!");
+                e.printStackTrace();
+            }
+        } else {
+            notify(WarningType.WARNING, "Filetype not supported. Please choose .lpf, .lps or .lpc files!");
         }
     }
     
+    public void resetButtonActtion(ActionEvent event) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Reset Logic Problem");
+        alert.initStyle(StageStyle.UTILITY);
+        alert.setHeaderText(null);
+        alert.setContentText("Resetting the Logic Problem will clear all relationships and clues\nDo you wish to continue?");
+        Optional<ButtonType> result = alert.showAndWait();
+        
+        if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+            logicProblem.get().getClues().clear();
+            this.clueGlyphBox.getChildren().clear();
+            
+            this.initializeProblem();
+            notify(WarningType.SUCCESS, "Logic problem reset successfully!");
+        }
+    }
     
     private void initializeProblem(){
         

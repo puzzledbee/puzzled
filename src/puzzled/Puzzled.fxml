@@ -48,7 +48,10 @@
                       <Menu mnemonicParsing="false" text="Edit">
                         <items>
                           <MenuItem mnemonicParsing="false" text="Undo last operation" />
-                              <MenuItem mnemonicParsing="false" text="Reset problem ..." />
+                              <MenuItem mnemonicParsing="false" onAction="#resetButtonActtion" text="Reset problem ...">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator></MenuItem>
                               <SeparatorMenuItem mnemonicParsing="false" />
                               <MenuItem fx:id="propertiesMenuItem" mnemonicParsing="false" text="Problem properties ..." />
                               <MenuItem mnemonicParsing="false" onAction="#process" text="process" visible="false">
@@ -85,7 +88,7 @@
                         <Button id="btn_open" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Open" />
                         <Button id="btn_save" fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#saveFile" text="Save" />
                         <Button id="btn_undo" fx:id="resetButton" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Undo" />
-                        <Button id="btn_reset" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Reset" />
+                        <Button id="btn_reset" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" onAction="#resetButtonActtion" text="Reset" />
                     </items>
                   </ToolBar>
                </children>

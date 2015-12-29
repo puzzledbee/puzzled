@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import puzzled.processor.Parser;
 
 /**
  *
@@ -204,6 +205,7 @@ public class LogicProblem {
     
     public void addClue(Clue newClue){
         clues.add(newClue);
+        Parser.parse(this);
     }
     
     public void removeClue(Clue oldClue){
