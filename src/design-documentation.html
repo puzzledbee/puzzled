@@ -1379,10 +1379,10 @@ function addRemindersToPopup(p,when,format)
 <div title="DefaultTiddlers" modifier="Fred" created="200807161402" modified="200807182049">
 <pre>[[Puzzled]]</pre>
 </div>
-<div title="Dependable" modifier="Fred" created="201510290103" modified="201512090139" changecount="18">
+<div title="Dependable" modifier="Fred" created="201510290103" modified="201512291308" changecount="20">
 <pre>Interface against which comply all objects which can be used to infer [[Relationship]], such as a [[Clue]], a [[Constraint]], a [[Hint]], and a [[Relationship]]. For example, if a user clicks the grid and sets a [[constraint|Constraint]] to [[VALUE_YES]], the [[Cross|logic elements]] can be filled out using [[VALUE_NO]] which depend on the VALUE_YES [[relationship|Relationship]]. The first relationship itself depends on the [[constraint|Constraint]].
 
-What is the best data structure for dependencies? Each [[Relationship]] will need to maintain an ArrayList&lt;Dependable&gt; of predecessors (derived from); [[Relationship]] and [[Hint]] will both need to have an ArrayList&lt;Relationship&gt; of successors (impacting), with a view to avoid walking through the [[RelationshipTable]] when needing to recursively invalidate a set of [[relationships|Relationship]] after an undo operation (or constraint change).
+What is the best data structure for dependencies? Each [[Relationship]] will need to maintain a HashSet&lt;Dependable&gt; of predecessors (derived from); [[Relationship]] and [[Hint]] will both need to have an HashSet&lt;Dependable&gt; of successors (impacting), with a view to avoid walking through the [[RelationshipTable]] when needing to recursively invalidate a set of [[relationships|Relationship]] after an undo operation (or constraint change).
 
 Dependable methods (bundling both methods needed for successors and predecessors):
 - center position of associated graph element (GridCell for [[Relationship]], [[Clue]] glyph, or [[Hint identifier|HintsTable]].)
@@ -1464,7 +1464,7 @@ e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesec
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512181147" tags="Object" changecount="21">
+<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512291309" tags="Object" changecount="22">
 <pre>''Grid'' is a visual container of the category and item labels as well as the data structure of [[GridCell]].
 It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]].
 
@@ -1477,7 +1477,7 @@ Possible structure:
 ****Button zoomOut, anchored top left
 ****ScrollPane, anchored top left, on top (FXML id: mainScroll)
 *****Group (used to enable zoom in / zoom out) (FXML id: mainGroup)
-******''Grid'' extends StackPane (subject to ScaleX and ScaleY....)
+******''Grid'' extends StackPane (subject to ScaleX and ScaleY....) (variable name:logicProblemGrid)
 *******layer 1, AnchorPane (gridPane), for the grid
 *******layer 2, AnchorPane (labelPane), for labels (visibleProperty bound to CheckMenuItem)
 *******layer 3, AnchorPane (relationshipPane), for relationships (GridCells)  (visibleProperty bound to CheckMenuItem)
@@ -1847,8 +1847,9 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512290347" changecount="25">
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512291309" changecount="26">
 <pre>*bind application title to multiple properties concatenated, including FileDirtyProperty
+*XML save to include clues
 *print API
 *[[.lps]] and [[.lpc]] handling with field attributes
 *add dependencies to Processor logic element
@@ -2481,7 +2482,7 @@ The relationship sequence is required to implement the RollBack feature.</pre>
 <div title="SiteTitle" modifier="Fred" created="200807152355" modified="200807182054">
 <pre>Puzzled notes</pre>
 </div>
-<div title="SpecialCategory" creator="Fred" modifier="Fred" created="201512050351" modified="201512050412" changecount="6">
+<div title="SpecialCategory" creator="Fred" modifier="Fred" created="201512050351" modified="201512291313" changecount="9">
 <pre>Some categories are unusual and need specialized handling. Namely:
 *Mathematical categories (or [[NumericalElements]]), or categories in which items have a mathematical relationship between one another, ''which is used in the puzzle [[clues|Clue]]'' (''items can be unevenly spaced as in the examples given''):
 **numbers: 
@@ -2493,9 +2494,12 @@ The relationship sequence is required to implement the RollBack feature.</pre>
 *** weight
 *** score/marks
 **times: e.g. 8:15, 8:45, 9:45, 10:15, 10:45
+***subject to next day calculation in some problems (00:30 is an hour after 23:30)
 **textual [[items|Item]] for which there is a mathematical relationship between the numerical representation of the [[items|Item]]
 ***days: e.g. Saturday, Sunday, Tuesday, Thursday, Friday (needs to be interpreted as 1-7 correctly)
+****subject to optional wrap-around in some problems; if the days are not fixed in time, arguably, Sunday can be the day after Saturday.
 ***months: e.g. January, March, June, July, August (needs to be converted to 1-12 correctly)
+****subject to optional wrap-around in some problems; if the months are not fixed in time, arguably, January can be the month after December.
 ***ranks: e.g. lieutenant, captain, lieutenant-colonel, general
 ***ranking: first, third, fourth, fifth, sixth
 **dates: 14 July, 17 August, 18 November, 1 December, ...

@@ -5,6 +5,7 @@
  */
 package puzzled.data;
 
+import java.util.HashSet;
 import javafx.geometry.Point2D;
 
 /**
@@ -12,14 +13,17 @@ import javafx.geometry.Point2D;
  * @author Fred
  */
 public interface Dependable {
+//    private HashSet<Dependable> predecessors = new HashSet<Dependable>();
+//    private HashSet<Dependable> sucessors = new HashSet<Dependable>();
+    
     
     public Point2D getCenterPosition();
     
-    //public void addSuccessor(Dependable successor);
+    public void addSuccessor(Dependable successor);
     
-    //public Set getSuccessors();
+    public HashSet<Dependable> getSuccessors();
     
-    //public void addDependency(Dependable dependency);
+    //public void addPredecessor(Dependable dependency);
     
-    //public void getDependencies();
+    //public void getPredecessor);
 }

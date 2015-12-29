@@ -28,8 +28,9 @@ public class Category {
     public enum CategoryType {
         NORMAL,
         NUMERICAL, //mathematical computation possible
-        TIME, //time handling
-        TEXT_NUMERICAL   //requires interpretation of text into value e.g. days/months/ranking
+        TIME, //time handling (force 24 hrs representation)
+        TEXT_NUMERICAL,   //requires interpretation of text into value e.g. days/months/ranking
+        TEXT_NUMERICAL_WITH_WRAPAROUND
     }
     
 //    @XmlElement

@@ -5,8 +5,7 @@
  */
 package puzzled.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import javafx.geometry.Point2D;
 
 /**
@@ -15,11 +14,19 @@ import javafx.geometry.Point2D;
  */
 public class Hint implements Dependable {
     
-    private List<Dependable> predecessors = new ArrayList<Dependable>();
-    private List<Dependable> successors = new ArrayList<Dependable>();
+    private HashSet<Dependable> predecessors = new HashSet<Dependable>();
+    private HashSet<Dependable> successors = new HashSet<Dependable>();
     
     @Override
     public Point2D getCenterPosition(){
         return null;
+    }
+    
+    public void addSuccessor(Dependable successor){
+        successors.add(successor);
+    }
+    
+    public HashSet<Dependable> getSuccessors(){
+        return successors;
     }
 }

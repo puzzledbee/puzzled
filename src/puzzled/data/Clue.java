@@ -5,8 +5,7 @@
  */
 package puzzled.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Point2D;
 
@@ -15,23 +14,30 @@ import javafx.geometry.Point2D;
  * @author Fred
  */
 public class Clue implements Dependable {
-
+    private HashSet<Dependable> successors = new HashSet<Dependable>();
+    private HashSet<Dependable> predecessors = new HashSet<Dependable>();
+    
     
     public enum ClueType {
         NORMAL,
         SPECIAL //needs re-assessment, see notebook for SpecialClue
     }
     
-    
-    private List<Dependable> successors = new ArrayList<Dependable>();
-    
-    List<Dependable> dependencies = new ArrayList<Dependable>(10);
+
     private SimpleStringProperty clueText = new SimpleStringProperty();
     private ClueType clueType = ClueType.NORMAL;
     
     //necessary for iterator?
     public Clue(){
         
+    }
+    
+    public void addSuccessor(Dependable successor) {
+        successors.add(successor);
+    }
+    
+    public HashSet<Dependable> getSuccessors(){
+        return successors;
     }
     
     public Clue(String clueText_arg) {
