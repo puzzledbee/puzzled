@@ -48,8 +48,9 @@ public class Clue implements Dependable {
         return successors;
     }
     
-    public Clue(String clueText_arg) {
-        clueText.set(clueText_arg);
+    public Clue(String ... clueInfo) { //clue text and clue type
+        clueText.set(clueInfo[0].trim());
+        if (clueInfo.length>1) clueType = ClueType.valueOf(clueInfo[1].trim());
     }
     
     @XmlElement

@@ -51,6 +51,12 @@ public class Category {
         items = myItems;
     }
     
+    public Category(List<Item> myItems, String... catInfo){ //will set text and type
+        items = myItems;
+        nameProperty.set(catInfo[0].trim());
+        if (catInfo.length>1) categoryType = CategoryType.valueOf(catInfo[1].trim());
+    }
+    
     public void setParent(LogicProblem arg_parent){
         this.parent = arg_parent;
     }
@@ -66,9 +72,6 @@ public class Category {
     public CategoryType getType(){
         return categoryType;
     }
-
-    
-    
     
     public void setName(String myText){
         nameProperty.set(myText);

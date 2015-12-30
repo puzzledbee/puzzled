@@ -1,14 +1,15 @@
-problem title here
+problem title here; this is from a great magazine
 category 1
 	item 11
 	item 12
 	item 13
-category 2
-	item 21
-	item 22
-	item 23
+category 2;NUMERICAL
+	30
+	31
+	32
 category 3
 	item 31
 	item 32
 	item 33
 clue1
+clue2;SPECIAL

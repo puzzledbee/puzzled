@@ -73,7 +73,6 @@ import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
 import puzzled.data.Category;
 import puzzled.data.Clue;
-import puzzled.data.DemoProblems;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
@@ -264,10 +263,10 @@ public class PuzzledController implements Initializable {
         
     @FXML
     private void addClueButtonAction(ActionEvent event) {
-        
-        logicProblem.get().getClues().add(new Clue(clueText.getText()));
+        Clue newClue = new Clue(clueText.getText());
+        logicProblem.get().getClues().add(newClue);
         Label label = new Label(Integer.toString(logicProblem.get().getClues().size()));
-        label.setTooltip(new Tooltip(clueText.getText()));
+        label.setTooltip(new Tooltip(clueText.getText()+" ("+newClue.getType()+")"));
         clueGlyphBox.getChildren().add(label);
         clueText.clear();
         notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getClues().size()+" was just added!");
@@ -406,10 +405,10 @@ public class PuzzledController implements Initializable {
                 List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 //                System.out.println("problem "+lines.get(0)+" with "+ lines.size());
 //                System.out.println("last line "+lines.get(lines.size()-1));
-                newProblem = new LogicProblem(lines.get(0));
+                newProblem = new LogicProblem(lines.get(0).split(";"));
                 int i=1;
                 int catIndex=1;
-//                ArrayList<Clue> clues = new ArrayList<Clue>();
+
                 while (i < lines.size()) {
                     if (i < lines.size()-1 && lines.get(i+1).startsWith("\t")) {
                         i++;
@@ -419,13 +418,16 @@ public class PuzzledController implements Initializable {
                             items.add(new Item(lines.get(i++).trim()));
                         }
 //                        System.out.println("adding category "+lines.get(catIndex)+" ("+catIndex+")");
-                        Category newCat = new Category(lines.get(catIndex),items);
+                        String[] catInfo = lines.get(catIndex).split(";");
+                        Category newCat = new Category(items,catInfo);
                         catIndex = i;
                         newProblem.addCategory(newCat);
                     } else {
                         if (i<lines.size()) {
                             System.out.println("adding clue "+lines.get(i)+" ("+i+")");
-                            newProblem.addClue(new Clue(lines.get(i++)));
+                            String[] clueInfo = lines.get(i++).split(";");
+                            Clue newClue = new Clue(clueInfo);
+                            newProblem.addClue(newClue);
                         } //else there are no clues present
                     }
                 }
@@ -441,11 +443,12 @@ public class PuzzledController implements Initializable {
         } else if (extension.equalsIgnoreCase("lpc")) {
             try {
                 List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-                for (String clueText : lines) {
-                    Clue newClue = new Clue(clueText);
+                for (String line : lines) {
+                    String[] clueInfo = line.split(";");
+                    Clue newClue = new Clue(clueInfo);
                     logicProblem.get().addClue(newClue);
                     Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(newClue)+1));
-                    label.setTooltip(new Tooltip(newClue.getText()));
+                    label.setTooltip(new Tooltip(newClue.getText()+" ("+newClue.getType()+")"));
                     clueGlyphBox.getChildren().add(label);
                 }
             } catch (IOException e) {
@@ -496,7 +499,7 @@ public class PuzzledController implements Initializable {
             
             for (Clue clue : logicProblem.get().getClues()){
                 Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
-                label.setTooltip(new Tooltip(clue.getText()));
+                label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
                 clueGlyphBox.getChildren().add(label);
             }
             
@@ -576,12 +579,8 @@ public class PuzzledController implements Initializable {
 //                System.out.println("minY: "+bound.getMinY());
 //                System.out.println("maxX: "+bound.getMaxX());
 //                System.out.println("maxY: "+bound.getMaxY());
-        
     }
     
-    public void transpose() {
-        Processor.transpose(logicProblem.get());
-    }
     
     public void saveFile(){
         
@@ -595,7 +594,7 @@ public class PuzzledController implements Initializable {
                     // output pretty printed
                     jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                     
-                    LogicProblem newProblem = DemoProblems.generateDemoProblem47();
+//                    LogicProblem newProblem = DemoProblems.generateDemoProblem47();
                     jaxbMarshaller.marshal(logicProblem.get(), file);
                     
                     jaxbMarshaller.marshal(logicProblem.get(), System.out);

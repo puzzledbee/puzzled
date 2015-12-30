@@ -62,9 +62,11 @@ public class LogicProblem {
     
     private HashMap<ItemPair,Relationship> relationshipTable;
     
-    public LogicProblem(String title){
+    
+    public LogicProblem(String ... problemInfo){
         System.out.println("constructor invoked");
-        titleProperty.set(title);
+        titleProperty.set(problemInfo[0].trim()); //trim needed for loading from .lps
+        if (problemInfo.length>1) this.problemSource = problemInfo[1].trim();
 //        numCategories = category_number;
 //        numItems = item_number;
         categories = new ArrayList<Category>();

@@ -1727,8 +1727,9 @@ For example when investigating, hovering over a [[GridCell]] could show arrows t
 
 Do we want to turn on investigating mode which would then allow you to click and show all dependencies at once? Or only one cell at a time by right click? Or hover long enough on a [[GridCell]] to show only its dependencies?</pre>
 </div>
-<div title="Item" creator="Fred" modifier="Fred" created="201511290206" changecount="1">
-<pre>element of a [[Category]]. A [[Relationship]] is defined between any two item from two different [[categories|Category]].</pre>
+<div title="Item" creator="Fred" modifier="Fred" created="201511290206" modified="201512292354" changecount="2">
+<pre>An item is an element of a [[Category]]. A [[Relationship]] is defined between for every pair of ''items'' from different [[categories|Category]].
+See [[RelationshipTable]] for the number of item pairs.</pre>
 </div>
 <div title="Layout" creator="Fred" modifier="Fred" created="201511230301" modified="201511290245" changecount="12">
 <pre>Application layout:
@@ -2581,7 +2582,7 @@ It is necessary to create all the [[relationships|Relationship]] even before VAL
 
 See also [[VALUE_NO]] and [[VALUE_UNKNOWN]].</pre>
 </div>
-<div title="XML binding" creator="Fred" modifier="Fred" created="201512170317" modified="201512170330" changecount="7">
+<div title="XML binding" creator="Fred" modifier="Fred" created="201512170317" modified="201512292353" changecount="8">
 <pre>Early experiments indicate that FAXB can be used to marshall the [[LogicProblem]] object to file and unmarshall the object from file.
 Some observations:
 *Objects needing unmarshalling need to have a public default constructor with no argument defined
@@ -2591,7 +2592,8 @@ Some observations:
 *Some private fields can be annotated, but {{{Property}}} objects cannot; instead annotate the {{{getXX}}} method and if a {{{setXX}}} method is also present, the {{{Property}}} will be restored upon unmarshalling
 *There seems to be no issue annotating private {{{List&lt;Object&gt;}}} fields, and if the {{{Object}}} is also annotated, it will also be marshalled/unmarshalled.
 *I find it easier annotating fields than the matching {{{getXX}}} method. After all, the purpose of the marshalling process is to save the fields of the object to disk.
-*You can change the order of the output of the fields in the XML file using the {{{@XmlType(propOrder={&quot;name&quot;,&quot;type&quot;,&quot;items&quot;})}}} annotation
+*You can change the order of the output of the fields in the XML file using the {{{@XmlType(propOrder={&quot;name&quot;,&quot;type&quot;,&quot;items&quot;})}}} annotation, but every element needs to be accounted for in the list (source of many stack traces)
+*Use the {{{@XmlTransient}}} for fields/methods who should not be marshalled
 
 [[FAXB marshalling/unmarshalling demo|http://www.mkyong.com/java/jaxb-hello-world-example/]]
 [[FAXB annotation reference|https://jaxb.java.net/tutorial]]</pre>
