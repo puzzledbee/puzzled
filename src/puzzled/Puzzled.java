@@ -7,7 +7,6 @@ package puzzled;
 
 import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -34,7 +33,7 @@ public class Puzzled extends Application {
         
         //logicProblem = new LogicProblem();
     }
-    
+
     
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -54,10 +53,17 @@ public class Puzzled extends Application {
         
         primaryStage.setMaximized(true);
         
-        primaryStage.titleProperty().bind(Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ? 
-                        banner+" v."+version : 
-                        banner+" v."+version+" - "+controller.getLogicProblemProperty().get().getTitle()+(controller.getLogicProblemProperty().get().isFileDirty()?"*":""),
-                controller.getLogicProblemProperty()));
+        controller.setupTitleBinding(primaryStage.titleProperty(), banner, version);
+//        primaryStage.titleProperty().bind(
+//                Bindings.concat(
+//                        Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ? 
+//                            banner+" v."+version : 
+//                            banner+" v."+version+" - "+controller.getLogicProblemProperty().get().getTitle(),controller.getLogicProblemProperty()),
+//                        Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ?
+//                            "" : 
+//                            controller.getLogicProblemProperty().get().dirtyFileProperty().getValue()?"*":"", controller.getLogicProblemProperty())
+//                        )
+//                );
         
 //        primaryStage.setTitle("Puzzled! - Computer-aided logic problem solver - v."+Puzzled.version);
         primaryStage.setScene(scene);

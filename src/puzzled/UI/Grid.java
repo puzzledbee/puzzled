@@ -59,8 +59,8 @@ public class Grid extends StackPane {
         //fLogger.log(Level.INFO, hideLabels.getText());
         
         AnchorPane gridPane = drawGrid();
-        this.scaleXProperty().bind(logicProblem.getScaleProperty());
-        this.scaleYProperty().bind(logicProblem.getScaleProperty());
+        this.scaleXProperty().bind(logicProblem.scaleProperty());
+        this.scaleYProperty().bind(logicProblem.scaleProperty());
         
         MenuItem item1 = new MenuItem("Edit...");
 //        item1.setOnAction(labelDoubleClickHandler);

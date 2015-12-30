@@ -23,9 +23,13 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -178,25 +182,35 @@ public class PuzzledController implements Initializable {
     private CheckMenuItem hideRelationshipsMenuItem;
     
     ObjectProperty<LogicProblem> logicProblem = new SimpleObjectProperty<LogicProblem>();
+    DoubleProperty scaleProperty = new SimpleDoubleProperty();
     
     private HashMap<Pair<Item,Item>,Relationship> relationships;
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty();
+    private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty();
     
     private static final Logger fLogger =
     Logger.getLogger(Puzzled.class.getPackage().getName());
     
     Grid logicProblemGrid;
     private boolean processing = false;
+    private String appTitle;
+    private String appVersion;
 
-
+    private StringProperty appTitleProperty = new SimpleStringProperty();
     
     @FXML
     private void loadMe(ActionEvent event) {
 //        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem0.lpf");
         loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
-        
     }
     
+    
+    public void setupTitleBinding(StringProperty puzzledTitleProperty, String banner, String version) {
+        puzzledTitleProperty.bind(this.appTitleProperty);
+        appTitle = banner;
+        appVersion = version;
+        this.appTitleProperty.set(banner+" - "+version);
+    }
     
     @FXML
     private void zoomInButtonAction(ActionEvent event) {
@@ -265,6 +279,7 @@ public class PuzzledController implements Initializable {
     private void addClueButtonAction(ActionEvent event) {
         Clue newClue = new Clue(clueText.getText());
         logicProblem.get().getClues().add(newClue);
+        logicProblem.get().setFileDirty(true);
         Label label = new Label(Integer.toString(logicProblem.get().getClues().size()));
         label.setTooltip(new Tooltip(clueText.getText()+" ("+newClue.getType()+")"));
         clueGlyphBox.getChildren().add(label);
@@ -288,31 +303,38 @@ public class PuzzledController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        //ScrollPane scroll = new ScrollPane();
         setupNotifier();
         mainScroll.setPannable(true);
-//        Grid logicProblemGrid = new Grid(logicProblem);
-
-
-//        mainScroll.setContent(logicProblemGrid);
-//        mainGroup.getChildren().add(logicProblemGrid);
           
         //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         clueText.disableProperty().bind(logicProblem.isNull());
         addClueButton.disableProperty().bind(logicProblem.isNull());
-        saveMenuItem.disableProperty().bind(logicProblem.isNull());
-        saveAsMenuItem.disableProperty().bind(logicProblem.isNull());
-        saveButton.disableProperty().bind(logicProblem.isNull());
+        saveMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
+        saveAsMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
+        saveButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
         printMenuItem.disableProperty().bind(logicProblem.isNull());
         toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
-//        zoomInMenuItem.disableProperty().bind(logicProblem.isNull().or(logicProblem.get().scaleProperty().greaterThanOrEqualTo(maxZoom)));
-//        zoomOutMenuItem.disableProperty().bind(logicProblem.isNull().or(logicProblem.get().scaleProperty().greaterThanOrEqualTo(minZoom)));
-        zoomInMenuItem.disableProperty().bind(logicProblem.isNull());
-        zoomOutMenuItem.disableProperty().bind(logicProblem.isNull());
-        zoomInButton.disableProperty().bind(logicProblem.isNull());
-        zoomOutButton.disableProperty().bind(logicProblem.isNull());
+        
+        zoomInMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
+        zoomOutMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
+        zoomInButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
+        zoomOutButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
+        
+//        this.logicProblem.addListener( (e, oldvalue, newvalue) -> {
+////            System.out.println("unbinding and rebinding");
+//            if (logicProblem.isNotNull().getValue()) {
+////                zoomInButton.disableProperty().unbind();
+////                zoomInMenuItem.disableProperty().unbind();
+////                zoomOutButton.disableProperty().unbind();
+////                zoomOutMenuItem.disableProperty().unbind();
+////                zoomInButton.disableProperty().bind(logicProblem.get().scaleProperty().greaterThanOrEqualTo(maxZoom));
+////                zoomInMenuItem.disableProperty().bind(logicProblem.get().scaleProperty().greaterThanOrEqualTo(maxZoom));
+////                zoomOutButton.disableProperty().bind(logicProblem.get().scaleProperty().lessThanOrEqualTo(minZoom));
+////                zoomOutMenuItem.disableProperty().bind(logicProblem.get().scaleProperty().lessThanOrEqualTo(minZoom));
+//            }
+//        });
+        
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
@@ -366,7 +388,6 @@ public class PuzzledController implements Initializable {
             event.consume();
             
         });
-        
     }
 
         /*
@@ -441,19 +462,25 @@ public class PuzzledController implements Initializable {
                 e.printStackTrace();
             }
         } else if (extension.equalsIgnoreCase("lpc")) {
-            try {
-                List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-                for (String line : lines) {
-                    String[] clueInfo = line.split(";");
-                    Clue newClue = new Clue(clueInfo);
-                    logicProblem.get().addClue(newClue);
-                    Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(newClue)+1));
-                    label.setTooltip(new Tooltip(newClue.getText()+" ("+newClue.getType()+")"));
-                    clueGlyphBox.getChildren().add(label);
+            if (logicProblem.isNotNull().getValue()) {
+                try {
+
+                    List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+                    for (String line : lines) {
+                        String[] clueInfo = line.split(";");
+                        Clue newClue = new Clue(clueInfo);
+                        logicProblem.get().addClue(newClue);
+                        logicProblem.get().setFileDirty(true);
+                        Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(newClue)+1));
+                        label.setTooltip(new Tooltip(newClue.getText()+" ("+newClue.getType()+")"));
+                        clueGlyphBox.getChildren().add(label);
+                    }
+                } catch (IOException e) {
+                    notify(WarningType.WARNING, "Unable to load problem clues file "+file.getName()+ "!");
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                notify(WarningType.WARNING, "Unable to load problem clues file "+file.getName()+ "!");
-                e.printStackTrace();
+            } else  {
+                notify(WarningType.WARNING, "A logic problem must be created or loaded before adding a .lpc file!");
             }
         } else {
             notify(WarningType.WARNING, "Filetype not supported. Please choose .lpf, .lps or .lpc files!");
@@ -490,12 +517,24 @@ public class PuzzledController implements Initializable {
             //bind relationships layer visibility to checkMenuItem        
             logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
             this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
+            this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
+            this.scaleProperty.bind(logicProblem.get().scaleProperty());
             
             this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
                 System.out.println("change detected to dirtyLogicProperty");
                 this.process();
                     });
+            
             clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
+            
+//            this.appTitleProperty.bind(Bindings.concat(appTitle," - ",appVersion," - ",logicProblem.get().getTitleProperty(),logicProblem.get().dirtyFileProperty().get()?"*":""));
+            
+            this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblem.get().dirtyFileProperty().get()?
+                    appTitle +" v."+appVersion+" -  "+logicProblem.get().getTitleProperty().getValue()+"*":
+                    appTitle +" v."+appVersion+" -  "+logicProblem.get().getTitleProperty().getValue(),this.dirtyFileProperty));
+//                 appTitle +" v."+appVersion+ " && "  });
+//                    logicProblem.get().getTitleProperty().getValue() + 
+//                    logicProblem.get().dirtyFileProperty().get()?"*":""),logicProblem.get().getTitleProperty(),logicProblem.get().dirtyFileProperty());
             
             for (Clue clue : logicProblem.get().getClues()){
                 Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
@@ -598,6 +637,7 @@ public class PuzzledController implements Initializable {
                     jaxbMarshaller.marshal(logicProblem.get(), file);
                     
                     jaxbMarshaller.marshal(logicProblem.get(), System.out);
+                    logicProblem.get().dirtyFileProperty().set(false);
                     notify(WarningType.SUCCESS, "File "+file.getName()+" saved successfully!");
         } catch (JAXBException e) {
                     notify(WarningType.WARNING, "Unable to save file "+file.getName()+"!");

@@ -74,7 +74,7 @@
                            <items>
                               <MenuItem fx:id="zoomInMenuItem" mnemonicParsing="false" onAction="#zoomInButtonAction" text="Zoom in">
                                  <accelerator>
-                                    <KeyCodeCombination alt="UP" code="PLUS" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                    <KeyCodeCombination alt="UP" code="EQUALS" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
                               <MenuItem fx:id="zoomOutMenuItem" mnemonicParsing="false" onAction="#zoomOutButtonAction" text="Zoom out">

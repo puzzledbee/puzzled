@@ -83,9 +83,10 @@ public class LogicProblem {
     @XmlTransient
     public boolean isLogicDirty(){
         return this.dirtyLogicProperty.getValue();
+
     }
     public void setLogicDirty(boolean dirtyness){
-        System.out.println("logic problem set to dirty "+dirtyness);
+        System.out.println("logic problem logic set to dirty "+dirtyness);
         this.dirtyLogicProperty.set(dirtyness);
     }
     
@@ -93,13 +94,15 @@ public class LogicProblem {
         return this.dirtyFileProperty;
     }
     
+    public void setFileDirty(boolean dirtyness) {
+        System.out.println("\n\nlogic problem file set to dirty "+dirtyness);
+        this.dirtyFileProperty.set(dirtyness);
+    }
+     
+     
     @XmlTransient
     public boolean isFileDirty(){
         return this.dirtyFileProperty.getValue();
-    }
-    public void setFileDirty(boolean dirtyness){
-        System.out.println("is this problem now dirty? "+dirtyness);
-        this.dirtyFileProperty.set(dirtyness);
     }
     
     public DoubleProperty scaleProperty() {
@@ -109,6 +112,10 @@ public class LogicProblem {
     @XmlElement
     public String getTitle() {
         return titleProperty.getValue();
+    }
+    
+    public StringProperty getTitleProperty() {
+        return titleProperty;
     }
 
     public void setTitle(String newTitle) {
@@ -215,11 +222,7 @@ public class LogicProblem {
     public void removeClue(Clue oldClue){
         clues.remove(oldClue);
     }
-    
-    public DoubleProperty getScaleProperty(){
-        return scaleProperty;
-    }
-    
+
     public void setScale(double newScale){
         scaleProperty.set(newScale);
     }
