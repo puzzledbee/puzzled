@@ -507,13 +507,14 @@ public class PuzzledController implements Initializable {
     private void initializeProblem(){
         
             logicProblem.get().generateRelationships();
-//                    System.out.println(logicProblem.get().getRelationshipTable().size());
             logicProblemGrid = new Grid(this,logicProblem.get());
             mainGroup.getChildren().clear();
             mainGroup.getChildren().add(logicProblemGrid);
+            
+            clueGlyphBox.getChildren().clear();
+            
             //bind labels layer visibility to checkMenuItem
             logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
-
             //bind relationships layer visibility to checkMenuItem        
             logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
             this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
@@ -527,22 +528,15 @@ public class PuzzledController implements Initializable {
             
             clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
             
-//            this.appTitleProperty.bind(Bindings.concat(appTitle," - ",appVersion," - ",logicProblem.get().getTitleProperty(),logicProblem.get().dirtyFileProperty().get()?"*":""));
-            
             this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblem.get().dirtyFileProperty().get()?
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().getTitleProperty().getValue()+"*":
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().getTitleProperty().getValue(),this.dirtyFileProperty));
-//                 appTitle +" v."+appVersion+ " && "  });
-//                    logicProblem.get().getTitleProperty().getValue() + 
-//                    logicProblem.get().dirtyFileProperty().get()?"*":""),logicProblem.get().getTitleProperty(),logicProblem.get().dirtyFileProperty());
-            
+//          
             for (Clue clue : logicProblem.get().getClues()){
                 Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
                 label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
                 clueGlyphBox.getChildren().add(label);
             }
-            
-            
     }
     
     public void openFile() {

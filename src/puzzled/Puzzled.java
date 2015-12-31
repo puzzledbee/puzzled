@@ -54,23 +54,11 @@ public class Puzzled extends Application {
         primaryStage.setMaximized(true);
         
         controller.setupTitleBinding(primaryStage.titleProperty(), banner, version);
-//        primaryStage.titleProperty().bind(
-//                Bindings.concat(
-//                        Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ? 
-//                            banner+" v."+version : 
-//                            banner+" v."+version+" - "+controller.getLogicProblemProperty().get().getTitle(),controller.getLogicProblemProperty()),
-//                        Bindings.createStringBinding(() -> controller.getLogicProblemProperty().isNull().get() ?
-//                            "" : 
-//                            controller.getLogicProblemProperty().get().dirtyFileProperty().getValue()?"*":"", controller.getLogicProblemProperty())
-//                        )
-//                );
-        
-//        primaryStage.setTitle("Puzzled! - Computer-aided logic problem solver - v."+Puzzled.version);
+
         primaryStage.setScene(scene);
         primaryStage.show();
 //        controller.loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         
-
     }
 
     public Logger getLogger(){

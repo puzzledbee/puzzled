@@ -535,7 +535,7 @@ clue 3 text[; type]
 <div title=".lpf" creator="Fred" modifier="Fred" created="201512281238" modified="201512281239" changecount="2">
 <pre>''Logic Problem File''. XML-based filetype used to save (or load) [[LogicProblem]] data. See also [[.lps]] and [[.lpc]].</pre>
 </div>
-<div title=".lps" creator="Fred" modifier="Fred" created="201512190050" modified="201512281240" changecount="12">
+<div title=".lps" creator="Fred" modifier="Fred" created="201512190050" modified="201512310459" changecount="13">
 <pre>''Logic Problem Shorthand''. simple text file used to rapidly input problems into Puzzled, faster than manually generating an XML [[.lpf]] file or using the GUI to input all persistent [LogicProblem]] data. It is convenient for command-line operations and testing. See also [[.lpc]].
 
 ''{{{.lps}}} specifications''
@@ -569,7 +569,7 @@ category 4 name[; type]
     item 3 name
     item 4 name
     item 5 name
-category 5 name[, type]
+category 5 name[; type]
     item 1 name
     item 2 name
     item 3 name
@@ -1396,19 +1396,22 @@ See [[Investigate]]
 | [[Constraint]] || [[Relationship]] |
 | [[Relationship]] | [[Constraint]]/[[Clue]]/[[Hint]]/[[Relationship]] | [[Relationship]] |</pre>
 </div>
-<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201512170343" changecount="21">
+<div title="Design considerations" creator="Fred" modifier="Fred" created="201511040246" modified="201512310440" changecount="31">
 <pre>Design considerations
-*use modern JavaFX components for the user interface; is it necessary to create a custom control for the grid cell. Try to bind the [[GridCell]] to the [[Relationship]] in a bi-directional fashion.
-*use as much FXML for the application shell (menu, [[Tabs]], status bar, [[Clue]] text field, etc, and Java code to draw the [[Grid]] / [[Answers]]
+*use modern JavaFX components for the user interface
+*use as much FXML for the &quot;static&quot; application shell (menu, [[Tabs]], status bar, [[Clue]] text field, etc, and Java code to draw the [[Grid]] / [[Answers]]) as possible
 *use cascading stylesheets (CSS) extensively, which makes it simpler to customize the appearance
 *use a modern data structure from the Java Collections Framework for the [[RelationshipTable]]
 *use lambda expressions for event handling, because the code is cleaner and shorter
+*use Java bindings extensively between application objects and UI elements. Bindings save a lot of event handling code.
+*use powerful Java enums to describe attributes whenever possible
 *keep as little as possible in the [[LogicProblem]] class, --which is serializable and-- used for saving/loading the problem to file/from file. The [[RelationshipTable]], [[HintsTable]], etc. can be re-generated. Aim to save the [[LogicProblem]] as an XML file which will make it easier for power users to rapidly create problems, and (also opens the door to a command line interface in addition to the GUI, automated [[Processor]] testing,etc). Consider FAXB for [[XML binding]].
-*keep ordinals (months, days) text in a text file for each language. Entries should be in the right order so that numerical rules can be applied
-*should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (first level)... and also show all the relationships that depend on it (first level)...
+*keep [[ordinals|SpecialCategory]] (months, days) text in a text file for each language. Entries should be in the right order so that numerical rules can be applied
 *try to keep classes small; however find a reasonable way to pass object pointers between classes for necessary application context information
 *log plenty, use modern flexible logging framework
-*provide modern notifications (e.g. file saved successfully) framework, such as using popover...</pre>
+*provide modern notifications (e.g. file saved successfully) framework, such as using popover...
+
+See also [[Features|Features (Wish List)]]</pre>
 </div>
 <div title="EnableDisableTextClues" modifier="Fred" created="200807181801" tags="Feature">
 <pre>It would be nice if the user had the option of viewing all entered text clues in a table and also have the ability to enable or disable certain clues to assess impact on the puzzle solving algorithms.
@@ -1440,23 +1443,27 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
-<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201512190043" changecount="17">
+<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201512310502" changecount="21">
 <pre>Ordered list of nice-to-have features:
-#notification pane for errors
-#reset problem where the clues and constraints are removed but categories and items remain, akin to starting the problem over
+#should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (predecessors)... and also show all the relationships that depend on it (successors)...
+#[[RollBack]] or undo for [[constraints|Constraint]] and [[clues|Clue]]
 #when loading a problem from file, it would be interesting to have the option to step through processing of clues, or have it automatically process everything ([[Preferences]])
-#provide zoom in/zoom out capability (see example in Mastering... p.48) using buttons on the top left of the [[Grid]] (see [[Layout]])
-#undo for [[constraints|Constraint]] with cascade down tree. Could do undo for [[clues|Clue]] also?
-#set/change category or item labels from the [[Grid]] using [[Lightweight dialogs|http://fxexperience.com/controlsfx/features/dialogs/]]
-#handling of [[.lps]] files
+#internationalization support, particularly for UI and [[Ordinals|SpecialClue]]
 #improved validation on unmarshalling XML files
-#print API to print the grid with or without the [[Relationship]] (use CSS to hide them?)
-#mnemonic and shortcut keys for menu items
-#export to {{{.png}}} snapshot
+#aim to automatically recognize [[special categories|SpecialCategory]] automatically when entering [[items|Item]], and prompt user to validate
 #auto-complete when entering [[clues|Clue]], based on recognized [[items|Item]] or [[category|Category]] names
-#tool tips
-#Add look and feel options.... Look at p.159- for look and feel setting code.  
-</pre>
+#add look and feel options or skins.... Look at p.159- for look and feel setting code. 
+#export to {{{.png}}} snapshot 
+
+!!!Completed features
+#--notification pane for errors--
+#--reset problem where the clues and constraints are removed but categories and items remain, akin to starting the problem over--
+#--print API to print the grid with or without the [[Relationship]], with or without labels--
+#--provide a [[.lps]] file format used to rapidly input problems--
+#--set/change category or item labels from the [[Grid]] using [[Lightweight dialogs|http://fxexperience.com/controlsfx/features/dialogs/]]--
+#--provide zoom in/zoom out capability (see example in Mastering... p.48) using buttons on the top left of the [[Grid]] (see [[Layout]])--
+#--mnemonic and shortcut keys for menu items--
+#--provide tool tips--</pre>
 </div>
 <div title="Gender" modifier="Fred" created="200807182037" modified="200807182039" tags="Clue">
 <pre>Using the gender of names in the clue text:
@@ -1753,10 +1760,10 @@ For n categories, the layout of the grid is as follows:
 |Cat n||||~|~|~|
 </pre>
 </div>
-<div title="Logic Elements" modifier="Fred" created="200807160004" modified="201512270424" changecount="3">
+<div title="Logic Elements" modifier="Fred" created="200807160004" modified="201512310506" changecount="6">
 <pre>This tiddler describes the various logic elements used by puzzled.
 ![[Constraint]]
-*entered graphically by the user using the Graphical User Interface
+*entered graphically by the user using the Graphical User Interface, can be captured as a simple text clue.
 !From Clue
 * determined by the parser from the text entered
 !Cross
@@ -1769,7 +1776,7 @@ For n categories, the layout of the grid is as follows:
 !Commonality
 * used when the only possible values share a commonality.
 * e.g. Paul lives in either the yellow or blue house, but both the yellow and blue house cannot be where the cat lives, therefore Paul does not have a cat.
-* when searching for Commonality relationships, examine when there are 2 to numberItems-2 possible value.  If there were 1 possible value it would become a VALUE_YES, and if there were numberItems-1 possibilities that all share a common characteristic, then a VALUE_YES would be defined there: Paul lives in either the the white, yellow, blue and green house, neither of which can be where the cat lives, thus the cat lives in the red house, and Paul does not have a cat which is already discovered by a Cross followed by a Transposed search
+* when searching for Commonality relationships, examine when there are 2 to numberItems-2 possible values (thus not possible if numItems &lt;=3). 
 ![[Restricted values|RestrictedValues]]
 * derived from [[special clues|SpecialClue]], values that are impossible for an element because two numerical elements are used in an algebraic-like equation which causes incompatible values
 * includes [[delta]]s until sign is determined, then processed via the [[Hints Table|HintsTable]].
@@ -1848,10 +1855,8 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512300347" changecount="29">
-<pre>*bind application title to multiple properties concatenated, including DirtyFileProperty
-*bind zoomIn/Out MenuItem/Button to zoom factor ''as well as'' loaded LogicProblem
-*print API, figure out centering
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512310503" changecount="33">
+<pre>*print API, figure out centering, figure out a way to print problem title &amp; source somewhere
 *implement save as feature
 *add dependencies to Processor logic element
 *work on clue tab and answer tab
@@ -1864,7 +1869,9 @@ HintsTable
 *new problem dialogs
 *better dialogs for editing Category from context menu
 *application properties file for preferences
-*right-click on clue glyph to remove clue</pre>
+*right-click on clue glyph to remove clue
+*javadoc, tons of javadoc
+*[[ToDo]]</pre>
 </div>
 <div title="NormalClue" modifier="Fred" created="200807182006" modified="200808030006" tags="Clue">
 <pre>A normal clue is specific enough that further reassessments are not necessary, as it provides VALUE_NO or VALUE_YES relationships at the onset, and will not be provide additional information in the future.  It is distinct from a [[special clue|SpecialClue]].
@@ -1935,11 +1942,11 @@ This tiddler captures the various logic elements required to solve some real-lif
 <pre>Class responsible to infer new relationships using the [[logic elements|LogicElement]] that are implemented.
 The ''Processor'' will include several utility static methods that apply various techniques on the [[RelationshipTable]] and [[HintsTable]] take to discover new [[Relationship]]. It also need to track if new [[Relationship]] are discovered by somehow setting the ''dirtyness'' flag which may cause, at the application level, subsequent processing...</pre>
 </div>
-<div title="Puzzled" modifier="Fred" created="200807182052" modified="201510290052">
+<div title="Puzzled" modifier="Fred" created="200807182052" modified="201512310501" changecount="1">
 <pre>[[Puzzled|http://puzzled.sf.net]] is an open-source java application which will ultimately help you solve grid-type logic problems by understanding pseudo-english translation of the clues provided with the problem.
 
 
-This [[TiddlyWiki|http://www.tiddlywiki.com/]] is used by the [[Puzzled|http://puzzled.sf.net]] developer to keep notes about logic puzzles, the design decisions during the development phase of Puzzled, as well as generic notes about logic puzzles solved by the developer which present a challenge from a programming perspective.</pre>
+This [[TiddlyWiki|http://www.tiddlywiki.com/]] is used by the [[Puzzled|http://puzzled.sf.net]] developer to track requirements and features, decisions decision, algorithmic insight and other tidbits during the development of Puzzled.</pre>
 </div>
 <div title="Relationship" modifier="Fred" created="200807210011" modified="201512090030" tags="Object Dependable" changecount="8">
 <pre>Object which represents a relationship between two items of different categories. By default, a relationship is defined as a VALUE_UNKNOWN; it can also take the VALUE_YES or VALUE_NO.
@@ -1986,11 +1993,13 @@ For a number //N// of categories of //n// items, the layout of the grid complies
 ** e.g. A's pulleys are equal to B's levers, pulley items being 1,3,4,5,6 and lever items being 1,2,3,4,5.  Neither can be 2 or 6.
 *Mathematical equations such as less than, double, half also result in restricted values.</pre>
 </div>
-<div title="RollBack" modifier="Fred" created="200807181759" modified="200807181950" tags="Feature">
+<div title="RollBack" modifier="Fred" created="200807181759" modified="201512310458" tags="Feature" changecount="1">
 <pre>The software needs to have the ability to roll back if the user changes a manually entered relationship.
-*In those instances, the relationships discovered following the initial user-entered relationship have to be removed completely, the initial user-entered relationship has to be modified, and the processor needs to re-discover relevant relationships.
-*Relationships that are not manually entered, such as those derived from text clues or using any of the logic elements, cannot be modified by the user using the Graphical User Interface.
-*In order to achieve roll-back, a [[Sequencer]] object needs to exist and its current value needs to be assigned to each relationship.</pre>
+*One approach is to remove all [[Relationship]] successors of the [[Clue]]|[[Constraint]] object being cancelled, as well as those successors, recursively.
+*Another approach is to simply remove the [[Clue]]|[[Constraint]] and re-compute from the top.
+*Maybe the core undo functionality is limited to undoing specific actions such as a [[Clue]] entered or a [[Constraint]] added. Perhaps a simple LIFO structure of actions taken is used to pop the last entry when it is undone.
+*--Relationships that are not manually entered, such as those derived from text clues or using any of the logic elements, cannot be modified by the user using the Graphical User Interface.--
+*--In order to achieve roll-back, a [[Sequencer]] object needs to exist and its current value needs to be assigned to each relationship.--</pre>
 </div>
 <div title="SearchOptionsPlugin" creator="Fred" modifier="Fred" created="201510290130" tags="systemConfig" changecount="1">
 <pre>/***
@@ -2474,9 +2483,10 @@ search in:
 ***/
 </pre>
 </div>
-<div title="Sequencer" modifier="Fred" created="200807210009" modified="200807210011" tags="Object">
-<pre>Object which simply assign an incrementing sequence number to the [[Relationship]] created.
-The relationship sequence is required to implement the RollBack feature.</pre>
+<div title="Sequencer" modifier="Fred" created="200807210009" modified="201512310458" tags="Object" changecount="4">
+<pre>--Object which simply assign an incrementing sequence number to the [[Relationship]] created.
+The relationship sequence is required to implement the RollBack feature.--
+I am not convinced this is needed. See [[RollBack]].</pre>
 </div>
 <div title="SiteSubtitle" modifier="Fred" created="200807152356" modified="201512210306" changecount="2">
 <pre>Software design considerations for [[Puzzled|http://puzzled.sf.net]]</pre>
@@ -2484,20 +2494,21 @@ The relationship sequence is required to implement the RollBack feature.</pre>
 <div title="SiteTitle" modifier="Fred" created="200807152355" modified="200807182054">
 <pre>Puzzled notes</pre>
 </div>
-<div title="SpecialCategory" creator="Fred" modifier="Fred" created="201512050351" modified="201512291313" changecount="9">
+<div title="SpecialCategory" creator="Fred" modifier="Fred" created="201512050351" modified="201512310451" changecount="14">
 <pre>Some categories are unusual and need specialized handling. Namely:
 *Mathematical categories (or [[NumericalElements]]), or categories in which items have a mathematical relationship between one another, ''which is used in the puzzle [[clues|Clue]]'' (''items can be unevenly spaced as in the examples given''):
-**numbers: 
+**''numerical'': 
 *** age
 ***quantities (2,3,5,6,7)
 *** years (1990, 1992, 1993, 1995, 1996)
 *** office/house number
-*** prices
+*** prices (various currencies)
 *** weight
 *** score/marks
+*** percentage
 **times: e.g. 8:15, 8:45, 9:45, 10:15, 10:45
 ***subject to next day calculation in some problems (00:30 is an hour after 23:30)
-**textual [[items|Item]] for which there is a mathematical relationship between the numerical representation of the [[items|Item]]
+**''ordinals'':textual [[items|Item]] for which there is a mathematical relationship between the numerical representation of the [[items|Item]]
 ***days: e.g. Saturday, Sunday, Tuesday, Thursday, Friday (needs to be interpreted as 1-7 correctly)
 ****subject to optional wrap-around in some problems; if the days are not fixed in time, arguably, Sunday can be the day after Saturday.
 ***months: e.g. January, March, June, July, August (needs to be converted to 1-12 correctly)
@@ -2514,7 +2525,9 @@ The relationship sequence is required to implement the RollBack feature.</pre>
 *relationship across categories (e.g. both animals and parcels have weights and a clue reads like Lucie's dog weights twice as much as the parcel given to Paul)
 *a combination of types
 **e.g. (mathematical &amp; repeating items) two of the cost items are equal at $80, two other equal at $90, two other equal at $100.
-**e.g. (relationship across categories &amp; text properties) dog's name's first letter is not the same as the owner's name's first letter</pre>
+**e.g. (relationship across categories &amp; text properties) dog's name's first letter is not the same as the owner's name's first letter
+
+''For many of these special categories, it seems the best approach is to maintain a &quot;shadow&quot; value property (in addition to the text property), which is used for computations. A translator will convert the text of the item into a mathematical entity. The ''shadow'' value could be generated once and stored, or computed on the fly each time it is needed.</pre>
 </div>
 <div title="SpecialClue" modifier="Fred" created="200807182003" modified="201510291107" tags="Clue" changecount="1">
 <pre>Contrary to a [[normal clue|NormalClue]], a [[special clue|SpecialClue]] is a text clue that needs to be reassessed periodically because it does not, at the onset, provide sufficient information to determine VALUE_YES relationships.
