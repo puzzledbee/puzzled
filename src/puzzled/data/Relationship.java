@@ -80,6 +80,14 @@ public class Relationship implements Dependable {
         return successors;
     }
     
+    public void drawPredecessors(){
+        System.out.println("about to draw many special lines");
+        
+        for (Dependable predecessor : predecessors) {
+            System.out.println(predecessor);
+        }
+    }
+    
     @Override
     public Point2D getCenterPosition(){
         return null;

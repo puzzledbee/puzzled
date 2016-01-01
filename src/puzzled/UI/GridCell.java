@@ -36,10 +36,13 @@ public class GridCell extends StackPane {
 
     private ContextMenu contextMenu = new ContextMenu();
     //private Pane xPane = new Pane();
+    
+    private Relationship linkedRelationship;
 
 
     public GridCell(int cellwidth, Relationship relationship) {
         Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
+        linkedRelationship = relationship;
         valueProperty.bindBidirectional(relationship.valueProperty());
         relationship.boundProperty().bind(this.boundsInParentProperty());
         
@@ -83,7 +86,14 @@ public class GridCell extends StackPane {
         MenuItem item3 = new MenuItem("Clear");
         item3.setOnAction(e -> this.reset());
         
-        contextMenu.getItems().addAll(item1,item2, item3);
+        MenuItem item4 = new MenuItem("Investigate");
+        item4.setOnAction(e -> {
+           System.out.println("about to draw a special line");
+           linkedRelationship.drawPredecessors();
+           
+        });
+        
+        contextMenu.getItems().addAll(item1,item2, item3, item4);
         
         myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));
         this.getStyleClass().add("gridCell");
