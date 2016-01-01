@@ -6,6 +6,7 @@
 package puzzled.UI;
 
 import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Side;
@@ -41,12 +42,21 @@ public class GridCell extends StackPane {
 
 
     public GridCell(int cellwidth, Relationship relationship) {
-        Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
         linkedRelationship = relationship;
-        valueProperty.bindBidirectional(relationship.valueProperty());
-        relationship.boundProperty().bind(this.boundsInParentProperty());
+                
+        valueProperty.bindBidirectional(linkedRelationship.valueProperty());
+        
+        
+        Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
         
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
+        linkedRelationship.centerXProperty().bind(Bindings.createDoubleBinding(
+            ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getX(),
+            circle.centerXProperty(),this.boundsInParentProperty()));
+        linkedRelationship.centerYProperty().bind(Bindings.createDoubleBinding(
+            ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getY(),
+            circle.centerYProperty(),this.boundsInParentProperty()));
+        
         Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
         Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );    
         
@@ -89,8 +99,23 @@ public class GridCell extends StackPane {
         MenuItem item4 = new MenuItem("Investigate");
         item4.setOnAction(e -> {
            System.out.println("about to draw a special line");
-           linkedRelationship.drawPredecessors();
-           
+//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinX());
+//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxX());
+//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinY());
+//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxY());
+           System.out.println(this.parentProperty().get());
+           System.out.println(this.parentProperty().get().parentProperty().get());
+           System.out.println();
+//           System.out.println(this.localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()));
+           StackPane mainStack = (StackPane) this.parentProperty().get()
+                    .parentProperty().get()
+                            .parentProperty().get()
+                                    .parentProperty().get()
+                                        .parentProperty().get()
+                                                .parentProperty().get()
+                                                    .parentProperty().get()
+                                                        .parentProperty().get();
+           linkedRelationship.drawPredecessors(mainStack);
         });
         
         contextMenu.getItems().addAll(item1,item2, item3, item4);
@@ -99,6 +124,14 @@ public class GridCell extends StackPane {
         this.getStyleClass().add("gridCell");
 //        this.setMouseTransparent(false);
         this.getChildren().addAll(myRectangle,circle,line1,line2);
+    
+        
+//        System.out.println(localToParent(circle.centerXProperty().get(),circle.centerYProperty().get()).getX());
+//        System.out.println(localToParent(circle.centerXProperty().get(),circle.centerYProperty().get()).getY());        
+
+
+    
+    
     }
 
     

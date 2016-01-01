@@ -7,10 +7,14 @@ package puzzled.data;
 
 import java.util.HashSet;
 import java.util.logging.Logger;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import puzzled.Puzzled;
 
 /**
@@ -25,8 +29,8 @@ public class Relationship implements Dependable {
     }
     
     private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<>(this, "value" , ValueType.VALUE_UNKNOWN);
-   
-    private ObjectProperty<Bounds> boundProperty = new SimpleObjectProperty<Bounds>();
+    private DoubleProperty centerX = new SimpleDoubleProperty();
+    private DoubleProperty centerY = new SimpleDoubleProperty();
 
     private HashSet<Dependable> predecessors = new HashSet<Dependable>();
     private HashSet<Dependable> successors = new HashSet<Dependable>();
@@ -53,8 +57,12 @@ public class Relationship implements Dependable {
         return valueProperty;
     }
     
-    public ObjectProperty<Bounds> boundProperty(){
-        return this.boundProperty;
+    public DoubleProperty centerXProperty(){
+        return this.centerX;
+    }
+    
+    public DoubleProperty centerYProperty(){
+        return this.centerY;
     }
     
     public ValueType getValue(){
@@ -80,16 +88,26 @@ public class Relationship implements Dependable {
         return successors;
     }
     
-    public void drawPredecessors(){
-        System.out.println("about to draw many special lines");
+    public void drawPredecessors(StackPane mainStack){
+        System.out.println("about to draw many special lines pointing to: "+ getCenterPosition().getX()
+                +", "+ getCenterPosition().getY());
+                
         
         for (Dependable predecessor : predecessors) {
-            System.out.println(predecessor);
+            System.out.println("\tpredecessor "+predecessor.getCenterPosition().getX()
+                +", "+ predecessor.getCenterPosition().getY());
+            AnchorPane dependencyPane = (AnchorPane) mainStack.getChildren().get(1);
+            Line depLine = new Line(getCenterPosition().getX(),getCenterPosition().getY(),predecessor.getCenterPosition().getX(),predecessor.getCenterPosition().getY());
+            depLine.getStyleClass().add("x");
+            depLine.setMouseTransparent(true);
+            dependencyPane.getChildren().add(depLine);
+
         }
     }
     
     @Override
     public Point2D getCenterPosition(){
-        return null;
+        return new Point2D(this.centerX.get(),this.centerY.get());
+        
     }
 }

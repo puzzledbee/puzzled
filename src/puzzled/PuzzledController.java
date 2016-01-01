@@ -568,6 +568,9 @@ public class PuzzledController implements Initializable {
             while (logicProblem.get().isLogicDirty()){
                 System.out.println("executing processing loop");
                 logicProblem.get().setLogicDirty(false);
+                
+                //re-process SPECIAL clues (with streams and filters maybe?)
+                
                 Processor.cross(logicProblem.get());
                 Processor.findUnique(logicProblem.get());
                 Processor.transpose(logicProblem.get());
