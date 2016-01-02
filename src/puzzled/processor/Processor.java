@@ -42,7 +42,7 @@ public class Processor {
                                     for (Item itemB : cat2.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
                                         if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                            rel.setValue(Relationship.ValueType.VALUE_NO, sourceRelationship);
+                                            rel.setValue(Relationship.ValueType.VALUE_NO,sourceRelationship);
                                         }
                                     }
                             }
@@ -96,7 +96,7 @@ public class Processor {
     }
     
     
-    public static void findUnique(LogicProblem logicProblem) {
+    public static void uniqueness(LogicProblem logicProblem) {
 //        System.out.println("findUnique invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
@@ -133,6 +133,55 @@ public class Processor {
             }
         }
         
+    }
+    
+    public static void commonality(LogicProblem logicProblem) {
+        System.out.println("commonality invoked");
+        HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
+        
+//        int i = 1;
+        
+        for (Category cat1 : logicProblem.getCategories()){
+            for (Category cat2 : logicProblem.getCategories()){
+                if (cat1!=cat2) {
+                    for (Item item1 : cat1.getItems()){
+                        ArrayList<Item> candidateList = new ArrayList<Item>();
+                        ArrayList<Dependable> predecessors1 = new ArrayList<Dependable>();
+                        for (Item item2 : cat2.getItems()){
+                            Relationship sourceRelationship = relationshipTable.get(new ItemPair(item1,item2));
+                            if (sourceRelationship.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                                candidateList.add(item2);
+                                predecessors1.add(sourceRelationship);
+                            }
+                        }
+//                        System.out.println("assessing "+cat1.getName()+","+item1.getName()+" vs "+cat2.getName()+"  -> size: "+searchList.size());
+                        if (candidateList.size()>1 && candidateList.size()<cat2.getNumItems()-1) {
+                            System.out.println("found commonality candidate"+cat1.getName()+","+item1.getName()+" vs "+cat2.getName());
+                            for (Category catSearch: logicProblem.getCategories()) {
+                                if (catSearch!=cat1 && catSearch!=cat2) {
+                                    for (Item itemSearch : catSearch.getItems()) {
+                                        ArrayList<Item> searchList = new ArrayList<Item>();
+                                        ArrayList<Dependable> predecessors2 = new ArrayList<Dependable>();
+                                        for (Item candidate : candidateList) {
+                                            Relationship searchRelationship = relationshipTable.get(new ItemPair(itemSearch,candidate));
+                                            if (searchRelationship.getValue()==Relationship.ValueType.VALUE_NO) {
+                                                searchList.add(itemSearch);
+                                                predecessors2.add(searchRelationship);
+                                            }
+                                        }
+                                        if (searchList.size()==candidateList.size() && relationshipTable.get(new ItemPair(item1,itemSearch)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                                            System.out.println("discovered new commonalisty for " + cat1.getName()+","+item1.getName()+" vs "+cat2.getName() + " at "+catSearch.getName()+","+itemSearch.getName());
+                                            predecessors1.addAll(predecessors2); //merge predecessors
+                                            relationshipTable.get(new ItemPair(item1,itemSearch)).setValue(Relationship.ValueType.VALUE_NO, predecessors1.toArray(new Relationship[predecessors1.size()]));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     

@@ -560,20 +560,21 @@ public class PuzzledController implements Initializable {
     
     
     public void process() {
-        System.out.println("process invoked");
+//        System.out.println("process invoked");
         if (!processing) {//prevents the changeHandler from triggering multiple
             //concurrent processing loops
             processing = true;
-            System.out.println("entering processing loop");
+//            System.out.println("entering processing loop");
             while (logicProblem.get().isLogicDirty()){
-                System.out.println("executing processing loop");
+//                System.out.println("executing processing loop");
                 logicProblem.get().setLogicDirty(false);
                 
                 //re-process SPECIAL clues (with streams and filters maybe?)
                 
                 Processor.cross(logicProblem.get());
-                Processor.findUnique(logicProblem.get());
+                Processor.uniqueness(logicProblem.get());
                 Processor.transpose(logicProblem.get());
+                Processor.commonality(logicProblem.get());
             }
             processing = false;
         }

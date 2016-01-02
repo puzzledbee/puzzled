@@ -92,11 +92,14 @@ public class Relationship implements Dependable {
         System.out.println("about to draw many special lines pointing to: "+ getCenterPosition().getX()
                 +", "+ getCenterPosition().getY());
                 
+        AnchorPane dependencyPane = (AnchorPane) mainStack.getChildren().get(1);
+        
+        dependencyPane.getChildren().clear();
         
         for (Dependable predecessor : predecessors) {
             System.out.println("\tpredecessor "+predecessor.getCenterPosition().getX()
                 +", "+ predecessor.getCenterPosition().getY());
-            AnchorPane dependencyPane = (AnchorPane) mainStack.getChildren().get(1);
+            
             Line depLine = new Line(getCenterPosition().getX(),getCenterPosition().getY(),predecessor.getCenterPosition().getX(),predecessor.getCenterPosition().getY());
             depLine.getStyleClass().add("x");
             depLine.setMouseTransparent(true);

@@ -48,14 +48,9 @@ public class GridCell extends StackPane {
         
         
         Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
-        
+
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
-        linkedRelationship.centerXProperty().bind(Bindings.createDoubleBinding(
-            ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getX(),
-            circle.centerXProperty(),this.boundsInParentProperty()));
-        linkedRelationship.centerYProperty().bind(Bindings.createDoubleBinding(
-            ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getY(),
-            circle.centerYProperty(),this.boundsInParentProperty()));
+ 
         
         Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
         Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );    
@@ -103,18 +98,21 @@ public class GridCell extends StackPane {
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxX());
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinY());
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxY());
-           System.out.println(this.parentProperty().get());
-           System.out.println(this.parentProperty().get().parentProperty().get());
-           System.out.println();
+           
+           
+           Grid logicProblemGrid = (Grid) this.parentProperty().get().parentProperty().get();
+           
+           System.out.println(logicProblemGrid.getScaleX());
 //           System.out.println(this.localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()));
-           StackPane mainStack = (StackPane) this.parentProperty().get()
-                    .parentProperty().get()
-                            .parentProperty().get()
-                                    .parentProperty().get()
-                                        .parentProperty().get()
-                                                .parentProperty().get()
-                                                    .parentProperty().get()
-                                                        .parentProperty().get();
+           StackPane mainStack = (StackPane) this //stackPane gridCell
+                .parentProperty().get() //anchorPane (layer 3)
+                    .parentProperty().get() //Grid extends StackPane
+                            .parentProperty().get() //group
+                                    .parentProperty().get() //scrollpane skin
+                                        .parentProperty().get() //scrollpane viewport
+                                                .parentProperty().get() //scrollpane mainScroll
+                                                    .parentProperty().get() //mainGrid
+                                                        .parentProperty().get(); //mainStack
            linkedRelationship.drawPredecessors(mainStack);
         });
         
@@ -126,11 +124,12 @@ public class GridCell extends StackPane {
         this.getChildren().addAll(myRectangle,circle,line1,line2);
     
         
-//        System.out.println(localToParent(circle.centerXProperty().get(),circle.centerYProperty().get()).getX());
-//        System.out.println(localToParent(circle.centerXProperty().get(),circle.centerYProperty().get()).getY());        
-
-
-    
+        linkedRelationship.centerXProperty().bind(Bindings.createDoubleBinding(
+            ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getX(),
+            circle.centerXProperty(),this.boundsInParentProperty(),this.scaleXProperty()));
+        linkedRelationship.centerYProperty().bind(Bindings.createDoubleBinding(
+            ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getY(),
+            circle.centerYProperty(),this.boundsInParentProperty(),this.scaleXProperty()));      
     
     }
 
