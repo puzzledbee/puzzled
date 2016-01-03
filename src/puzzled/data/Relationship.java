@@ -28,6 +28,10 @@ public class Relationship implements Dependable {
         VALUE_YES, VALUE_NO, VALUE_UNKNOWN 
     }
     
+    public static enum LogicType {
+        CONSTRAINT, CROSS, TRANSPOSE, UNIQUE, COMMON
+    }
+    
     private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<>(this, "value" , ValueType.VALUE_UNKNOWN);
     private DoubleProperty centerX = new SimpleDoubleProperty();
     private DoubleProperty centerY = new SimpleDoubleProperty();
@@ -40,6 +44,8 @@ public class Relationship implements Dependable {
     
     private LogicProblem logicProblem;
 
+
+    private LogicType logicType = LogicType.CONSTRAINT;
     public Relationship(LogicProblem arg_parent) {
 //        System.out.println("creating relationship #" + index);
         logicProblem = arg_parent;
@@ -73,8 +79,9 @@ public class Relationship implements Dependable {
         valueProperty.set(value);
     }
     
-    public void setValue(ValueType value, Dependable ... arg_predecessors){
+    public void setValue(ValueType value, LogicType arg_logicType, Dependable ... arg_predecessors){
         valueProperty.set(value);
+        logicType = arg_logicType;
         for (Dependable predecessor : arg_predecessors) {
             predecessors.add(predecessor);
             predecessor.addSuccessor(this);

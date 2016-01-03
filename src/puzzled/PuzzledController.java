@@ -147,6 +147,9 @@ public class PuzzledController implements Initializable {
     private MenuItem saveMenuItem;
     
     @FXML
+    private CheckMenuItem automaticProcessingMenuItem;
+    
+    @FXML
     private MenuItem saveAsMenuItem;
     
     @FXML
@@ -192,11 +195,18 @@ public class PuzzledController implements Initializable {
     Logger.getLogger(Puzzled.class.getPackage().getName());
     
     Grid logicProblemGrid;
-    private boolean processing = false;
+    private boolean processingFlag = false;
     private String appTitle;
     private String appVersion;
 
     private StringProperty appTitleProperty = new SimpleStringProperty();
+    
+    @FXML
+    private void handleAutomaticProcessingAction(ActionEvent event) {
+        // Button was clicked, do something...
+        process();
+    }
+    
     
     @FXML
     private void loadMe(ActionEvent event) {
@@ -309,6 +319,7 @@ public class PuzzledController implements Initializable {
         //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         clueText.disableProperty().bind(logicProblem.isNull());
         addClueButton.disableProperty().bind(logicProblem.isNull());
+        automaticProcessingMenuItem.disableProperty().bind(logicProblem.isNull());
         saveMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
         saveAsMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
         saveButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
@@ -524,7 +535,8 @@ public class PuzzledController implements Initializable {
             this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
                 System.out.println("change detected to dirtyLogicProperty");
                 this.process();
-                    });
+            });
+            
             
             clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getClues()).add(1).asString().concat("->"));
             
@@ -560,13 +572,14 @@ public class PuzzledController implements Initializable {
     
     
     public void process() {
-//        System.out.println("process invoked");
-        if (!processing) {//prevents the changeHandler from triggering multiple
-            //concurrent processing loops
-            processing = true;
-//            System.out.println("entering processing loop");
+        System.out.println("process invoked "+automaticProcessingMenuItem.isSelected());
+        
+        if (automaticProcessingMenuItem.isSelected() && !processingFlag) {//prevents the changeHandler from triggering multiple
+            //concurrent processingFlag loops
+            processingFlag = true;
+//            System.out.println("entering processingFlag loop");
             while (logicProblem.get().isLogicDirty()){
-//                System.out.println("executing processing loop");
+//                System.out.println("executing processingFlag loop");
                 logicProblem.get().setLogicDirty(false);
                 
                 //re-process SPECIAL clues (with streams and filters maybe?)
@@ -574,9 +587,9 @@ public class PuzzledController implements Initializable {
                 Processor.cross(logicProblem.get());
                 Processor.uniqueness(logicProblem.get());
                 Processor.transpose(logicProblem.get());
-                Processor.commonality(logicProblem.get());
+                if (logicProblem.get().getNumItems() >3) Processor.commonality(logicProblem.get());
             }
-            processing = false;
+            processingFlag = false;
         }
             
 //        logicProblem.get().getRelationshipTable().get(

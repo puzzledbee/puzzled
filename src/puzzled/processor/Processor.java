@@ -36,13 +36,13 @@ public class Processor {
                                     for (Item itemA : cat1.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(itemA,item2));
                                         if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN)  {
-                                            rel.setValue(Relationship.ValueType.VALUE_NO,sourceRelationship);
+                                            rel.setValue(Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
                                         }
                                     }
                                     for (Item itemB : cat2.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
                                         if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                            rel.setValue(Relationship.ValueType.VALUE_NO,sourceRelationship);
+                                            rel.setValue(Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
                                         }
                                     }
                             }
@@ -77,11 +77,11 @@ public class Processor {
 //                                                System.out.println("this value needs transposing ->"+item1.getName()+" and "+itemA.getName());
                                                 //need to copy
                                                
-                                                relCopy.setValue(relBase.getValue(), sourceRelationship, relBase);
+                                                relCopy.setValue(relBase.getValue(), Relationship.LogicType.TRANSPOSE,sourceRelationship, relBase);
                                                 
                                             } else if (relBase.getValue()==Relationship.ValueType.VALUE_UNKNOWN && relCopy.getValue()!=Relationship.ValueType.VALUE_UNKNOWN) {
                                             
-                                                relBase.setValue(relCopy.getValue(), sourceRelationship, relCopy);
+                                                relBase.setValue(relCopy.getValue(), Relationship.LogicType.TRANSPOSE,sourceRelationship, relCopy);
                                                 
                                             } 
                                         }                                        
@@ -123,7 +123,7 @@ public class Processor {
                             for (Item itemB : cat2.getItems()){
                                 if (relationshipTable.get(new ItemPair(item1,itemB)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
                                     
-                                    relationshipTable.get(new ItemPair(item1,itemB)).setValue(Relationship.ValueType.VALUE_YES, noRelationships.toArray(new Relationship[noRelationships.size()]));
+                                    relationshipTable.get(new ItemPair(item1,itemB)).setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.UNIQUE,noRelationships.toArray(new Relationship[noRelationships.size()]));
                                 }
                             }
 
@@ -172,7 +172,7 @@ public class Processor {
                                         if (searchList.size()==candidateList.size() && relationshipTable.get(new ItemPair(item1,itemSearch)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
                                             System.out.println("discovered new commonalisty for " + cat1.getName()+","+item1.getName()+" vs "+cat2.getName() + " at "+catSearch.getName()+","+itemSearch.getName());
                                             predecessors1.addAll(predecessors2); //merge predecessors
-                                            relationshipTable.get(new ItemPair(item1,itemSearch)).setValue(Relationship.ValueType.VALUE_NO, predecessors1.toArray(new Relationship[predecessors1.size()]));
+                                            relationshipTable.get(new ItemPair(item1,itemSearch)).setValue(Relationship.ValueType.VALUE_NO, Relationship.LogicType.COMMON,predecessors1.toArray(new Relationship[predecessors1.size()]));
                                         }
                                     }
                                 }
