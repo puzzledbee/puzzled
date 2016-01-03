@@ -32,9 +32,11 @@ public class Relationship implements Dependable {
         CONSTRAINT, CROSS, TRANSPOSE, UNIQUE, COMMON
     }
     
-    private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<>(this, "value" , ValueType.VALUE_UNKNOWN);
+    private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<ValueType>(this, "value" , ValueType.VALUE_UNKNOWN);
     private DoubleProperty centerX = new SimpleDoubleProperty();
     private DoubleProperty centerY = new SimpleDoubleProperty();
+    
+//    private StringProperty highlight = new SimpleStringProperty();
 
     private HashSet<Dependable> predecessors = new HashSet<Dependable>();
     private HashSet<Dependable> successors = new HashSet<Dependable>();
@@ -45,7 +47,9 @@ public class Relationship implements Dependable {
     private LogicProblem logicProblem;
 
 
-    private LogicType logicType = LogicType.CONSTRAINT;
+//    private LogicType logicType = LogicType.CONSTRAINT;
+    private ObjectProperty<LogicType> logicTypeProperty = new SimpleObjectProperty<LogicType>(this, "value" , LogicType.CONSTRAINT);
+    
     public Relationship(LogicProblem arg_parent) {
 //        System.out.println("creating relationship #" + index);
         logicProblem = arg_parent;
@@ -63,6 +67,8 @@ public class Relationship implements Dependable {
         return valueProperty;
     }
     
+    
+    
     public DoubleProperty centerXProperty(){
         return this.centerX;
     }
@@ -75,13 +81,21 @@ public class Relationship implements Dependable {
         return valueProperty.get();
     }
     
+    public LogicType getLogic() {
+        return logicTypeProperty.get();
+    }
+    
     public void setValue(ValueType value){
         valueProperty.set(value);
     }
     
+    public ObjectProperty<LogicType> logicTypeProperty() {
+        return this.logicTypeProperty;
+    }
+    
     public void setValue(ValueType value, LogicType arg_logicType, Dependable ... arg_predecessors){
         valueProperty.set(value);
-        logicType = arg_logicType;
+        logicTypeProperty.set(arg_logicType);
         for (Dependable predecessor : arg_predecessors) {
             predecessors.add(predecessor);
             predecessor.addSuccessor(this);

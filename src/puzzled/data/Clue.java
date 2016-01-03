@@ -28,7 +28,8 @@ public class Clue implements Dependable {
     
     public enum ClueType {
         NORMAL,
-        SPECIAL //needs re-assessment, see notebook for SpecialClue
+        SPECIAL, //needs re-assessment, see notebook for SpecialClue    
+        CONSTRAINT
     }
     
 
@@ -48,6 +49,11 @@ public class Clue implements Dependable {
         return successors;
     }
     
+    public Clue(String arg_clueText, ClueType arg_clueType) {
+        clueText.set(arg_clueText);
+        clueType = arg_clueType;
+    }
+    
     public Clue(String ... clueInfo) { //clue text and clue type
         clueText.set(clueInfo[0].trim());
         if (clueInfo.length>1) clueType = ClueType.valueOf(clueInfo[1].trim());
@@ -56,6 +62,14 @@ public class Clue implements Dependable {
     @XmlElement
     public String getText(){
         return clueText.getValue();
+    }
+    
+    public void setText(String arg_text) {
+        clueText.set(arg_text);
+    }
+    
+    public void setType(ClueType arg_type) {
+        clueType = arg_type;
     }
     
     @XmlElement

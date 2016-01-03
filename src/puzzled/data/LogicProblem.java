@@ -16,6 +16,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -190,6 +191,9 @@ public class LogicProblem {
 
     public ObservableList<Clue> getClues() {
         return clues;
+    }
+    public FilteredList<Clue> getFilteredClues() {
+        return new FilteredList<Clue>(clues, e -> e.getType() != Clue.ClueType.CONSTRAINT);
     }
     
     public String getNotes() {

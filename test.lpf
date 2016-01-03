@@ -1,45 +1,101 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <logicProblem>
-    <title>problem title here</title>
-    <source>this is from a great magazine</source>
-    <scale>1.3000000000000003</scale>
+    <title>Problem 47</title>
+    <source>Penny Press Original Logic Problems Mar 1999</source>
+    <scale>1.0</scale>
     <categories>
-        <name>category 1</name>
+        <name>Book</name>
         <type>NORMAL</type>
         <items>
-            <name>item 11</name>
+            <name>Haley's Comet</name>
         </items>
         <items>
-            <name>item 12</name>
+            <name>Into The Fire</name>
         </items>
         <items>
-            <name>item 13</name>
+            <name>Never Again</name>
+        </items>
+        <items>
+            <name>Passion Play</name>
+        </items>
+        <items>
+            <name>Starburst</name>
         </items>
     </categories>
     <categories>
-        <name>category 2</name>
+        <name>Author</name>
+        <type>NORMAL</type>
+        <items>
+            <name>Bettany</name>
+        </items>
+        <items>
+            <name>Donovan</name>
+        </items>
+        <items>
+            <name>Elizabeth</name>
+        </items>
+        <items>
+            <name>Frederick</name>
+        </items>
+        <items>
+            <name>Peyton</name>
+        </items>
+    </categories>
+    <categories>
+        <name>Pages</name>
         <type>NUMERICAL</type>
         <items>
-            <name>30</name>
+            <name>15</name>
         </items>
         <items>
-            <name>31</name>
+            <name>16</name>
         </items>
         <items>
-            <name>32</name>
+            <name>17</name>
+        </items>
+        <items>
+            <name>18</name>
+        </items>
+        <items>
+            <name>19</name>
         </items>
     </categories>
     <categories>
-        <name>category 3</name>
+        <name>Genre</name>
         <type>NORMAL</type>
         <items>
-            <name>item 31</name>
+            <name>Biography</name>
         </items>
         <items>
-            <name>item 32</name>
+            <name>Fantasy</name>
         </items>
         <items>
-            <name>item 33</name>
+            <name>Mystery</name>
+        </items>
+        <items>
+            <name>Romance</name>
+        </items>
+        <items>
+            <name>Science-Fiction</name>
+        </items>
+    </categories>
+    <categories>
+        <name>Last Name</name>
+        <type>NORMAL</type>
+        <items>
+            <name>Chapman</name>
+        </items>
+        <items>
+            <name>Holden</name>
+        </items>
+        <items>
+            <name>Koenig</name>
+        </items>
+        <items>
+            <name>Rawlins</name>
+        </items>
+        <items>
+            <name>Wright</name>
         </items>
     </categories>
     <clues>
@@ -53,5 +109,29 @@
     <clues>
         <text>this is clue 3</text>
         <type>SPECIAL</type>
+    </clues>
+    <clues>
+        <text>test one two</text>
+        <type>NORMAL</type>
+    </clues>
+    <clues>
+        <text>this is clue 1</text>
+        <type>NORMAL</type>
+    </clues>
+    <clues>
+        <text>this is clue 2</text>
+        <type>NORMAL</type>
+    </clues>
+    <clues>
+        <text>this is clue 3</text>
+        <type>SPECIAL</type>
+    </clues>
+    <clues>
+        <text>Starburst is not 18</text>
+        <type>CONSTRAINT</type>
+    </clues>
+    <clues>
+        <text>Never Again is not Romance</text>
+        <type>CONSTRAINT</type>
     </clues>
 </logicProblem>

@@ -7,8 +7,11 @@ package puzzled.UI;
 
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -35,25 +38,26 @@ public class GridCell extends StackPane {
     
     //keep this only until
 
-    private ContextMenu contextMenu = new ContextMenu();
+    private ContextMenu contextMenu = new ContextMenu();  
+//    private CirclePopupMenu contextMenu = new CirclePopupMenu(this,MouseButton.SECONDARY);
     //private Pane xPane = new Pane();
     
     private Relationship linkedRelationship;
+    private BooleanProperty fileDirtyProperty;
+    private StringProperty highlight = new SimpleStringProperty();
 
-
-    public GridCell(int cellwidth, Relationship relationship) {
+    public GridCell(int cellwidth, Relationship relationship, BooleanProperty arg_fileDirtyProperty) {
         linkedRelationship = relationship;
-                
+        fileDirtyProperty = arg_fileDirtyProperty;
         valueProperty.bindBidirectional(linkedRelationship.valueProperty());
-        
-        
+        highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.logicTypeProperty().getValue().toString(),linkedRelationship.logicTypeProperty()));
         Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
 
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
  
         
         Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
-        Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );    
+        Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );
         
         
         valueProperty.addListener( (e,oldValue,newValue) -> {
@@ -81,7 +85,7 @@ public class GridCell extends StackPane {
         MenuItem item1 = new MenuItem("Set as FALSE");
         item1.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
         item1.setOnAction(e -> this.setFalse());
-        //needs to add this to constraint table
+        
 
         MenuItem item2 = new MenuItem("Set as TRUE");
         item2.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
@@ -93,7 +97,9 @@ public class GridCell extends StackPane {
         
         MenuItem item4 = new MenuItem("Investigate");
         item4.setOnAction(e -> {
-           System.out.println("about to draw a special line");
+           System.out.println("about to draw a special line with funky style: "+highlight.get());
+           
+           this.getStyleClass().add("highlight-"+highlight.get());
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinX());
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxX());
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinY());
@@ -113,12 +119,13 @@ public class GridCell extends StackPane {
                                                 .parentProperty().get() //scrollpane mainScroll
                                                     .parentProperty().get() //mainGrid
                                                         .parentProperty().get(); //mainStack
-           linkedRelationship.drawPredecessors(mainStack);
+//           linkedRelationship.drawPredecessors(mainStack);
         });
         
         contextMenu.getItems().addAll(item1,item2, item3, item4);
         
-        myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));
+        myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));  
+//        myRectangle.setOnMouseClicked()
         this.getStyleClass().add("gridCell");
 //        this.setMouseTransparent(false);
         this.getChildren().addAll(myRectangle,circle,line1,line2);
@@ -145,12 +152,14 @@ public class GridCell extends StackPane {
     public void setFalse() {
         this.valueProperty.set(ValueType.VALUE_NO);
         fLogger.info("setting FALSE");
+        fileDirtyProperty.set(true);
     }
      
     
     public void setTrue() {
         this.valueProperty.set(ValueType.VALUE_YES);
         fLogger.info("setting TRUE");
+        fileDirtyProperty.set(true);
     }
  
     public void reset() {

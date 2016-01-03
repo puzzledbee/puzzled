@@ -228,7 +228,7 @@ public class Grid extends StackPane {
             
             for (ItemPair key : relationshipTable.keySet()){
 //                System.out.println("position cell for key "+key.first().getName()+ " <-> "+ key.last().getName());
-                GridCell cell = new GridCell(cellwidth, relationshipTable.get(key));
+                GridCell cell = new GridCell(cellwidth, relationshipTable.get(key), logicProblem.dirtyFileProperty());
                 cells.getChildren().add(cell);
                 Point2D position = positionCell(key);
                 AnchorPane.setLeftAnchor(cell, position.getX());

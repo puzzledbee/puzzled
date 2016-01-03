@@ -1029,8 +1029,8 @@ Also follows a list of particularly interesting clues found in published logic p
 <div title="ClueTable" creator="Fred" modifier="Fred" created="201510290151" modified="201510290202" tags="Object" changecount="2">
 <pre>Numbered list of [[Clues|Clue]] entered by the user.</pre>
 </div>
-<div title="Constraint" creator="Fred" modifier="Fred" created="201510312009" modified="201512090044" changecount="8">
-<pre>A ''Constraint'' is a forced relationships (made from user interaction graphically, by right-clicking a cell in the grid). An ArrayList of ''Constraint'' need to be stored as a field of a [[LogicProblem]] so that it can be processed first when the [[LogicProblem]] is loaded (ie, pushed into the [[RelationshipTable]]).
+<div title="Constraint" creator="Fred" modifier="Fred" created="201510312009" modified="201601030427" changecount="11">
+<pre>A ''Constraint'' is a forced relationships (made from user interaction graphically, by right-clicking a cell in the grid). Logically, ''constraints'' are no different than [[relationships|Relationship]] derived from simple [[clues|Clue]]; in fact, when saving the [[.lpf]] file, all [[relationships|Relationship]] defined (not VALUE_UNKNOWN) with a logicType of ''CONSTRAINT'' will be added to the list of clues as [[clues|Clue]] of type ''CONSTRAINT'' in a simple //item1 is [not] item2//. When the problem is loaded, [[clues|Clue]] of type ''CONSTRAINT'' will be left off the clue list (and glyph box), but will be processed into [[relationships|Relationship]] just like normal [[clues|Clue]] would be.
 
 [[GridCell]]'s context menu should offer {{{set as positive}}}, {{{set as negative}}} or {{{clear}}}. However, it should be smart enough to gray out/disable options that result in conflict with earlier / uptree relationships.</pre>
 </div>
@@ -1856,17 +1856,14 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201512311625" changecount="34">
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201601031745" changecount="39">
 <pre>*print API, figure out centering, figure out a way to print problem title &amp; source somewhere
-*implement commonality logic in processor
 *implement ''Save as...'' feature
-*add dependencies to Processor logic element
 *work on clue tab and answer tab
 *become a layout king
 **learn what preferred size means in UI components
 *right-click on label with simpleContextMenu
-*try the funky circular contextmenu for gridcells
-*start tracking [[constraints|Constraint]] somehow?
+*try the funky circular contextmenu for gridcells (http://jfxtras.org/doc/8.0/jfxtras-menu/index.html)
 *problem properties dialog
 *new problem dialogs
 *better dialogs for editing Category from context menu

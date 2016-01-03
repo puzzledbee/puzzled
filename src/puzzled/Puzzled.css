@@ -100,3 +100,12 @@
 .gridCell:hover {
     -fx-background-color: yellow;
 }
+
+
+.highlight-CONSTRAINT {
+    -fx-background-color: orange;
+}
+
+.highlight-CROSS {
+    -fx-background-color: green;
+}
