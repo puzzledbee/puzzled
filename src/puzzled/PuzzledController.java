@@ -95,6 +95,8 @@ public class PuzzledController implements Initializable {
     private static double minZoom = 0.4;
     private static int notificationTimer = 3000;
     
+    StringProperty filenameProperty = new SimpleStringProperty(null);
+    
     public enum WarningType {
         SUCCESS ("success.png"), 
         INFO ("info.png"), 
@@ -209,7 +211,6 @@ public class PuzzledController implements Initializable {
         process();
     }
     
-    
     @FXML
     private void loadMe(ActionEvent event) {
 //        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem0.lpf");
@@ -322,9 +323,10 @@ public class PuzzledController implements Initializable {
         clueText.disableProperty().bind(logicProblem.isNull());
         addClueButton.disableProperty().bind(logicProblem.isNull());
         automaticProcessingMenuItem.disableProperty().bind(logicProblem.isNull());
-        saveMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
+        saveMenuItem.disableProperty().bind(Bindings.or(Bindings.or(this.logicProblem.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
         saveAsMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
-        saveButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
+        
+        saveButton.disableProperty().bind(Bindings.or(Bindings.or(this.logicProblem.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
         printMenuItem.disableProperty().bind(logicProblem.isNull());
         toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
@@ -428,6 +430,7 @@ public class PuzzledController implements Initializable {
                     fLogger.log(Level.INFO, newProblem.toString());
                     logicProblem.set(newProblem);
                     initializeProblem();
+                    this.filenameProperty.set(file.getName());
                     notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
               } catch (JAXBException e) {
                     notify(WarningType.WARNING, "Unable to load problem file "+file.getName()+ "!");

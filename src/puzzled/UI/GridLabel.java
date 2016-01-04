@@ -10,8 +10,13 @@ import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.StageStyle;
@@ -22,7 +27,28 @@ import javafx.stage.StageStyle;
  */
 public class GridLabel extends Label {
 
+    private ContextMenu contextMenu = new ContextMenu();  
     
+    
+    public GridLabel(StringProperty bound, int width, int height) {
+//        super(text);
+        this.textProperty().bindBidirectional(bound);
+        this.setOnMouseClicked(this.labelDoubleClickHandler);
+        this.getStyleClass().add("gridLabel");
+        this.setAlignment(Pos.CENTER);
+        this.setPrefWidth(width);
+        this.setPrefHeight(height);
+        
+        MenuItem item1 = new MenuItem("Edit text...");
+        //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+        item1.setGraphic(new ImageView("/icons/circular-menu/edit.png"));
+        //item1.setOnAction(null);
+        contextMenu.getItems().add(item1);
+//        this.setOnMouseClicked(e -> contextMenu.show(this, Side.RIGHT, 0, 0)); 
+    }
+        
+        
     private EventHandler<MouseEvent> labelDoubleClickHandler = new EventHandler<MouseEvent>() {
             
             private TextInputDialog editDialog = new TextInputDialog();
@@ -32,39 +58,26 @@ public class GridLabel extends Label {
               editDialog.setTitle("Change label name");
               editDialog.setHeaderText(null);
               editDialog.setContentText("Please enter the new name:");      
-              
             }
             
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    if(mouseEvent.getClickCount() == 2){
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2){
 
-                        Label sourceLabel = (Label)mouseEvent.getSource();
+                    Label sourceLabel = (Label)mouseEvent.getSource();
 //                        controller.notify(WarningType.INFO, "Hello World "+ sourceLabel.getText());
-                        editDialog.getEditor().setText(sourceLabel.getText());
-                        Platform.runLater(() -> {
-                            editDialog.getEditor().selectAll();
-                            editDialog.getEditor().requestFocus();
-                        });
-                        
-                        Optional<String> result = editDialog.showAndWait();
-                        result.ifPresent(name -> sourceLabel.setText(name));
-                    }
+                    editDialog.getEditor().setText(sourceLabel.getText());
+                    Platform.runLater(() -> {
+                        editDialog.getEditor().selectAll();
+                        editDialog.getEditor().requestFocus();
+                    });
+
+                    Optional<String> result = editDialog.showAndWait();
+                    result.ifPresent(name -> sourceLabel.setText(name));
+                } else {
+                    contextMenu.show((Node) mouseEvent.getTarget(), Side.RIGHT, 0, 0);
                 }
             }
     };
-    
-    
-    
-    public GridLabel(StringProperty bound, int width, int height) {
-//        super(text);
-        this.textProperty().bindBidirectional(bound);
-        this.setOnMouseClicked(labelDoubleClickHandler);
-        this.getStyleClass().add("gridLabel");
-        this.setAlignment(Pos.CENTER);
-        this.setPrefWidth(width);
-        this.setPrefHeight(height);
-    }
-    
+
 }
