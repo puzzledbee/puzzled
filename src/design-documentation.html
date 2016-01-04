@@ -1856,14 +1856,17 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201601031745" changecount="39">
-<pre>*print API, figure out centering, figure out a way to print problem title &amp; source somewhere
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201601040400" changecount="44">
+<pre>*if a CONSTRAINT is set but another logic element sets it to the same value, the CONSTRAINT should be overriden with the new logic elment so that the clear option is removed
+*dependencies for COMMONALITY need to be inverted and show the valid options and where the valid options are common
+*some relationships seem to have way too many dependencies
+*setup a filename property and bind it to &quot;save&quot; to force save as
+*print API, figure out centering, figure out a way to print problem title &amp; source somewhere
 *implement ''Save as...'' feature
 *work on clue tab and answer tab
 *become a layout king
 **learn what preferred size means in UI components
 *right-click on label with simpleContextMenu
-*try the funky circular contextmenu for gridcells (http://jfxtras.org/doc/8.0/jfxtras-menu/index.html)
 *problem properties dialog
 *new problem dialogs
 *better dialogs for editing Category from context menu
@@ -2542,8 +2545,9 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *Are TableViews the best for answers and clues list. 
 *Are tabs the best way to divide out, can we look at accordion?</pre>
 </div>
-<div title="ToDo" modifier="Fred" created="200807181952" modified="201601010241" changecount="5">
-<pre>*RollBack handling
+<div title="ToDo" modifier="Fred" created="200807181952" modified="201601040351" changecount="8">
+<pre>*legend overlay to indicate LogicType highlighting colours when Investigate
+*RollBack handling
 *HintsTable implementation 
 ** Algebraic 1 &amp; 2: only executed after hints are added to the table
 ***1. discovery from items in the same category
@@ -2551,7 +2555,9 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 ***3. algebra 3: dependent upon relationship to discover other ones
 *how to handle &gt; &lt; : as special clue only or in table (ref [[Type 2]])
 *[[delta]] (no direction for offset): SpecialClue until sign is determined and then into HintsTable, or dormant in the HintsTable as an unsigned [[offset]] used for RestrictedValues only?? (should a delta simply be considered as an [[Or]] rule?)
-*[[Enumeration]] handling, [[Or]] handling</pre>
+*[[Enumeration]] handling, [[Or]] handling
+
+*--try the funky circular contextmenu for gridcells (http://jfxtras.org/doc/8.0/jfxtras-menu/index.html)-- -&gt; very cool but does not respect disabled items</pre>
 </div>
 <div title="Toolbar" creator="Fred" modifier="Fred" created="201511290154" changecount="1">
 <pre>Under the menu there will be a toolbar containing frequently-used buttons with graphic+text.

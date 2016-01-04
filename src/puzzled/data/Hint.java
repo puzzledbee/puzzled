@@ -6,6 +6,8 @@
 package puzzled.data;
 
 import java.util.HashSet;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Point2D;
 
 /**
@@ -16,6 +18,7 @@ public class Hint implements Dependable {
     
     private HashSet<Dependable> predecessors = new HashSet<Dependable>();
     private HashSet<Dependable> successors = new HashSet<Dependable>();
+    private BooleanProperty investigateProperty = new SimpleBooleanProperty(false);
     
     @Override
     public Point2D getCenterPosition(){
@@ -28,5 +31,9 @@ public class Hint implements Dependable {
     
     public HashSet<Dependable> getSuccessors(){
         return successors;
+    }
+    
+    public BooleanProperty investigateProperty() {
+        return this.investigateProperty;
     }
 }

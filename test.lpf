@@ -99,39 +99,27 @@
         </items>
     </categories>
     <clues>
-        <text>this is clue 1</text>
-        <type>NORMAL</type>
-    </clues>
-    <clues>
-        <text>this is clue 2</text>
-        <type>NORMAL</type>
-    </clues>
-    <clues>
-        <text>this is clue 3</text>
-        <type>SPECIAL</type>
-    </clues>
-    <clues>
-        <text>test one two</text>
-        <type>NORMAL</type>
-    </clues>
-    <clues>
-        <text>this is clue 1</text>
-        <type>NORMAL</type>
-    </clues>
-    <clues>
-        <text>this is clue 2</text>
-        <type>NORMAL</type>
-    </clues>
-    <clues>
-        <text>this is clue 3</text>
-        <type>SPECIAL</type>
-    </clues>
-    <clues>
-        <text>Starburst is not 18</text>
+        <text>Never Again is Elizabeth</text>
         <type>CONSTRAINT</type>
     </clues>
     <clues>
-        <text>Never Again is not Romance</text>
+        <text>Never Again is not 17</text>
+        <type>CONSTRAINT</type>
+    </clues>
+    <clues>
+        <text>Haley's Comet is not 17</text>
+        <type>CONSTRAINT</type>
+    </clues>
+    <clues>
+        <text>Starburst is not 17</text>
+        <type>CONSTRAINT</type>
+    </clues>
+    <clues>
+        <text>Passion Play is not Mystery</text>
+        <type>CONSTRAINT</type>
+    </clues>
+    <clues>
+        <text>Into The Fire is not Mystery</text>
         <type>CONSTRAINT</type>
     </clues>
 </logicProblem>

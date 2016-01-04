@@ -9,12 +9,15 @@ import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -39,18 +42,33 @@ public class GridCell extends StackPane {
     //keep this only until
 
     private ContextMenu contextMenu = new ContextMenu();  
-//    private CirclePopupMenu contextMenu = new CirclePopupMenu(this,MouseButton.SECONDARY);
+//    private CirclePopupMenu contextMenu = new CirclePopupMenu(this,MouseButton.SECONDARY);;
     //private Pane xPane = new Pane();
     
     private Relationship linkedRelationship;
     private BooleanProperty fileDirtyProperty;
     private StringProperty highlight = new SimpleStringProperty();
+    private BooleanProperty investigateProperty = new SimpleBooleanProperty(false);
+    private ObjectProperty<Relationship.LogicType> logicTypeProperty = new SimpleObjectProperty<Relationship.LogicType>();
 
     public GridCell(int cellwidth, Relationship relationship, BooleanProperty arg_fileDirtyProperty) {
         linkedRelationship = relationship;
         fileDirtyProperty = arg_fileDirtyProperty;
         valueProperty.bindBidirectional(linkedRelationship.valueProperty());
+        investigateProperty.bindBidirectional(linkedRelationship.investigateProperty());
+        logicTypeProperty.bind(linkedRelationship.logicTypeProperty());
         highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.logicTypeProperty().getValue().toString(),linkedRelationship.logicTypeProperty()));
+
+        investigateProperty.addListener((e,oldValue,newValue) -> {
+            if (newValue==true) {
+                this.getStyleClass().add("highlight-PREDECESSOR");
+            } else {
+                FilteredList<String> styles = this.getStyleClass().filtered(g -> g.contains("highlight"));
+                this.getStyleClass().remove(styles.get(0));
+            }
+        });
+        
+        
         Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
 
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
@@ -83,23 +101,37 @@ public class GridCell extends StackPane {
         line2.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_NO));
         
         MenuItem item1 = new MenuItem("Set as FALSE");
+        //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+        item1.setGraphic(new ImageView("/icons/circular-menu/x.png"));
         item1.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
         item1.setOnAction(e -> this.setFalse());
         
 
         MenuItem item2 = new MenuItem("Set as TRUE");
+                
+        item2.setGraphic(new ImageView("/icons/circular-menu/o.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         item2.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
+//        item2.setDisable(true);
         item2.setOnAction(e -> this.setTrue());
         //needs to add this to constraint table
         
         MenuItem item3 = new MenuItem("Clear");
+        item3.setGraphic(new ImageView("/icons/circular-menu/clear.png"));
+        item3.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN), this.logicTypeProperty.isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         item3.setOnAction(e -> this.reset());
         
         MenuItem item4 = new MenuItem("Investigate");
+        item4.setGraphic(new ImageView("/icons/circular-menu/investigate.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         item4.setOnAction(e -> {
            System.out.println("about to draw a special line with funky style: "+highlight.get());
-           
-           this.getStyleClass().add("highlight-"+highlight.get());
+           linkedRelationship.clearInvestigate();
+           this.investigateProperty.set(true);
+           this.getStyleClass().remove("highlight-PREDECESSOR"); //undoing previous
+           this.getStyleClass().add("highlight-"+highlight.get()); //should override the one set by the property listener
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinX());
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxX());
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinY());
@@ -125,7 +157,7 @@ public class GridCell extends StackPane {
         contextMenu.getItems().addAll(item1,item2, item3, item4);
         
         myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));  
-//        myRectangle.setOnMouseClicked()
+//        myRectangle.setOnMouseClicked(e -> contextMenu.show(e));
         this.getStyleClass().add("gridCell");
 //        this.setMouseTransparent(false);
         this.getChildren().addAll(myRectangle,circle,line1,line2);

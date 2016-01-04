@@ -7,8 +7,10 @@ package puzzled.data;
 
 import java.util.HashSet;
 import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
@@ -33,6 +35,7 @@ public class Relationship implements Dependable {
     }
     
     private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<ValueType>(this, "value" , ValueType.VALUE_UNKNOWN);
+    private BooleanProperty investigateProperty = new SimpleBooleanProperty(false);
     private DoubleProperty centerX = new SimpleDoubleProperty();
     private DoubleProperty centerY = new SimpleDoubleProperty();
     
@@ -57,7 +60,19 @@ public class Relationship implements Dependable {
 //            fLogger.info("Relationship valueProperty chansged to: " + newValue);
             logicProblem.setLogicDirty(true);
                 });
+        
+        investigateProperty.addListener((e,oldValue,newValue) -> {
+            if (newValue == true) {
+                System.out.println("investigate property becoming true for "+this.toString());
+                for (Dependable predecessor : predecessors) {
+                    System.out.println("setting predecessor "+predecessor.toString());
+                    predecessor.investigateProperty().set(true);
+                }
+            }
+        });
+        
     }
+
     public Relationship(ValueType myType) {
         valueProperty.set(myType);
         valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty changed to: " + newValue));
@@ -68,6 +83,10 @@ public class Relationship implements Dependable {
     }
     
     
+    public void clearInvestigate() {
+        logicProblem.clearInvestigate();
+    }
+    
     
     public DoubleProperty centerXProperty(){
         return this.centerX;
@@ -75,6 +94,10 @@ public class Relationship implements Dependable {
     
     public DoubleProperty centerYProperty(){
         return this.centerY;
+    }
+    
+    public BooleanProperty investigateProperty() {
+        return this.investigateProperty;
     }
     
     public ValueType getValue(){

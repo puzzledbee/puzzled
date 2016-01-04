@@ -6,6 +6,8 @@
 package puzzled.data;
 
 import java.util.HashSet;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Point2D;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 public class Clue implements Dependable {
     private HashSet<Dependable> successors = new HashSet<Dependable>();
     private HashSet<Dependable> predecessors = new HashSet<Dependable>();
+    private BooleanProperty investigateProperty = new SimpleBooleanProperty(false);
     
     
     public enum ClueType {
@@ -70,6 +73,11 @@ public class Clue implements Dependable {
     
     public void setType(ClueType arg_type) {
         clueType = arg_type;
+    }
+    
+    
+    public BooleanProperty investigateProperty() {
+        return this.investigateProperty;
     }
     
     @XmlElement

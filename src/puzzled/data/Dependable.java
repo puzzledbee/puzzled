@@ -6,6 +6,7 @@
 package puzzled.data;
 
 import java.util.HashSet;
+import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Point2D;
 
 /**
@@ -22,6 +23,7 @@ public interface Dependable {
     public void addSuccessor(Dependable successor);
     
     public HashSet<Dependable> getSuccessors();
+    public BooleanProperty investigateProperty();
     
     //public void addPredecessor(Dependable dependency);
     

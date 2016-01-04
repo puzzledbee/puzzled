@@ -101,11 +101,30 @@
     -fx-background-color: yellow;
 }
 
+.highlight-NORMAL {
+    -fx-background-color: white;
+}
+
+.highlight-PREDECESSOR {
+    -fx-background-color: lightcoral;
+}
+
+.highlight-UNIQUE {
+    -fx-background-color: lightblue;
+}
+
+.highlight-TRANSPOSE {
+    -fx-background-color: lightcyan;
+}
+
+.highlight-COMMONALITY {
+    -fx-background-color: limegreen;
+}
 
 .highlight-CONSTRAINT {
-    -fx-background-color: orange;
+    -fx-background-color: lightcoral;
 }
 
 .highlight-CROSS {
-    -fx-background-color: green;
+    -fx-background-color: lightgreen;
 }
