@@ -117,7 +117,7 @@ public class GridCell extends StackPane {
         item2.setOnAction(e -> this.setTrue());
         //needs to add this to constraint table
         
-        MenuItem item3 = new MenuItem("Clear");
+        MenuItem item3 = new MenuItem("Clear relationship");
         item3.setGraphic(new ImageView("/icons/circular-menu/clear.png"));
         item3.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN), this.logicTypeProperty.isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
@@ -126,6 +126,7 @@ public class GridCell extends StackPane {
         MenuItem item4 = new MenuItem("Investigate");
         item4.setGraphic(new ImageView("/icons/circular-menu/investigate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        item4.disableProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN));
         item4.setOnAction(e -> {
            System.out.println("about to draw a special line with funky style: "+highlight.get());
            linkedRelationship.clearInvestigate();
@@ -138,23 +139,35 @@ public class GridCell extends StackPane {
 //           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxY());
            
            
-           Grid logicProblemGrid = (Grid) this.parentProperty().get().parentProperty().get();
-           
-           System.out.println(logicProblemGrid.getScaleX());
-//           System.out.println(this.localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()));
-           StackPane mainStack = (StackPane) this //stackPane gridCell
-                .parentProperty().get() //anchorPane (layer 3)
-                    .parentProperty().get() //Grid extends StackPane
-                            .parentProperty().get() //group
-                                    .parentProperty().get() //scrollpane skin
-                                        .parentProperty().get() //scrollpane viewport
-                                                .parentProperty().get() //scrollpane mainScroll
-                                                    .parentProperty().get() //mainGrid
-                                                        .parentProperty().get(); //mainStack
+//           Grid logicProblemGrid = (Grid) this.parentProperty().get().parentProperty().get();
+//           
+//           System.out.println(logicProblemGrid.getScaleX());
+////           System.out.println(this.localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()));
+//           StackPane mainStack = (StackPane) this //stackPane gridCell
+//                .parentProperty().get() //anchorPane (layer 3)
+//                    .parentProperty().get() //Grid extends StackPane
+//                            .parentProperty().get() //group
+//                                    .parentProperty().get() //scrollpane skin
+//                                        .parentProperty().get() //scrollpane viewport
+//                                                .parentProperty().get() //scrollpane mainScroll
+//                                                    .parentProperty().get() //mainGrid
+//                                                        .parentProperty().get(); //mainStack
 //           linkedRelationship.drawPredecessors(mainStack);
         });
         
-        contextMenu.getItems().addAll(item1,item2, item3, item4);
+        
+        
+        MenuItem item5 = new MenuItem("Clear investigation");
+        item5.setGraphic(new ImageView("/icons/circular-menu/noinvestigate.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        item5.disableProperty().bind(this.investigateProperty.not());
+        item5.setOnAction(e -> {
+//           System.out.println("about to draw a special line with funky style: "+highlight.get());
+           linkedRelationship.clearInvestigate();
+//           this.investigateProperty.set(true);
+        });
+        
+        contextMenu.getItems().addAll(item1,item2, item3, item4, item5);
         
         myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));  
 //        myRectangle.setOnMouseClicked(e -> contextMenu.show(e));
