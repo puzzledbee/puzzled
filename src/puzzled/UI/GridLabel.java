@@ -7,6 +7,8 @@ package puzzled.UI;
 
 import java.util.Optional;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -16,10 +18,12 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.StageStyle;
+import puzzled.data.Category;
 
 /**
  *
@@ -29,15 +33,14 @@ public class GridLabel extends Label {
 
     private ContextMenu contextMenu = new ContextMenu();  
     
-    
     public GridLabel(StringProperty bound, int width, int height) {
-//        super(text);
         this.textProperty().bindBidirectional(bound);
         this.setOnMouseClicked(this.labelDoubleClickHandler);
         this.getStyleClass().add("gridLabel");
         this.setAlignment(Pos.CENTER);
         this.setPrefWidth(width);
         this.setPrefHeight(height);
+            
         
         MenuItem item1 = new MenuItem("Edit text...");
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
@@ -46,6 +49,14 @@ public class GridLabel extends Label {
         //item1.setOnAction(null);
         contextMenu.getItems().add(item1);
 //        this.setOnMouseClicked(e -> contextMenu.show(this, Side.RIGHT, 0, 0)); 
+    }
+    
+    //overloaded
+    public GridLabel(StringProperty bound, int width, int height, ObjectProperty<Category.CategoryType> arg_typeProperty) {
+        this(bound, width, height);
+        Tooltip newTooltip = new Tooltip();
+        newTooltip.textProperty().bind(Bindings.format("category of type %s", arg_typeProperty.asString()));
+        this.setTooltip(newTooltip);
     }
         
         

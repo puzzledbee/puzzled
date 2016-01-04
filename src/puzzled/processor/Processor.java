@@ -35,13 +35,15 @@ public class Processor {
 //                                System.out.println("discovered VALUE_YES, setting up the cross");
                                     for (Item itemA : cat1.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(itemA,item2));
-                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN)  {
+                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN || 
+                                                rel.getLogic()==Relationship.LogicType.CONSTRAINT)  { //override constraints to disable clearing relationship
                                             rel.setValue(Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
                                         }
                                     }
                                     for (Item itemB : cat2.getItems()){
                                         Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
-                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN ||
+                                                rel.getLogic()==Relationship.LogicType.CONSTRAINT)  { //override constraints to disable clearing relationship) {
                                             rel.setValue(Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
                                         }
                                     }
@@ -73,13 +75,15 @@ public class Processor {
                                             Relationship relBase = relationshipTable.get(new ItemPair(item1,itemA));
                                             Relationship relCopy = relationshipTable.get(new ItemPair(itemA,item2));
 //                                            System.out.println("testing->"+item1.getName()+" and "+itemA.getName()+" with value "+relBase.getValue());
-                                            if (relBase.getValue()!=Relationship.ValueType.VALUE_UNKNOWN && relCopy.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                                            if (relBase.getValue()!=Relationship.ValueType.VALUE_UNKNOWN && (relCopy.getValue()==Relationship.ValueType.VALUE_UNKNOWN ||
+                                                    relCopy.getLogic()==Relationship.LogicType.CONSTRAINT)) {//override constraints to disable clearing relationship
 //                                                System.out.println("this value needs transposing ->"+item1.getName()+" and "+itemA.getName());
                                                 //need to copy
                                                
                                                 relCopy.setValue(relBase.getValue(), Relationship.LogicType.TRANSPOSE,sourceRelationship, relBase);
                                                 
-                                            } else if (relBase.getValue()==Relationship.ValueType.VALUE_UNKNOWN && relCopy.getValue()!=Relationship.ValueType.VALUE_UNKNOWN) {
+                                            } else if (relCopy.getValue()!=Relationship.ValueType.VALUE_UNKNOWN && (relBase.getValue()==Relationship.ValueType.VALUE_UNKNOWN ||
+                                                     relBase.getLogic()==Relationship.LogicType.CONSTRAINT)) {//override constraints to disable clearing relationship) {
                                             
                                                 relBase.setValue(relCopy.getValue(), Relationship.LogicType.TRANSPOSE,sourceRelationship, relCopy);
                                                 
@@ -121,8 +125,8 @@ public class Processor {
                         if (noRelationships.size() == logicProblem.getNumItems()-1) {
 //                            System.out.println("discovered unique possibility at " + item1.getName()+" and "+cat2.getName());
                             for (Item itemB : cat2.getItems()){
-                                if (relationshipTable.get(new ItemPair(item1,itemB)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                    
+                                if (relationshipTable.get(new ItemPair(item1,itemB)).getValue()==Relationship.ValueType.VALUE_UNKNOWN ||
+                                        relationshipTable.get(new ItemPair(item1,itemB)).getLogic()==Relationship.LogicType.CONSTRAINT) { //override constraints to disable clear relationship
                                     relationshipTable.get(new ItemPair(item1,itemB)).setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.UNIQUE,noRelationships.toArray(new Relationship[noRelationships.size()]));
                                 }
                             }
@@ -169,8 +173,9 @@ public class Processor {
                                                 predecessors2.add(searchRelationship);
                                             }
                                         }
-                                        if (searchList.size()==candidateList.size() && relationshipTable.get(new ItemPair(item1,itemSearch)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
-                                            System.out.println("discovered new commonalisty for " + cat1.getName()+","+item1.getName()+" vs "+cat2.getName() + " at "+catSearch.getName()+","+itemSearch.getName());
+                                        if (searchList.size()==candidateList.size() && (relationshipTable.get(new ItemPair(item1,itemSearch)).getValue()==Relationship.ValueType.VALUE_UNKNOWN 
+                                                || relationshipTable.get(new ItemPair(item1,itemSearch)).getLogic()==Relationship.LogicType.CONSTRAINT)) { //override constraints to disable clearing relationship
+//                                            System.out.println("discovered new commonalisty for " + cat1.getName()+","+item1.getName()+" vs "+cat2.getName() + " at "+catSearch.getName()+","+itemSearch.getName());
                                             predecessors1.addAll(predecessors2); //merge predecessors
                                             relationshipTable.get(new ItemPair(item1,itemSearch)).setValue(Relationship.ValueType.VALUE_NO, Relationship.LogicType.COMMON,predecessors1.toArray(new Relationship[predecessors1.size()]));
                                         }

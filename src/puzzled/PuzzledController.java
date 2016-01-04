@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -293,11 +292,11 @@ public class PuzzledController implements Initializable {
         Clue newClue = new Clue(clueText.getText());
         logicProblem.get().getClues().add(newClue);
         logicProblem.get().setFileDirty(true);
-        Label label = new Label(Integer.toString(logicProblem.get().getClues().stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).collect(Collectors.toList()).size()));
+        Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().size()));
         label.setTooltip(new Tooltip(clueText.getText()+" ("+newClue.getType()+")"));
         clueGlyphBox.getChildren().add(label);
         clueText.clear();
-        notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getClues().stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).collect(Collectors.toList()).size()+" was just added!");
+        notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
     }
     
     @FXML
@@ -307,7 +306,7 @@ public class PuzzledController implements Initializable {
     }
     
     public void notify(WarningType type, String text) {
-        nPane.setGraphic(new ImageView(new Image("/icons/"+type.getImageName())));  
+        nPane.setGraphic(new ImageView(new Image("/icons/notification-pane/"+type.getImageName())));  
         nPane.setText(text);
         nPane.show();
     }

@@ -1,21 +1,21 @@
 #btn_new {          
-    -fx-graphic: url("/icons/new.png");
+    -fx-graphic: url("/icons/toolbar/new.png");
 }
 
 #btn_open {          
-    -fx-graphic: url("/icons/open.png");
+    -fx-graphic: url("/icons/toolbar/open.png");
 }
 
 #btn_save {          
-    -fx-graphic: url("/icons/save.png");
+    -fx-graphic: url("/icons/toolbar/save.png");
 }
 
 #btn_undo {
-    -fx-graphic: url("/icons/undo.png");
+    -fx-graphic: url("/icons/toolbar/undo.png");
 }
 
 #btn_reset {
-    -fx-graphic: url("/icons/reset.png");
+    -fx-graphic: url("/icons/toolbar/reset.png");
 }
 
 

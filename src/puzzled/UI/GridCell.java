@@ -103,14 +103,14 @@ public class GridCell extends StackPane {
         MenuItem item1 = new MenuItem("Set as FALSE");
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 
-        item1.setGraphic(new ImageView("/icons/circular-menu/x.png"));
+        item1.setGraphic(new ImageView("/icons/context-menus/x.png"));
         item1.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
         item1.setOnAction(e -> this.setFalse());
         
 
         MenuItem item2 = new MenuItem("Set as TRUE");
                 
-        item2.setGraphic(new ImageView("/icons/circular-menu/o.png"));
+        item2.setGraphic(new ImageView("/icons/context-menus/o.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         item2.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
 //        item2.setDisable(true);
@@ -118,15 +118,18 @@ public class GridCell extends StackPane {
         //needs to add this to constraint table
         
         MenuItem item3 = new MenuItem("Clear relationship");
-        item3.setGraphic(new ImageView("/icons/circular-menu/clear.png"));
+        item3.setGraphic(new ImageView("/icons/context-menus/clear.png"));
         item3.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN), this.logicTypeProperty.isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        item3.setOnAction(e -> this.reset());
+        item3.setOnAction(e -> {
+            this.reset();
+            linkedRelationship.clearInvestigate();
+        });
         
         MenuItem item4 = new MenuItem("Investigate");
-        item4.setGraphic(new ImageView("/icons/circular-menu/investigate.png"));
+        item4.setGraphic(new ImageView("/icons/context-menus/investigate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        item4.disableProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN));
+        item4.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN),this.investigateProperty));
         item4.setOnAction(e -> {
            System.out.println("about to draw a special line with funky style: "+highlight.get());
            linkedRelationship.clearInvestigate();
@@ -158,7 +161,7 @@ public class GridCell extends StackPane {
         
         
         MenuItem item5 = new MenuItem("Clear investigation");
-        item5.setGraphic(new ImageView("/icons/circular-menu/noinvestigate.png"));
+        item5.setGraphic(new ImageView("/icons/context-menus/noinvestigate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         item5.disableProperty().bind(this.investigateProperty.not());
         item5.setOnAction(e -> {
@@ -210,6 +213,7 @@ public class GridCell extends StackPane {
     public void reset() {
         this.valueProperty.set(ValueType.VALUE_UNKNOWN);
         fLogger.info("setting UNKNOWN");
+        fileDirtyProperty.set(true);
     }
   
 }
