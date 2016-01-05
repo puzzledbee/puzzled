@@ -45,7 +45,7 @@ public class GridLabel extends Label {
         MenuItem item1 = new MenuItem("Edit text...");
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 
-        item1.setGraphic(new ImageView("/icons/circular-menu/edit.png"));
+        item1.setGraphic(new ImageView("/icons/context-menus/edit.png"));
         //item1.setOnAction(null);
         contextMenu.getItems().add(item1);
 //        this.setOnMouseClicked(e -> contextMenu.show(this, Side.RIGHT, 0, 0)); 

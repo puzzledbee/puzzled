@@ -110,7 +110,7 @@ public class Processor {
                 if (cat1!=cat2) {
                     for (Item item1 : cat1.getItems()){
                         
-                        ArrayList<Dependable> noRelationships = new ArrayList<Dependable>();
+                        ArrayList<Relationship> noRelationships = new ArrayList<Relationship>();
 //                        System.out.println("counting "+item1.getName()+" with "+cat2.getName());
                         for (Item item2 : cat2.getItems()){
                             Relationship relationship = relationshipTable.get(new ItemPair(item1,item2));
@@ -125,8 +125,7 @@ public class Processor {
                         if (noRelationships.size() == logicProblem.getNumItems()-1) {
 //                            System.out.println("discovered unique possibility at " + item1.getName()+" and "+cat2.getName());
                             for (Item itemB : cat2.getItems()){
-                                if (relationshipTable.get(new ItemPair(item1,itemB)).getValue()==Relationship.ValueType.VALUE_UNKNOWN ||
-                                        relationshipTable.get(new ItemPair(item1,itemB)).getLogic()==Relationship.LogicType.CONSTRAINT) { //override constraints to disable clear relationship
+                                if (relationshipTable.get(new ItemPair(item1,itemB)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) { 
                                     relationshipTable.get(new ItemPair(item1,itemB)).setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.UNIQUE,noRelationships.toArray(new Relationship[noRelationships.size()]));
                                 }
                             }
@@ -159,7 +158,7 @@ public class Processor {
                             }
                         }
 //                        System.out.println("assessing "+cat1.getName()+","+item1.getName()+" vs "+cat2.getName()+"  -> size: "+searchList.size());
-                        if (candidateList.size()>1 && candidateList.size()<cat2.getNumItems()-1) {
+                        if (candidateList.size()>1 && candidateList.size()<=cat2.getNumItems()/2) {
                             System.out.println("found commonality candidate"+cat1.getName()+","+item1.getName()+" vs "+cat2.getName());
                             for (Category catSearch: logicProblem.getCategories()) {
                                 if (catSearch!=cat1 && catSearch!=cat2) {
