@@ -71,6 +71,7 @@
                               <CheckMenuItem fx:id="hideToolbarMenuItem" mnemonicParsing="false" text="Hide Toolbar" />
                               <CheckMenuItem fx:id="hideLabelsMenuItem" mnemonicParsing="false" text="Hide Labels" />
                               <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
+                              <CheckMenuItem fx:id="hideClueEngineMenuItem" mnemonicParsing="false" text="Hide Clue Engine" />
                               <SeparatorMenuItem mnemonicParsing="false" />
                               <MenuItem mnemonicParsing="false" text="Preferences..." />
                           </items>
@@ -155,7 +156,7 @@
             </TabPane>
          </center>
          <bottom>
-            <VBox prefHeight="30.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <VBox fx:id="clueEngineVBox" prefHeight="30.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
                   <Separator prefWidth="200.0" style="-fx-border-color: FF0000;" />
                   <FlowPane alignment="CENTER" hgap="5.0" prefHeight="45.0" prefWidth="600.0">

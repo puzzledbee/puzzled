@@ -47,9 +47,7 @@ public class Grid extends StackPane {
     private ContextMenu contextMenu = new ContextMenu();
     
     private PopOver myPopOver = new PopOver(new Label("hello!"));
-    
-    
-    
+
     public Grid(PuzzledController arg_controller, LogicProblem arg_logicProblem) {
         //super();
         controller = arg_controller;    

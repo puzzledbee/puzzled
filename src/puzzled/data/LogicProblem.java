@@ -29,7 +29,7 @@ import puzzled.processor.Parser;
  */
 
 @XmlRootElement
-@XmlType(propOrder={"title","source","notes","scale","categories","clues"})
+@XmlType(propOrder={"title","source","notes","text","scale","categories","clues"})
 //something is amiss
 public class LogicProblem {
 
@@ -38,6 +38,8 @@ public class LogicProblem {
     
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(false);
     private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty(false);
+    
+    private StringProperty problemText = new SimpleStringProperty();
     
     private String problemSource;
     @XmlElement
@@ -49,6 +51,7 @@ public class LogicProblem {
 //    private int numItems; //is this necessary or can it not be recovered, what is the point???
     @XmlElement
     private List<Category> categories;
+    
     
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     
@@ -68,6 +71,7 @@ public class LogicProblem {
         System.out.println("constructor invoked");
         titleProperty.set(problemInfo[0].trim()); //trim needed for loading from .lps
         if (problemInfo.length>1) this.problemSource = problemInfo[1].trim();
+        if (problemInfo.length>2) this.notes = problemInfo[2].trim();
 //        numCategories = category_number;
 //        numItems = item_number;
         categories = new ArrayList<Category>();
@@ -137,6 +141,11 @@ public class LogicProblem {
         return problemSource;
     }
     
+    @XmlElement //unnecessary
+    public String getText() {
+        return problemText.get();
+    }
+    
     public void generateRelationships(){
         
         System.out.println("generating relationshipTable");
@@ -189,6 +198,11 @@ public class LogicProblem {
         this.problemSource =arg_source;
     }
 
+    public void setText(String text) {
+        this.problemText.set(text);
+    }
+
+    
     public ObservableList<Clue> getClues() {
         return clues;
     }

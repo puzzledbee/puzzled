@@ -194,6 +194,12 @@ public class PuzzledController implements Initializable {
     @FXML
     private CheckMenuItem hideRelationshipsMenuItem;
     
+    @FXML
+    private CheckMenuItem hideClueEngineMenuItem;
+    
+    @FXML
+    private VBox clueEngineVBox;
+    
     ObjectProperty<LogicProblem> logicProblem = new SimpleObjectProperty<LogicProblem>();
     DoubleProperty scaleProperty = new SimpleDoubleProperty();
     
@@ -220,7 +226,7 @@ public class PuzzledController implements Initializable {
     @FXML
     private void loadMe(ActionEvent event) {
 //        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem0.lpf");
-        loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
+        loadProblem("resources/samples/problem47.lpf");
     }
     
     
@@ -394,6 +400,9 @@ public class PuzzledController implements Initializable {
         printMenuItem.disableProperty().bind(logicProblem.isNull());
         toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
         
+        clueEngineVBox.managedProperty().bind(hideClueEngineMenuItem.selectedProperty().not());
+        clueEngineVBox.visibleProperty().bind(hideClueEngineMenuItem.selectedProperty().not());
+        
         zoomInMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
         zoomOutMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
         zoomInButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
@@ -505,6 +514,8 @@ public class PuzzledController implements Initializable {
                 List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 //                System.out.println("problem "+lines.get(0)+" with "+ lines.size());
 //                System.out.println("last line "+lines.get(lines.size()-1));
+
+                //using the VARARG constructor to feed all relevant puzzle information
                 newProblem = new LogicProblem(lines.get(0).split(";"));
                 int i=1;
                 int catIndex=1;
@@ -599,6 +610,9 @@ public class PuzzledController implements Initializable {
             logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
             //bind relationships layer visibility to checkMenuItem        
             logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
+            
+            
+            
             this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());

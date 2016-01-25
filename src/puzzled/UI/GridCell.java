@@ -101,49 +101,48 @@ public class GridCell extends StackPane {
         line1.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_NO));
         line2.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_NO));
         
-        MenuItem item1 = new MenuItem("Set as FALSE");
+        MenuItem setFalseMenuItem = new MenuItem("Set as FALSE");
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 
-        item1.setGraphic(new ImageView("/icons/context-menus/x.png"));
-        item1.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
-        item1.setOnAction(e -> {
+        setFalseMenuItem.setGraphic(new ImageView("/icons/context-menus/x.png"));
+        setFalseMenuItem.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
+        setFalseMenuItem.setOnAction(e -> {
             try {
                 this.setFalse();
             } catch (RelationshipConflictException ex) {
 //                Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
-                
             }
         });
 
-        MenuItem item2 = new MenuItem("Set as TRUE");
+        MenuItem setTrueMenuItem = new MenuItem("Set as TRUE");
                 
-        item2.setGraphic(new ImageView("/icons/context-menus/o.png"));
+        setTrueMenuItem.setGraphic(new ImageView("/icons/context-menus/o.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        item2.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
+        setTrueMenuItem.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
 //        item2.setDisable(true);
-        item2.setOnAction(e -> {
+        setTrueMenuItem.setOnAction(e -> {
             try {
                 this.setTrue();
             } catch (RelationshipConflictException ex) {
-                Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         //needs to add this to constraint table
         
-        MenuItem item3 = new MenuItem("Clear relationship");
-        item3.setGraphic(new ImageView("/icons/context-menus/clear.png"));
-        item3.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN), this.logicTypeProperty.isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
+        MenuItem resetMenuItem = new MenuItem("Clear relationship");
+        resetMenuItem.setGraphic(new ImageView("/icons/context-menus/clear.png"));
+        resetMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN), this.logicTypeProperty.isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        item3.setOnAction(e -> {
+        resetMenuItem.setOnAction(e -> {
             this.reset();
             linkedRelationship.clearInvestigate();
         });
         
-        MenuItem item4 = new MenuItem("Investigate");
-        item4.setGraphic(new ImageView("/icons/context-menus/investigate.png"));
+        MenuItem investigateMenuItem = new MenuItem("Investigate");
+        investigateMenuItem.setGraphic(new ImageView("/icons/context-menus/investigate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        item4.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN),this.investigateProperty));
-        item4.setOnAction(e -> {
+        investigateMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN),this.investigateProperty));
+        investigateMenuItem.setOnAction(e -> {
            System.out.println("about to draw a special line with funky style: "+highlight.get());
            linkedRelationship.clearInvestigate();
            this.investigateProperty.set(true);
@@ -173,17 +172,17 @@ public class GridCell extends StackPane {
         
         
         
-        MenuItem item5 = new MenuItem("Clear investigation");
-        item5.setGraphic(new ImageView("/icons/context-menus/noinvestigate.png"));
+        MenuItem clearInvestigateMenuItem = new MenuItem("Clear investigation");
+        clearInvestigateMenuItem.setGraphic(new ImageView("/icons/context-menus/noinvestigate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        item5.disableProperty().bind(this.investigateProperty.not());
-        item5.setOnAction(e -> {
+        clearInvestigateMenuItem.disableProperty().bind(this.investigateProperty.not());
+        clearInvestigateMenuItem.setOnAction(e -> {
 //           System.out.println("about to draw a special line with funky style: "+highlight.get());
            linkedRelationship.clearInvestigate();
 //           this.investigateProperty.set(true);
         });
         
-        contextMenu.getItems().addAll(item1,item2, item3, item4, item5);
+        contextMenu.getItems().addAll(setFalseMenuItem,setTrueMenuItem, resetMenuItem, investigateMenuItem, clearInvestigateMenuItem);
         
         myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));  
 //        myRectangle.setOnMouseClicked(e -> contextMenu.show(e));
