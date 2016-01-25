@@ -33,6 +33,8 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.print.PageLayout;
 import javafx.print.PageOrientation;
 import javafx.print.Paper;
@@ -59,8 +61,10 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
@@ -81,6 +85,8 @@ import puzzled.data.Item;
 import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
+import puzzled.exceptions.RelationshipConflictException;
+import puzzled.exceptions.SuperfluousRelationshipException;
 import puzzled.processor.Processor;
 
 /**
@@ -163,6 +169,7 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private MenuItem zoomOutMenuItem;
+    
     
     @FXML
     private ToolBar toolbar;
@@ -248,42 +255,98 @@ public class PuzzledController implements Initializable {
     @FXML
     private void print(ActionEvent event) {
         Printer printer = Printer.getDefaultPrinter();
+        Double currentScale = logicProblem.get().getScale();
+        logicProblem.get().setScale(1);
+        
         PageLayout pageLayout = printer.createPageLayout(Paper.NA_LETTER, PageOrientation.LANDSCAPE, Printer.MarginType.EQUAL_OPPOSITES);
-        double scaleX = pageLayout.getPrintableWidth() / this.logicProblemGrid.getBoundsInParent().getWidth();
-        double scaleY = pageLayout.getPrintableHeight() / this.logicProblemGrid.getBoundsInParent().getHeight();
-        Scale scaler = new Scale(scaleX,scaleY);
         
-        System.out.println("pagewidth="+pageLayout.getPrintableWidth());
-        System.out.println("pageheight="+pageLayout.getPrintableHeight());
-        System.out.println("imagewidth="+this.logicProblemGrid.getBoundsInParent().getWidth());
-        System.out.println("imagewidth="+this.logicProblemGrid.getBoundsInParent().getHeight());
-        System.out.println("scaleX="+scaleX);
-        System.out.println("scaleY="+scaleY);
+        BorderPane borderPane = new BorderPane();
+        borderPane.setPrefSize(pageLayout.getPrintableWidth(), pageLayout.getPrintableHeight());
+        borderPane.setMaxSize(pageLayout.getPrintableWidth(), pageLayout.getPrintableHeight());
+        borderPane.setMinSize(pageLayout.getPrintableWidth(), pageLayout.getPrintableHeight());
         
+        Label headerLabel = new Label(this.hideLabelsMenuItem.isSelected()?"":logicProblem.get().getTitle());
+        Label sourceLabel = new Label(this.hideLabelsMenuItem.isSelected()?"":logicProblem.get().getSource());
+        Label puzzledLabel = new Label("Grid printed using Puzzled! - puzzled.sourceforge.net");
+        BorderPane.setAlignment(puzzledLabel, Pos.CENTER_LEFT);
+        BorderPane footerPane = new BorderPane();
+        footerPane.setLeft(puzzledLabel);
+
+        BorderPane.setAlignment(headerLabel, Pos.CENTER);
+        BorderPane.setMargin(headerLabel, new Insets(10, 20,0,20));
+        borderPane.setTop(headerLabel);
+        BorderPane.setAlignment(sourceLabel, Pos.CENTER_RIGHT);
+        footerPane.setRight(sourceLabel);
+
+        BorderPane.setMargin(footerPane, new Insets(0,20,3,20));
+        borderPane.setBottom(footerPane);
+
+        borderPane.getStylesheets().add("puzzled/Puzzled.css"); //necessary to preserve sytle
         int numcats = this.logicProblem.get().getNumCategories()-1;
-        System.out.println("numCats="+numcats);
         int numcells = numcats * this.logicProblem.get().getNumItems() + 1;
-        System.out.println("\nnumCells="+numcells);
         int totalwidth = numcells*this.logicProblemGrid.cellwidth+this.logicProblemGrid.labelwidth;
-        System.out.println("totalwidth="+totalwidth);
-        double scaled = totalwidth*scaleX;
-        System.out.println("scaled="+scaled);
-        this.logicProblemGrid.getTransforms().add(scaler);
-        //center grid in page
-        Translate translator = new Translate((pageLayout.getPrintableWidth()-scaled)/2,0);
-        this.logicProblemGrid.getTransforms().add(translator);
+        int totalheight = numcells*this.logicProblemGrid.cellwidth+this.logicProblemGrid.labelheight;
+//        FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
+        
+//        System.out.println("label height="+fontLoader.computeStringWidth(headerLabel.getText(), headerLabel.getFont()));
+//        System.out.println("label height="+borderPane.getTop().getBoundsInLocal().getHeight());
+//        
+        double scaleX = pageLayout.getPrintableWidth() / (totalwidth);
+        //150 is the approximate heights of the header and footer labels. 
+        //Unfortunatley, there appears to be no way to compute the label size before it is displayed on a scene
+        //the FontLoader computeStringWidth(headerLabel.getText(),headerLabel.getFont()) does not have a height equivalent
+        //
+        double scaleY = pageLayout.getPrintableHeight()  / (totalheight+150); //
+        double scaleMin = Double.min(scaleX, scaleY); //preserve aspect ratio
+        
+        Scale scaler = new Scale(scaleMin,scaleMin);
+        
+        VBox content = new VBox(this.logicProblemGrid); //VBox container necessary to prevent distortion 
+                                                        //that occur on logicProblemGrid when calling setMinSize
+
+        Translate translator = new Translate(100,-10); //fixed offsets appear to work best up to 6 categories
+        content.getTransforms().add(translator);
+        content.getTransforms().add(scaler);
+        content.setMinSize(0,0); //necessary to prevent BorderPane center region from pushing out border regions 
+        
+        borderPane.setCenter(content);
+
+//        System.out.println("bounds X="+this.logicProblemGrid.getBoundsInLocal().getWidth());
+//        System.out.println("bounds Y="+this.logicProblemGrid.getBoundsInLocal().getHeight());
+//        
+//        System.out.println("numCats="+numcats);
+//        System.out.println("numCells="+numcells);
+//        
+//        System.out.println("totalwidth="+totalwidth);
+//        System.out.println("totalheight="+totalheight);
+//        double scaled = totalwidth*scaleX;
+//        System.out.println("scaled="+scaled);
+
+        
+        
+//        System.out.println("pagewidth="+pageLayout.getPrintableWidth());
+//        System.out.println("pageheight="+pageLayout.getPrintableHeight());
+//        System.out.println("scaledwidth="+this.logicProblemGrid.getBoundsInParent().getWidth());
+//        System.out.println("scaledheight="+this.logicProblemGrid.getBoundsInParent().getHeight());
+//        System.out.println("scaleX="+scaleX);
+//        System.out.println("scaleY="+scaleY);
+        
         PrinterJob printerJob = PrinterJob.createPrinterJob();
+        
         if (printerJob != null) {
             printerJob.getJobSettings().setPageLayout(pageLayout);
             
-            boolean success = printerJob.printPage(this.logicProblemGrid);
+            boolean success = printerJob.printPage(borderPane);
             if (success) {
                 printerJob.endJob();
                 notify(WarningType.SUCCESS,"Printing successful!");
             } else {
                 notify(WarningType.WARNING,"Printing not successful!");
             }
-            this.logicProblemGrid.getTransforms().remove(scaler);
+            //retore problem scale
+            logicProblem.get().setScale(currentScale);
+            //re-attach to scene
+            mainGroup.getChildren().add(logicProblemGrid);
         }
     }
         
@@ -318,7 +381,8 @@ public class PuzzledController implements Initializable {
         setupNotifier();
         mainScroll.setPannable(true);
           
-        //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
+        //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");  
+        
         clueText.disableProperty().bind(logicProblem.isNull());
         addClueButton.disableProperty().bind(logicProblem.isNull());
         automaticProcessingMenuItem.disableProperty().bind(logicProblem.isNull());
@@ -538,6 +602,7 @@ public class PuzzledController implements Initializable {
             this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());
+//            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
             
             this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
                 System.out.println("change detected to dirtyLogicProperty");
@@ -592,11 +657,14 @@ public class PuzzledController implements Initializable {
                 logicProblem.get().setLogicDirty(false);
                 
                 //re-process SPECIAL clues (with streams and filters maybe?)
-                
-                Processor.cross(logicProblem.get());
-                Processor.uniqueness(logicProblem.get());
-                Processor.transpose(logicProblem.get());
+                try {
+                    Processor.cross(logicProblem.get());
+                    Processor.uniqueness(logicProblem.get());
+                    Processor.transpose(logicProblem.get());
                 if (logicProblem.get().getNumItems() >3) Processor.commonality(logicProblem.get());
+                } catch (SuperfluousRelationshipException | RelationshipConflictException e) {
+                    notify(WarningType.WARNING, e.toString());
+                }
             }
             processingFlag = false;
         }

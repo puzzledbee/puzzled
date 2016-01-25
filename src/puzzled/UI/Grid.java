@@ -33,7 +33,7 @@ public class Grid extends StackPane {
 
     //PuzzledController controller;
     public final static int cellwidth = 40;
-    private static int labelheight = 175; //for vertical item labels
+    public static int labelheight = 175; //for vertical item labels
     public static int labelwidth = 175;  //for horizontal item labels
     private LogicProblem logicProblem;
     
@@ -99,7 +99,10 @@ public class Grid extends StackPane {
 //        hbox.getChildren().addAll(labels,tPane);
         StackPane.setMargin(labelPane, new Insets(cellwidth));
         StackPane.setMargin(cellsPane, new Insets(cellwidth));
+        
         this.getChildren().addAll(gridPane,labelPane,cellsPane);
+//        this.setMaxWidth(21*cellwidth+labelwidth);
+//        this.setMaxHeight(21*cellwidth+labelheight);
     }
     
     
@@ -182,7 +185,7 @@ public class Grid extends StackPane {
         for (int cat=1;cat<=numCategories;cat++){
             if (cat==2) continue; //second category appears first on the horizontal axis
             //category labels
-            Label myLabel = new GridLabel(categories.get(cat-1).nameProperty(),cellwidth*numItems,cellwidth,categories.get(cat-1).typeProperty());
+            Label myLabel = new GridLabel(GridLabel.LabelType.CATEGORY,categories.get(cat-1).nameProperty(),cellwidth*numItems,cellwidth,categories.get(cat-1).typeProperty());
             AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
             AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat:cat-1)*numItems+0.0);   
             //the Rotate object allows you to define a pivot point, and is easier to position than the setRotate method.
@@ -190,7 +193,7 @@ public class Grid extends StackPane {
             anchorPane.getChildren().add(myLabel);
             //item labels
             for (int item=1;item<=numItems;item++){
-                myLabel = new GridLabel(categories.get(cat-1).getItems().get(item-1).nameProperty(),labelwidth,cellwidth);
+                myLabel = new GridLabel(GridLabel.LabelType.ITEM,categories.get(cat-1).getItems().get(item-1).nameProperty(),labelwidth,cellwidth);
                 AnchorPane.setLeftAnchor(myLabel, cellwidth+0.0);
                 AnchorPane.setTopAnchor(myLabel, labelheight+cellwidth*(cat<3?cat-1:cat-2)*numItems+cellwidth*item+0.0);
                 anchorPane.getChildren().add(myLabel);
@@ -203,14 +206,14 @@ public class Grid extends StackPane {
         for (int cat=1;cat<numCategories;cat++){
             
             //category labels
-            Label myLabel = new GridLabel(categories.get((cat==1?1:numCategories-cat+1)).nameProperty(),cellwidth*numItems,cellwidth,categories.get((cat==1?1:numCategories-cat+1)).typeProperty());
+            Label myLabel = new GridLabel(GridLabel.LabelType.CATEGORY,categories.get((cat==1?1:numCategories-cat+1)).nameProperty(),cellwidth*numItems,cellwidth,categories.get((cat==1?1:numCategories-cat+1)).typeProperty());
             AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+cellwidth*numItems*(cat-1)+0.0);
             AnchorPane.setTopAnchor(myLabel, 0.0);   
 
             anchorPane.getChildren().add(myLabel);
             //item labels
             for (int item=1;item<=numItems;item++){
-                myLabel = new GridLabel(categories.get((cat==1?1:numCategories-cat+1)).getItems().get(item-1).nameProperty(),labelheight,cellwidth);
+                myLabel = new GridLabel(GridLabel.LabelType.ITEM,categories.get((cat==1?1:numCategories-cat+1)).getItems().get(item-1).nameProperty(),labelheight,cellwidth);
                 myLabel.getTransforms().add(new Rotate(270, 0, 0));
 
                 AnchorPane.setLeftAnchor(myLabel, cellwidth+labelwidth+(cellwidth*(cat-1)*numItems)+(cellwidth*(item-1))+0.0);

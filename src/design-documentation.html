@@ -1474,7 +1474,7 @@ e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesec
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201512291309" tags="Object" changecount="22">
+<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201601091608" tags="Object" changecount="25">
 <pre>''Grid'' is a visual container of the category and item labels as well as the data structure of [[GridCell]].
 It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]].
 
@@ -1486,7 +1486,7 @@ Possible structure:
 ****Button zoomIn, anchored top left
 ****Button zoomOut, anchored top left
 ****ScrollPane, anchored top left, on top (FXML id: mainScroll)
-*****Group (used to enable zoom in / zoom out) (FXML id: mainGroup)
+*****Group (BorderPane's center region) (used to enable zoom in / zoom out) (FXML id: mainGroup)
 ******''Grid'' extends StackPane (subject to ScaleX and ScaleY....) (variable name:logicProblemGrid)
 *******layer 1, AnchorPane (gridPane), for the grid
 *******layer 2, AnchorPane (labelPane), for labels (visibleProperty bound to CheckMenuItem)
@@ -1858,12 +1858,11 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201601042225" changecount="50">
+<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201601091611" changecount="51">
 <pre>*wire-up GridLabel context menu to show the same dialog as when double-click is invoked
-*refactor circularmenu to contextmenu; consider using CSS for context menu graphics
-*visual indicator for special category (triangle), along with tooltip, and special clues (different circle)
+*consider using CSS for context menu graphics
+*visual indicator for special category (triangle), along with tooltip, and special clues (different circle), see controlsFX decorator
 *some relationships seem to have way too many dependencies
-*print API, figure out centering, figure out a way to print problem title &amp; source somewhere
 *implement ''Save as...'' feature
 *work on clue tab and answer tab
 *become a layout king
@@ -2546,9 +2545,10 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *Are TableViews the best for answers and clues list. 
 *Are tabs the best way to divide out, can we look at accordion?</pre>
 </div>
-<div title="ToDo" modifier="Fred" created="200807181952" modified="201601050143" changecount="10">
+<div title="ToDo" modifier="Fred" created="200807181952" modified="201601091612" changecount="12">
 <pre>*legend overlay to indicate LogicType highlighting colours when Investigate
 *webview to browse the user manual
+*printing, improve page centering for various grid sizes
 *RollBack handling
 *HintsTable implementation 
 ** Algebraic 1 &amp; 2: only executed after hints are added to the table
@@ -2560,7 +2560,9 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *[[Enumeration]] handling, [[Or]] handling
 
 *--try the funky circular contextmenu for gridcells (http://jfxtras.org/doc/8.0/jfxtras-menu/index.html)-- -&gt; very cool but does not respect disabled items
-*--dependencies for COMMONALITY need to be inverted and show the valid options and where the valid options are common-- -&gt; code inspection seems fine</pre>
+*--dependencies for COMMONALITY need to be inverted and show the valid options and where the valid options are common-- -&gt; code inspection 
+seems fine
+*--printing, figure out a way to print problem title &amp; source on page--</pre>
 </div>
 <div title="Toolbar" creator="Fred" modifier="Fred" created="201511290154" changecount="1">
 <pre>Under the menu there will be a toolbar containing frequently-used buttons with graphic+text.

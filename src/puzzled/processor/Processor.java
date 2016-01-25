@@ -13,6 +13,8 @@ import puzzled.data.Item;
 import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
+import puzzled.exceptions.RelationshipConflictException;
+import puzzled.exceptions.SuperfluousRelationshipException;
 
 /**
  *
@@ -21,7 +23,7 @@ import puzzled.data.Relationship;
 public class Processor {
     
     
-    public static void cross(LogicProblem logicProblem){
+    public static void cross(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
 //        System.out.println("cross invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
@@ -34,17 +36,15 @@ public class Processor {
                             if (sourceRelationship.getValue()==Relationship.ValueType.VALUE_YES) {
 //                                System.out.println("discovered VALUE_YES, setting up the cross");
                                     for (Item itemA : cat1.getItems()){
-                                        Relationship rel = relationshipTable.get(new ItemPair(itemA,item2));
-                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN || 
-                                                rel.getLogic()==Relationship.LogicType.CONSTRAINT)  { //override constraints to disable clearing relationship
-                                            rel.setValue(Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
+                                        if (itemA != item1) {
+                                            Relationship rel = relationshipTable.get(new ItemPair(itemA,item2));
+                                            rel.setValue(new ItemPair(itemA,item2),Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
                                         }
                                     }
                                     for (Item itemB : cat2.getItems()){
-                                        Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
-                                        if (rel.getValue()==Relationship.ValueType.VALUE_UNKNOWN ||
-                                                rel.getLogic()==Relationship.LogicType.CONSTRAINT)  { //override constraints to disable clearing relationship) {
-                                            rel.setValue(Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
+                                        if (itemB != item2) {
+                                            Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
+                                            rel.setValue(new ItemPair(item1,itemB),Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
                                         }
                                     }
                             }
@@ -55,7 +55,7 @@ public class Processor {
         }
     }
     
-    public static void transpose(LogicProblem logicProblem) {
+    public static void transpose(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
 //        System.out.println("transpose invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
@@ -75,19 +75,8 @@ public class Processor {
                                             Relationship relBase = relationshipTable.get(new ItemPair(item1,itemA));
                                             Relationship relCopy = relationshipTable.get(new ItemPair(itemA,item2));
 //                                            System.out.println("testing->"+item1.getName()+" and "+itemA.getName()+" with value "+relBase.getValue());
-                                            if (relBase.getValue()!=Relationship.ValueType.VALUE_UNKNOWN && (relCopy.getValue()==Relationship.ValueType.VALUE_UNKNOWN ||
-                                                    relCopy.getLogic()==Relationship.LogicType.CONSTRAINT)) {//override constraints to disable clearing relationship
-//                                                System.out.println("this value needs transposing ->"+item1.getName()+" and "+itemA.getName());
-                                                //need to copy
-                                               
-                                                relCopy.setValue(relBase.getValue(), Relationship.LogicType.TRANSPOSE,sourceRelationship, relBase);
-                                                
-                                            } else if (relCopy.getValue()!=Relationship.ValueType.VALUE_UNKNOWN && (relBase.getValue()==Relationship.ValueType.VALUE_UNKNOWN ||
-                                                     relBase.getLogic()==Relationship.LogicType.CONSTRAINT)) {//override constraints to disable clearing relationship) {
-                                            
-                                                relBase.setValue(relCopy.getValue(), Relationship.LogicType.TRANSPOSE,sourceRelationship, relCopy);
-                                                
-                                            } 
+                                            relCopy.setValue(new ItemPair(item1,itemA),relBase.getValue(), Relationship.LogicType.TRANSPOSE,sourceRelationship, relBase);
+                                            relBase.setValue(new ItemPair(itemA,item2),relCopy.getValue(), Relationship.LogicType.TRANSPOSE,sourceRelationship, relCopy);
                                         }                                        
                                     }
                                 }
@@ -100,7 +89,7 @@ public class Processor {
     }
     
     
-    public static void uniqueness(LogicProblem logicProblem) {
+    public static void uniqueness(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
 //        System.out.println("findUnique invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
@@ -121,13 +110,13 @@ public class Processor {
                             }
                         }
                         
-//                        System.out.println("count is "+counter);
+                        //are there enough VALUE_NO to force a VALUE_YES?
                         if (noRelationships.size() == logicProblem.getNumItems()-1) {
-//                            System.out.println("discovered unique possibility at " + item1.getName()+" and "+cat2.getName());
+//                          //search item that does not have a VALUE_NO and set it
                             for (Item itemB : cat2.getItems()){
-                                if (relationshipTable.get(new ItemPair(item1,itemB)).getValue()==Relationship.ValueType.VALUE_UNKNOWN) { 
-                                    relationshipTable.get(new ItemPair(item1,itemB)).setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.UNIQUE,noRelationships.toArray(new Relationship[noRelationships.size()]));
-                                }
+                                Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
+                                if (rel.getValue()!=Relationship.ValueType.VALUE_NO)
+                                    rel.setValue(new ItemPair(item1,itemB),Relationship.ValueType.VALUE_YES, Relationship.LogicType.UNIQUE,noRelationships.toArray(new Relationship[noRelationships.size()]));
                             }
 
                         }
@@ -138,7 +127,7 @@ public class Processor {
         
     }
     
-    public static void commonality(LogicProblem logicProblem) {
+    public static void commonality(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
         System.out.println("commonality invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
@@ -172,11 +161,11 @@ public class Processor {
                                                 predecessors2.add(searchRelationship);
                                             }
                                         }
-                                        if (searchList.size()==candidateList.size() && (relationshipTable.get(new ItemPair(item1,itemSearch)).getValue()==Relationship.ValueType.VALUE_UNKNOWN 
-                                                || relationshipTable.get(new ItemPair(item1,itemSearch)).getLogic()==Relationship.LogicType.CONSTRAINT)) { //override constraints to disable clearing relationship
-//                                            System.out.println("discovered new commonalisty for " + cat1.getName()+","+item1.getName()+" vs "+cat2.getName() + " at "+catSearch.getName()+","+itemSearch.getName());
+                                        if (searchList.size()==candidateList.size()) {
+                                            //System.out.println("discovered new commonalisty for " + cat1.getName()+","+item1.getName()+" vs "+cat2.getName() + " at "+catSearch.getName()+","+itemSearch.getName());
                                             predecessors1.addAll(predecessors2); //merge predecessors
-                                            relationshipTable.get(new ItemPair(item1,itemSearch)).setValue(Relationship.ValueType.VALUE_NO, Relationship.LogicType.COMMON,predecessors1.toArray(new Relationship[predecessors1.size()]));
+                                            relationshipTable.get(new ItemPair(item1,itemSearch)).setValue(new ItemPair(item1,itemSearch),Relationship.ValueType.VALUE_NO, Relationship.LogicType.COMMON,predecessors1.toArray(new Relationship[predecessors1.size()]));
+                                            
                                         }
                                     }
                                 }

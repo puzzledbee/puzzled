@@ -5,6 +5,7 @@
  */
 package puzzled.UI;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -26,6 +27,7 @@ import javafx.scene.shape.Rectangle;
 import puzzled.Puzzled;
 import puzzled.data.Relationship;
 import puzzled.data.Relationship.ValueType;
+import puzzled.exceptions.RelationshipConflictException;
 
 /**
  *
@@ -73,7 +75,6 @@ public class GridCell extends StackPane {
 
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
  
-        
         Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
         Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );
         
@@ -82,7 +83,7 @@ public class GridCell extends StackPane {
 //            fLogger.info("GridCell valueProperty chaged to:" + newValue)
                 });
         
-        myRectangle.setStroke(Color.BLACK);
+//        myRectangle.setStroke(Color.TRANSPARENT);
         
         circle.setMouseTransparent(true);
         circle.getStyleClass().add("o");
@@ -105,8 +106,14 @@ public class GridCell extends StackPane {
 
         item1.setGraphic(new ImageView("/icons/context-menus/x.png"));
         item1.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
-        item1.setOnAction(e -> this.setFalse());
-        
+        item1.setOnAction(e -> {
+            try {
+                this.setFalse();
+            } catch (RelationshipConflictException ex) {
+//                Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
+                
+            }
+        });
 
         MenuItem item2 = new MenuItem("Set as TRUE");
                 
@@ -114,7 +121,13 @@ public class GridCell extends StackPane {
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         item2.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
 //        item2.setDisable(true);
-        item2.setOnAction(e -> this.setTrue());
+        item2.setOnAction(e -> {
+            try {
+                this.setTrue();
+            } catch (RelationshipConflictException ex) {
+                Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         //needs to add this to constraint table
         
         MenuItem item3 = new MenuItem("Clear relationship");
@@ -197,14 +210,14 @@ public class GridCell extends StackPane {
         return this.valueProperty.get();
     }
     
-    public void setFalse() {
+    public void setFalse() throws RelationshipConflictException {
         this.valueProperty.set(ValueType.VALUE_NO);
         fLogger.info("setting FALSE");
         fileDirtyProperty.set(true);
     }
      
     
-    public void setTrue() {
+    public void setTrue() throws RelationshipConflictException{
         this.valueProperty.set(ValueType.VALUE_YES);
         fLogger.info("setting TRUE");
         fileDirtyProperty.set(true);

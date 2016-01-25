@@ -18,6 +18,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import puzzled.Puzzled;
+import puzzled.exceptions.RelationshipConflictException;
+import puzzled.exceptions.SuperfluousRelationshipException;
 
 /**
  *
@@ -116,12 +118,19 @@ public class Relationship implements Dependable {
         return this.logicTypeProperty;
     }
     
-    public void setValue(ValueType value, LogicType arg_logicType, Dependable ... arg_predecessors){
-        valueProperty.set(value);
-        logicTypeProperty.set(arg_logicType);
-        for (Dependable predecessor : arg_predecessors) {
-            predecessors.add(predecessor);
-            predecessor.addSuccessor(this);
+    public void setValue(ItemPair pair, ValueType value, LogicType arg_logicType, Dependable ... arg_predecessors) throws SuperfluousRelationshipException, RelationshipConflictException {
+        if (valueProperty.getValue()==ValueType.VALUE_UNKNOWN) {
+            valueProperty.set(value);
+            logicTypeProperty.set(arg_logicType);
+            for (Dependable predecessor : arg_predecessors) {
+                predecessors.add(predecessor);
+                predecessor.addSuccessor(this);
+            }
+        } else if (valueProperty.getValue()==value) {
+            //already set by different logic type
+           // if (logicTypeProperty.get() != arg_logicType) throw new SuperfluousRelationshipException(pair,logicTypeProperty.get(),arg_logicType); //investigate up tree
+        } else {
+            throw new RelationshipConflictException(pair,valueProperty.getValue(),value);
         }
     }
     
