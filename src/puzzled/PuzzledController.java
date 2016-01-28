@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -519,7 +520,8 @@ public class PuzzledController implements Initializable {
                 newProblem = new LogicProblem(lines.get(0).split(";"));
                 int i=1;
                 int catIndex=1;
-
+                Boolean problemTextToggle = false;
+                String problemText = "";
                 while (i < lines.size()) {
                     if (i < lines.size()-1 && lines.get(i+1).startsWith("\t")) {
                         i++;
@@ -533,16 +535,29 @@ public class PuzzledController implements Initializable {
                         Category newCat = new Category(items,catInfo);
                         catIndex = i;
                         newProblem.addCategory(newCat);
+                    } else if (i < lines.size()-1 && lines.get(i+1).trim().isEmpty()) {
+                        System.out.println("adding clue "+lines.get(i)+" ("+i+")");
+                        String[] clueInfo = lines.get(i++).split(";");
+                        Clue newClue = new Clue(clueInfo);
+                        newProblem.addClue(newClue);
+                        problemTextToggle = true;
+                        i++;//skip over blank line
                     } else {
                         if (i<lines.size()) {
-                            System.out.println("adding clue "+lines.get(i)+" ("+i+")");
-                            String[] clueInfo = lines.get(i++).split(";");
-                            Clue newClue = new Clue(clueInfo);
-                            newProblem.addClue(newClue);
+                            if (problemTextToggle) {
+                                System.out.println("appending problem text: "+lines.get(i));
+                                problemText += lines.get(i++);
+                            } else {
+                                System.out.println("adding clue "+lines.get(i)+" ("+i+")");
+                                String[] clueInfo = lines.get(i++).split(";");
+                                Clue newClue = new Clue(clueInfo);
+                                newProblem.addClue(newClue);
+                            }
                         } //else there are no clues present
                     }
                 }
-                
+                if (problemText != "") newProblem.setText(problemText);
+
                 logicProblem.set(newProblem);
                 initializeProblem();
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
