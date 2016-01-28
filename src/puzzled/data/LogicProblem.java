@@ -39,7 +39,7 @@ public class LogicProblem {
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(false);
     private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty(false);
     
-    private StringProperty problemText = new SimpleStringProperty();
+    private StringProperty problemTextProperty = new SimpleStringProperty();
     
     private String problemSource;
     @XmlElement
@@ -119,8 +119,12 @@ public class LogicProblem {
         return titleProperty.getValue();
     }
     
-    public StringProperty getTitleProperty() {
+    public StringProperty titleProperty() {
         return titleProperty;
+    }
+    
+    public StringProperty problemTextProperty() {
+        return problemTextProperty;
     }
 
     public void setTitle(String newTitle) {
@@ -143,7 +147,7 @@ public class LogicProblem {
     
     @XmlElement //unnecessary
     public String getText() {
-        return problemText.get();
+        return problemTextProperty.get();
     }
     
     public void generateRelationships(){
@@ -199,7 +203,7 @@ public class LogicProblem {
     }
 
     public void setText(String text) {
-        this.problemText.set(text);
+        this.problemTextProperty.set(text);
     }
 
     

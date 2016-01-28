@@ -36,6 +36,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.print.PageLayout;
 import javafx.print.PageOrientation;
 import javafx.print.Paper;
@@ -60,6 +61,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -78,6 +80,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
 import puzzled.data.Category;
@@ -197,6 +200,23 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private CheckMenuItem hideClueEngineMenuItem;
+    
+    @FXML
+    private HiddenSidesPane pane;
+
+    @FXML
+    private Label pinLabel;
+
+    @FXML
+    private void handleMouseClicked(MouseEvent event) {
+      if (pane.getPinnedSide() != null) {
+        pinLabel.setText("(unpinned)");
+        pane.setPinnedSide(null);
+      } else {
+        pinLabel.setText("(pinned)");
+        pane.setPinnedSide(Side.TOP);
+      }
+    }
     
     @FXML
     private VBox clueEngineVBox;
@@ -630,7 +650,7 @@ public class PuzzledController implements Initializable {
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());
 //            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
-            
+            pinLabel.textProperty().bind(logicProblem.get().problemTextProperty());
             this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
                 System.out.println("change detected to dirtyLogicProperty");
                 this.process();
@@ -642,8 +662,8 @@ public class PuzzledController implements Initializable {
             clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getFilteredClues()).add(1).asString().concat("->"));
             
             this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblem.get().dirtyFileProperty().get()?
-                    appTitle +" v."+appVersion+" -  "+logicProblem.get().getTitleProperty().getValue()+"*":
-                    appTitle +" v."+appVersion+" -  "+logicProblem.get().getTitleProperty().getValue(),this.dirtyFileProperty));
+                    appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+"*":
+                    appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue(),this.dirtyFileProperty));
 //          
             for (Clue clue : logicProblem.get().getClues()){
 //                Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
