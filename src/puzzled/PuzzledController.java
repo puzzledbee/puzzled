@@ -535,28 +535,26 @@ public class PuzzledController implements Initializable {
                         Category newCat = new Category(items,catInfo);
                         catIndex = i;
                         newProblem.addCategory(newCat);
-                    } else if (i < lines.size()-1 && lines.get(i+1).trim().isEmpty()) {
-                        System.out.println("adding clue "+lines.get(i)+" ("+i+")");
-                        String[] clueInfo = lines.get(i++).split(";");
-                        Clue newClue = new Clue(clueInfo);
-                        newProblem.addClue(newClue);
-                        problemTextToggle = true;
-                        i++;//skip over blank line
                     } else {
                         if (i<lines.size()) {
-                            if (problemTextToggle) {
-                                System.out.println("appending problem text: "+lines.get(i));
-                                problemText += lines.get(i++);
+                            if (lines.get(i).trim().isEmpty()) {
+                                problemTextToggle = true; 
+                                i++; //skip over blank line
                             } else {
-                                System.out.println("adding clue "+lines.get(i)+" ("+i+")");
-                                String[] clueInfo = lines.get(i++).split(";");
-                                Clue newClue = new Clue(clueInfo);
-                                newProblem.addClue(newClue);
+                                if (problemTextToggle) {
+                                    System.out.println("appending text "+lines.get(i));
+                                    problemText += lines.get(i++);
+                                } else {
+                                    System.out.println("adding clue "+lines.get(i)+" ("+i+")");
+                                    String[] clueInfo = lines.get(i++).split(";");
+                                    Clue newClue = new Clue(clueInfo);
+                                    newProblem.addClue(newClue);
+                                }
                             }
                         } //else there are no clues present
                     }
                 }
-                if (problemText != "") newProblem.setText(problemText);
+                if (!problemText.trim().isEmpty()) newProblem.setText(problemText);
 
                 logicProblem.set(newProblem);
                 initializeProblem();
