@@ -535,7 +535,7 @@ clue 3 text[; type]
 <div title=".lpf" creator="Fred" modifier="Fred" created="201512281238" modified="201512281239" changecount="2">
 <pre>''Logic Problem File''. XML-based filetype used to save (or load) [[LogicProblem]] data. See also [[.lps]] and [[.lpc]].</pre>
 </div>
-<div title=".lps" creator="Fred" modifier="Fred" created="201512190050" modified="201512310459" changecount="13">
+<div title=".lps" creator="Fred" modifier="phiv" created="201512190050" modified="201601290210" changecount="15">
 <pre>''Logic Problem Shorthand''. simple text file used to rapidly input problems into Puzzled, faster than manually generating an XML [[.lpf]] file or using the GUI to input all persistent [LogicProblem]] data. It is convenient for command-line operations and testing. See also [[.lpc]].
 
 ''{{{.lps}}} specifications''
@@ -578,6 +578,9 @@ category 5 name[; type]
 clue 1 text[; type]
 clue 2 text[; type]
 clue 3 text[; type]
+[
+this is the problem text, with all the clues for the humans to read
+It can be on multiple lines]
 }}}</pre>
 </div>
 <div title="Answers" creator="Fred" modifier="Fred" created="201511290246" changecount="1">
@@ -1474,26 +1477,27 @@ e.g. Fergus isn't the man who both ate the chicken pot pie and the lemon cheesec
 * leads to the elimination of Josie in favour of Timothy.
 * work around: user defines a negative relationship between all female names and the listed foods</pre>
 </div>
-<div title="Grid" creator="Fred" modifier="Fred" created="201511040256" modified="201601091608" tags="Object" changecount="25">
+<div title="Grid" creator="Fred" modifier="phiv" created="201511040256" modified="201601290236" tags="Object" changecount="28">
 <pre>''Grid'' is a visual container of the category and item labels as well as the data structure of [[GridCell]].
 It needs not to be part of the [[LogicProblem]] class, but can be generated upon loading/creating by the [[application|Puzzled]].
 
+(see [[Application Node Hiearchy|Puzzled]])
 
-Possible structure:
+Grid node hierarchy:
 *AnchorPane, in grid tab
-**StackPane (FXML id: mainStack)
-***layer 1, AnchorPane (FXML id:mainGrid)
+**StackPane ({{{mainStack}}})
+***layer 1, AnchorPane ({{{mainGrid}}})
 ****Button zoomIn, anchored top left
 ****Button zoomOut, anchored top left
-****ScrollPane, anchored top left, on top (FXML id: mainScroll)
-*****Group (BorderPane's center region) (used to enable zoom in / zoom out) (FXML id: mainGroup)
-******''Grid'' extends StackPane (subject to ScaleX and ScaleY....) (variable name:logicProblemGrid)
+****ScrollPane, anchored top left, on top ({{{mainScroll}}})
+*****Group (BorderPane's center region) (used to enable zoom in / zoom out) ({{{mainGroup}}})
+******''Grid'' extends StackPane (subject to ScaleX and ScaleY....) ({{{logicProblemGrid}}})
 *******layer 1, AnchorPane (gridPane), for the grid
 *******layer 2, AnchorPane (labelPane), for labels (visibleProperty bound to CheckMenuItem)
 *******layer 3, AnchorPane (relationshipPane), for relationships (GridCells)  (visibleProperty bound to CheckMenuItem)
 ****HBox for the clue glyphs, anchored bottom right
 ****HBox for the hint glyphs, anchored bottom right
-***layer 2, AnchorPane, for the dependencies (needs to be above the ''Grid'' StackPane in the ScrollPane, to show arrows to the glyphs
+***layer 2, AnchorPane, for the dependencies (needs to be above the ''Grid'' StackPane in the ScrollPane, to show arrows to the glyphs)
 
 
 
@@ -1944,11 +1948,30 @@ This tiddler captures the various logic elements required to solve some real-lif
 <pre>Class responsible to infer new relationships using the [[logic elements|LogicElement]] that are implemented.
 The ''Processor'' will include several utility static methods that apply various techniques on the [[RelationshipTable]] and [[HintsTable]] take to discover new [[Relationship]]. It also need to track if new [[Relationship]] are discovered by somehow setting the ''dirtyness'' flag which may cause, at the application level, subsequent processing...</pre>
 </div>
-<div title="Puzzled" modifier="Fred" created="200807182052" modified="201512310501" changecount="1">
+<div title="Puzzled" modifier="phiv" created="200807182052" modified="201601290235" changecount="4">
 <pre>[[Puzzled|http://puzzled.sf.net]] is an open-source java application which will ultimately help you solve grid-type logic problems by understanding pseudo-english translation of the clues provided with the problem.
 
 
-This [[TiddlyWiki|http://www.tiddlywiki.com/]] is used by the [[Puzzled|http://puzzled.sf.net]] developer to track requirements and features, decisions decision, algorithmic insight and other tidbits during the development of Puzzled.</pre>
+This [[TiddlyWiki|http://www.tiddlywiki.com/]] is used by the [[Puzzled|http://puzzled.sf.net]] developer to track requirements and features, decisions decision, algorithmic insight and other tidbits during the development of Puzzled.
+
+
+Application node hierarchy (defined in FXML)
+*AnchorPane
+**NotificationPane (ControlsFX), used for messages
+**BorderPane {{{bPane}}}
+***TOP: VBox
+****Menubar
+****Toolbar
+***CENTER: main view
+****HiddenSidesPane {{{hsPane}}} (inserted at runtime, to {{{bPane}}} center region)
+*****Content: TabPane {{{tPane}}}
+******Grid Tab
+******Clue Tab
+******Answer Tab
+*****Right: Label {{{pinLabel}}}
+***BOTTOM: 
+****VBox
+*****FlowPane (Clue indicator and text processing engine)</pre>
 </div>
 <div title="Relationship" modifier="Fred" created="200807210011" modified="201512090030" tags="Object Dependable" changecount="8">
 <pre>Object which represents a relationship between two items of different categories. By default, a relationship is defined as a VALUE_UNKNOWN; it can also take the VALUE_YES or VALUE_NO.

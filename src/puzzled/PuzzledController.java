@@ -53,6 +53,7 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
@@ -68,6 +69,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
@@ -127,7 +129,10 @@ public class PuzzledController implements Initializable {
     private Parent root;
     
     @FXML
-    private Parent bPane;
+    private BorderPane bPane;
+    
+    @FXML
+    private TabPane tPane;
     
     @FXML
     private HBox clueGlyphBox;
@@ -204,19 +209,13 @@ public class PuzzledController implements Initializable {
     @FXML
     private HiddenSidesPane pane;
 
-    @FXML
+//    @FXML
     private Label pinLabel;
 
-    @FXML
-    private void handleMouseClicked(MouseEvent event) {
-      if (pane.getPinnedSide() != null) {
-        pinLabel.setText("(unpinned)");
-        pane.setPinnedSide(null);
-      } else {
-        pinLabel.setText("(pinned)");
-        pane.setPinnedSide(Side.TOP);
-      }
-    }
+//    @FXML
+//    private void handleMouseClicked(MouseEvent event) {
+//        pane.setPinnedSide((pane.getPinnedSide() != null)?null:Side.RIGHT);
+//    }
     
     @FXML
     private VBox clueEngineVBox;
@@ -448,6 +447,23 @@ public class PuzzledController implements Initializable {
             if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
         });
         
+        
+        //mangle with borderPane to create the slide out using ControlsFX HiddenSidesPane
+        //whilst this can (and probably should) be added within Scene Builder
+        //it becomes impossible to use HiddenSidesPane as a parent
+        //manually editing the FXML file works, but breaks Scene Builder functionality
+        HiddenSidesPane hsPane = new HiddenSidesPane();
+        hsPane.setContent(tPane);
+        pinLabel = new Label();
+        pinLabel.setStyle("-fx-background-color: rgba(75,0,130,.25);-fx-padding: 5 5 5 5;");
+        pinLabel.setPrefSize(200, 200);
+        pinLabel.setTextAlignment(TextAlignment.JUSTIFY);
+        pinLabel.setWrapText(true);
+        pinLabel.setOnMouseClicked(e -> hsPane.setPinnedSide((hsPane.getPinnedSide() != null)?null:Side.RIGHT));
+        hsPane.setRight(pinLabel);
+        bPane.setCenter(hsPane);
+        
+        
     //    relationships = new HashMap<Pair<Item,Item>,Relationship>(logicProblem.getNumItems()*logicProblem.getNumItems()*(logicProblem.getNumCategories()-1)*logicProblem.getNumCategories()/2);
     }    
     
@@ -645,7 +661,7 @@ public class PuzzledController implements Initializable {
             logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
             
             
-            
+           //test
             this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());

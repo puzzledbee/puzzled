@@ -110,9 +110,8 @@
             </VBox>
          </top>
          <center>
-             <HiddenSidesPane fx:id="pane">
-      <content>
-        <TabPane prefHeight="294.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+             
+        <TabPane fx:id="tPane" prefHeight="294.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
               <tabs>
                 <Tab text="Grid">
                      <content>
@@ -156,13 +155,7 @@
                 </Tab>
               </tabs>
             </TabPane>
-      </content>
-      <right>
-        <Label fx:id="pinLabel"  style="-fx-background-color: rgba(75,0,130,.25);-fx-padding: 5 5 5 5;"  wrapText="true" textAlignment="JUSTIFY"  alignment="CENTER" prefHeight="200.0" prefWidth="200.0"  onMouseClicked="#handleMouseClicked"/>
-      </right>
-    </HiddenSidesPane>
-            
-         </center>
+          </center>
          <bottom>
             <VBox fx:id="clueEngineVBox" prefHeight="30.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
