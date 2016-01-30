@@ -85,6 +85,7 @@ import javax.xml.bind.Unmarshaller;
 import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.NotificationPane;
 import puzzled.UI.Grid;
+import puzzled.UI.SlideOutPane;
 import puzzled.data.Category;
 import puzzled.data.Clue;
 import puzzled.data.Item;
@@ -210,7 +211,7 @@ public class PuzzledController implements Initializable {
     private HiddenSidesPane pane;
 
 //    @FXML
-    private Label pinLabel;
+    private SlideOutPane soPane;
 
 //    @FXML
 //    private void handleMouseClicked(MouseEvent event) {
@@ -453,14 +454,11 @@ public class PuzzledController implements Initializable {
         //it becomes impossible to use HiddenSidesPane as a parent
         //manually editing the FXML file works, but breaks Scene Builder functionality
         HiddenSidesPane hsPane = new HiddenSidesPane();
+        soPane = new SlideOutPane(hsPane);
+        //steal tPane from scene
         hsPane.setContent(tPane);
-        pinLabel = new Label();
-        pinLabel.setStyle("-fx-background-color: rgba(75,0,130,.25);-fx-padding: 5 5 5 5;");
-        pinLabel.setPrefSize(200, 200);
-        pinLabel.setTextAlignment(TextAlignment.JUSTIFY);
-        pinLabel.setWrapText(true);
-        pinLabel.setOnMouseClicked(e -> hsPane.setPinnedSide((hsPane.getPinnedSide() != null)?null:Side.RIGHT));
-        hsPane.setRight(pinLabel);
+        hsPane.setRight(soPane);
+        //inject into scene
         bPane.setCenter(hsPane);
         
         
@@ -579,7 +577,7 @@ public class PuzzledController implements Initializable {
                             } else {
                                 if (problemTextToggle) {
                                     System.out.println("appending text "+lines.get(i));
-                                    problemText += lines.get(i++);
+                                    problemText += lines.get(i++) + "\n";
                                 } else {
                                     System.out.println("adding clue "+lines.get(i)+" ("+i+")");
                                     String[] clueInfo = lines.get(i++).split(";");
@@ -666,7 +664,7 @@ public class PuzzledController implements Initializable {
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());
 //            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
-            pinLabel.textProperty().bind(logicProblem.get().problemTextProperty());
+            soPane.textProperty().bind(logicProblem.get().problemTextProperty());
             this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
                 System.out.println("change detected to dirtyLogicProperty");
                 this.process();

@@ -42,6 +42,15 @@
     -fx-stroke: blue;
 }
 
+.slideout {
+    -fx-background-color: rgba(75,0,130,.25);
+    -fx-padding: 5 5 5 5;
+}
+
+.slideout .label {
+    -fx-text-fill: blueviolet;
+}
+
 .gridLabel {
     -fx-border-color: blueviolet;
     -fx-label-padding: 5px;
