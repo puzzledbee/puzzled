@@ -43,12 +43,13 @@
 }
 
 .slideout {
-    -fx-background-color: rgba(75,0,130,.25);
+    -fx-background-color: rgba(75,0,130,.50);
     -fx-padding: 5 5 5 5;
 }
 
 .slideout .label {
-    -fx-text-fill: blueviolet;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
 }
 
 .gridLabel {

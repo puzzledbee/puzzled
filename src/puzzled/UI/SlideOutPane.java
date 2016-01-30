@@ -27,14 +27,14 @@ public class SlideOutPane extends AnchorPane {
     
     public SlideOutPane(HiddenSidesPane hsPane) {
         this.getStyleClass().add("slideout");
-        this.setPrefSize(200, 200);
+        this.setPrefSize(300, 200);
 //        pinLabel.setPrefSize(200, 200);
         //this.hsPane = hsPane;
  
         
         textLabel.setTextAlignment(TextAlignment.JUSTIFY);
         textLabel.setWrapText(true);
-        textLabel.setStyle("-fx-font-size: 11pt;");
+        textLabel.setStyle("-fx-font-size: 10pt;");
         
         titleLabel.setStyle("-fx-underline:true;-fx-font-size: 14pt;");
         
@@ -51,7 +51,7 @@ public class SlideOutPane extends AnchorPane {
         
         AnchorPane.setBottomAnchor(textLabel, 0.0);
         AnchorPane.setRightAnchor(textLabel, 0.0);
-        AnchorPane.setTopAnchor(textLabel, 0.0);
+        AnchorPane.setTopAnchor(textLabel, 35.0);
         AnchorPane.setLeftAnchor(textLabel, 0.0);
         AnchorPane.setTopAnchor(tackLabel, 5.0);
         AnchorPane.setLeftAnchor(tackLabel, 5.0);
