@@ -294,7 +294,7 @@ public class PuzzledController implements Initializable {
         
         Label headerLabel = new Label(this.hideLabelsMenuItem.isSelected()?"":logicProblem.get().getTitle());
         Label sourceLabel = new Label(this.hideLabelsMenuItem.isSelected()?"":logicProblem.get().getSource());
-        Label puzzledLabel = new Label("Grid printed using Puzzled! - puzzled.sourceforge.net");
+        Label puzzledLabel = new Label("Grid printed using Puzzled! - http://puzzled.be");
         BorderPane.setAlignment(puzzledLabel, Pos.CENTER_LEFT);
         BorderPane footerPane = new BorderPane();
         footerPane.setLeft(puzzledLabel);
@@ -664,7 +664,8 @@ public class PuzzledController implements Initializable {
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());
 //            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
-            soPane.textProperty().bind(logicProblem.get().problemTextProperty());
+//            soPane.textProperty().bind(logicProblem.get().problemTextProperty());
+            soPane.textProperty().bindBidirectional(logicProblem.get().problemTextProperty());
             this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
                 System.out.println("change detected to dirtyLogicProperty");
                 this.process();
