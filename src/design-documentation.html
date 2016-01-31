@@ -1862,9 +1862,8 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="Fred" created="201511230254" modified="201601091611" changecount="51">
-<pre>*wire-up GridLabel context menu to show the same dialog as when double-click is invoked
-*consider using CSS for context menu graphics
+<div title="Next" creator="Fred" modifier="phiv" created="201511230254" modified="201601310338" changecount="52">
+<pre>*wire-up GridLabel context menu to show the same dialog as when double-click is invoked -&gt; this is harder than I thought... try doing away with the anonymous class altogether
 *visual indicator for special category (triangle), along with tooltip, and special clues (different circle), see controlsFX decorator
 *some relationships seem to have way too many dependencies
 *implement ''Save as...'' feature
@@ -2568,7 +2567,7 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *Are TableViews the best for answers and clues list. 
 *Are tabs the best way to divide out, can we look at accordion?</pre>
 </div>
-<div title="ToDo" modifier="Fred" created="200807181952" modified="201601091612" changecount="12">
+<div title="ToDo" modifier="phiv" created="200807181952" modified="201601310338" changecount="13">
 <pre>*legend overlay to indicate LogicType highlighting colours when Investigate
 *webview to browse the user manual
 *printing, improve page centering for various grid sizes
@@ -2582,6 +2581,7 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *[[delta]] (no direction for offset): SpecialClue until sign is determined and then into HintsTable, or dormant in the HintsTable as an unsigned [[offset]] used for RestrictedValues only?? (should a delta simply be considered as an [[Or]] rule?)
 *[[Enumeration]] handling, [[Or]] handling
 
+*--consider using CSS for context menu graphics-- -&gt; tried with setting up the node's ID using .setID and a #entry in the .css file or using a class, without success
 *--try the funky circular contextmenu for gridcells (http://jfxtras.org/doc/8.0/jfxtras-menu/index.html)-- -&gt; very cool but does not respect disabled items
 *--dependencies for COMMONALITY need to be inverted and show the valid options and where the valid options are common-- -&gt; code inspection 
 seems fine

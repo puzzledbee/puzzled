@@ -18,7 +18,6 @@
     -fx-graphic: url("/icons/toolbar/reset.png");
 }
 
-
 .tool-bar .button {
     -fx-text-fill: #673AB7;
 }

@@ -10,6 +10,8 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -44,7 +46,7 @@ public class GridLabel extends Label {
         this(labelType_arg, bound, width, height, null);
     }
 
-        //overloaded
+    //overloaded
     public GridLabel(LabelType labelType_arg, StringProperty bound, int width, int height, ObjectProperty<Category.CategoryType> arg_typeProperty) {
         this.labelType = labelType_arg;
         this.textProperty().bindBidirectional(bound);
@@ -53,13 +55,13 @@ public class GridLabel extends Label {
         this.setAlignment(Pos.CENTER);
         this.setPrefWidth(width);
         this.setPrefHeight(height);
-            
+
         
-        MenuItem item1 = new MenuItem("Edit "+((labelType==LabelType.CATEGORY)?"category...":"item..."));
+        MenuItem editMenuItem = new MenuItem("Edit "+((labelType==LabelType.CATEGORY)?"category...":"item..."));
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        item1.setGraphic(new ImageView("/icons/context-menus/edit.png"));
-        //item1.setOnAction(null);
-        contextMenu.getItems().add(item1);
+        editMenuItem.setGraphic(new ImageView("/icons/context-menus/edit.png"));
+        editMenuItem.setOnAction(new ContextMenuActionHandler(this));
+        contextMenu.getItems().add(editMenuItem);
 //        this.setOnMouseClicked(e -> contextMenu.show(this, Side.RIGHT, 0, 0)); 
         if (labelType==LabelType.CATEGORY) {
             Tooltip newTooltip = new Tooltip();
@@ -67,19 +69,9 @@ public class GridLabel extends Label {
             this.setTooltip(newTooltip);
         }
     }
+    
 
-        
-        
     private EventHandler<MouseEvent> labelDoubleClickHandler = new EventHandler<MouseEvent>() {
-            
-            private TextInputDialog editDialog = new TextInputDialog();
-        
-            {
-              editDialog.initStyle(StageStyle.UTILITY);
-              editDialog.setTitle("Change label name");
-              editDialog.setHeaderText(null);
-              editDialog.setContentText("Please enter the new name:");      
-            }
             
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -87,7 +79,8 @@ public class GridLabel extends Label {
 
                     Label sourceLabel = (Label)mouseEvent.getSource();
 //                        controller.notify(WarningType.INFO, "Hello World "+ sourceLabel.getText());
-                    editDialog.getEditor().setText(sourceLabel.getText());
+    
+                    EditDialog editDialog = new EditDialog(sourceLabel.getText());
                     Platform.runLater(() -> {
                         editDialog.getEditor().selectAll();
                         editDialog.getEditor().requestFocus();
@@ -100,5 +93,39 @@ public class GridLabel extends Label {
                 }
             }
     };
+    
+    class ContextMenuActionHandler implements EventHandler<ActionEvent> {
+        
+        private GridLabel refLabel;
+        
+        public ContextMenuActionHandler(GridLabel refLabel) {
+            this.refLabel = refLabel;
+        }
+        
+        @Override
+        public void handle(ActionEvent actionEvent) {
 
+//                controller.notify(WarningType.INFO, "Hello World "+ sourceLabel.getText());
+
+                EditDialog editDialog = new EditDialog(refLabel.getText());
+                Platform.runLater(() -> {
+                    editDialog.getEditor().selectAll();
+                    editDialog.getEditor().requestFocus();
+                });
+
+                Optional<String> result = editDialog.showAndWait();
+                result.ifPresent(name -> refLabel.setText(name));
+        }
+    }
+    
+    class EditDialog extends TextInputDialog {
+        
+        public EditDialog(String inputText) {
+              this.initStyle(StageStyle.UTILITY);
+              this.setTitle("Change label name");
+              this.setHeaderText(null);
+              this.setContentText("Please enter the new name:");
+              this.getEditor().setText(inputText);
+        }
+    }
 }
