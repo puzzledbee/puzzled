@@ -43,31 +43,11 @@ public class SlideOutPane extends AnchorPane {
         
         tackLabel.setGraphic(new ImageView("/icons/slideout-pane/thumbtack.png"));
         
-        this.setOnMouseClicked(e -> {
-            hsPane.setPinnedSide((hsPane.getPinnedSide() != null)?null:Side.RIGHT);
-            
-            RotateTransition rotateTransition = 
-                new RotateTransition(Duration.millis((hsPane.getPinnedSide() != null)?200:10), tackLabel);
-            rotateTransition.setByAngle((hsPane.getPinnedSide() != null)?-45f:45f);
-            rotateTransition.setCycleCount(1);
-            rotateTransition.play();
-            tackLabel.setGraphic(new ImageView((hsPane.getPinnedSide() != null)?
-                    "/icons/slideout-pane/thumbtack-pushed.png":"/icons/slideout-pane/thumbtack.png"));
-            
-        });
+        this.setOnMouseClicked(e -> pinSlideOutHandler(hsPane));
+
         
         textArea.setOnMouseClicked(e -> {
-            if (hsPane.getPinnedSide() == null) {
-                hsPane.setPinnedSide((hsPane.getPinnedSide() != null)?null:Side.RIGHT);
-
-                RotateTransition rotateTransition = 
-                    new RotateTransition(Duration.millis((hsPane.getPinnedSide() != null)?200:10), tackLabel);
-                rotateTransition.setByAngle((hsPane.getPinnedSide() != null)?-45f:45f);
-                rotateTransition.setCycleCount(1);
-                rotateTransition.play();
-                tackLabel.setGraphic(new ImageView((hsPane.getPinnedSide() != null)?
-                        "/icons/slideout-pane/thumbtack-pushed.png":"/icons/slideout-pane/thumbtack.png"));
-            }
+            if (hsPane.getPinnedSide() == null) pinSlideOutHandler(hsPane);
         });
         
         this.getChildren().addAll(textArea,tackLabel, titleLabel);
@@ -84,6 +64,19 @@ public class SlideOutPane extends AnchorPane {
     
     public StringProperty textProperty() {
         return textArea.textProperty();
+    }
+    
+    private void pinSlideOutHandler(HiddenSidesPane hsPane) {
+            hsPane.setPinnedSide((hsPane.getPinnedSide() != null)?null:Side.RIGHT);
+            
+            RotateTransition rotateTransition = 
+                new RotateTransition(Duration.millis((hsPane.getPinnedSide() != null)?200:10), tackLabel);
+            rotateTransition.setByAngle((hsPane.getPinnedSide() != null)?-45f:45f);
+            rotateTransition.setCycleCount(1);
+            rotateTransition.play();
+            tackLabel.setGraphic(new ImageView((hsPane.getPinnedSide() != null)?
+                    "/icons/slideout-pane/thumbtack-pushed.png":"/icons/slideout-pane/thumbtack.png"));
+            
     }
     
 }
