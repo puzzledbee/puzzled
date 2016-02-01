@@ -23,7 +23,7 @@ import puzzled.exceptions.SuperfluousRelationshipException;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class Relationship implements Dependable {
     

@@ -9,6 +9,7 @@ import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -19,28 +20,37 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.StageStyle;
+import org.controlsfx.control.decoration.Decorator;
+import org.controlsfx.control.decoration.GraphicDecoration;
+import org.controlsfx.control.decoration.StyleClassDecoration;
 import puzzled.data.Category;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
-public class GridLabel extends Label {
+public class GridLabel extends AnchorPane {
 
     public enum LabelType {
         CATEGORY,
         ITEM
     }
-    
+
     private LabelType labelType;
-    
-    private ContextMenu contextMenu = new ContextMenu();  
+    private Label mainLabel = new Label();
+    private ContextMenu contextMenu = new ContextMenu();
+    private ObjectProperty<Category.CategoryType> categoryTypeProperty;
     
     public GridLabel(LabelType labelType_arg, StringProperty bound, int width, int height) {
         this(labelType_arg, bound, width, height, null);
@@ -49,13 +59,25 @@ public class GridLabel extends Label {
     //overloaded
     public GridLabel(LabelType labelType_arg, StringProperty bound, int width, int height, ObjectProperty<Category.CategoryType> arg_typeProperty) {
         this.labelType = labelType_arg;
-        this.textProperty().bindBidirectional(bound);
+        this.categoryTypeProperty = arg_typeProperty;
+        
+        mainLabel.textProperty().bindBidirectional(bound);
         this.setOnMouseClicked(this.labelDoubleClickHandler);
         this.getStyleClass().add("gridLabel");
-        this.setAlignment(Pos.CENTER);
+        mainLabel.setAlignment(Pos.CENTER);
         this.setPrefWidth(width);
         this.setPrefHeight(height);
-
+        
+        this.getChildren().add(mainLabel);
+        decorate();
+        AnchorPane.setBottomAnchor(mainLabel, 0.0);
+        AnchorPane.setTopAnchor(mainLabel, 0.0);
+        AnchorPane.setLeftAnchor(mainLabel, 0.0);
+        AnchorPane.setRightAnchor(mainLabel, 0.0);
+    
+//        Decorator.addDecoration(this, new StyleClassDecoration("warning"));
+//        Decorator.addDecoration(this, new GraphicDecoration(createDecoratorNode(Color.RED),Pos.TOP_CENTER));
+//        Decorator.addDecoration(this, new GraphicDecoration(createImageNode(),Pos.TOP_CENTER));
         
         MenuItem editMenuItem = new MenuItem("Edit "+((labelType==LabelType.CATEGORY)?"category...":"item..."));
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
@@ -66,11 +88,38 @@ public class GridLabel extends Label {
         if (labelType==LabelType.CATEGORY) {
             Tooltip newTooltip = new Tooltip();
             newTooltip.textProperty().bind(Bindings.format("category of type %s", arg_typeProperty.asString()));
-            this.setTooltip(newTooltip);
+            mainLabel.setTooltip(newTooltip);
         }
     }
     
-
+    private String getText() {
+        return mainLabel.getText();
+    }
+    
+    private void setText(String text) {
+        mainLabel.setText(text);
+    }
+    
+    private void decorate() {
+       
+        if (this.labelType == LabelType.CATEGORY) {
+            Label decorator = new Label();
+            decorator.setPrefSize(20,20);
+            decorator.setMouseTransparent(true);
+//          decorator.getStyleClass().add("decorator");
+            
+            //create a binding with the type of category, in order to update
+            //the decorator colour whenever/if the category type changes
+            decorator.styleProperty().bind(Bindings.createStringBinding(() -> 
+                "-fx-shape: \"M0,0 L1,1 L1,0 Z\"; -fx-background-color: "+
+                this.categoryTypeProperty.get().color));
+            
+            this.getChildren().add(decorator);
+            AnchorPane.setTopAnchor(decorator, 0.0);
+            AnchorPane.setRightAnchor(decorator, 0.0); 
+        } 
+    }
+    
     private EventHandler<MouseEvent> labelDoubleClickHandler = new EventHandler<MouseEvent>() {
             
             @Override

@@ -19,7 +19,7 @@ import org.controlsfx.control.NotificationPane;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class Puzzled extends Application {
     

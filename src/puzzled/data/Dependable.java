@@ -11,7 +11,7 @@ import javafx.geometry.Point2D;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public interface Dependable {
 //    private HashSet<Dependable> predecessors = new HashSet<Dependable>();

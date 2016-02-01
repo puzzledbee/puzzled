@@ -9,7 +9,7 @@ import puzzled.data.LogicProblem;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class Parser {
     

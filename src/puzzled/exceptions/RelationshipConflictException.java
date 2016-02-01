@@ -10,7 +10,7 @@ import puzzled.data.Relationship;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class RelationshipConflictException extends Exception {
     private ItemPair pair;

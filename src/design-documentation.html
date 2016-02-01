@@ -1985,15 +1985,15 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="phiv" created="201511230254" modified="201602010234" changecount="56">
-<pre>*visual indicator for special category (triangle), along with tooltip, and special clues (different circle), see controlsFX decorator
+<div title="Next" creator="Fred" modifier="phiv" created="201511230254" modified="201602011521" changecount="59">
+<pre>*visual indicator for special clues (by binding through a different circle colour), like the [[Category]] decorator
 *some relationships seem to have way too many dependencies
 *work on clue tab and answer tab
 *become a layout king
 **learn what preferred size means in UI components
 *problem properties dialog
 *new problem dialogs
-*better dialogs for editing Category from context menu
+*better dialogs for editing Category from context menu, to include the ability to change the category type (note: observe decorator colour change)
 *application properties file for [[Preferences]]
 *right-click on clue glyph to remove clue
 *javadoc, tons of javadoc
@@ -2146,6 +2146,14 @@ For a number //N// of categories of //n// items, the layout of the grid complies
 *Maybe the core undo functionality is limited to undoing specific actions such as a [[Clue]] entered or a [[Constraint]] added. Perhaps a simple LIFO structure of actions taken is used to pop the last entry when it is undone.
 *--Relationships that are not manually entered, such as those derived from text clues or using any of the logic elements, cannot be modified by the user using the Graphical User Interface.--
 *--In order to achieve roll-back, a [[Sequencer]] object needs to exist and its current value needs to be assigned to each relationship.--</pre>
+</div>
+<div title="SVGPath" creator="phiv" modifier="phiv" created="201602010441" modified="201602010443" changecount="3">
+<pre>When using the -fx-shape CSS attribute inside a label, coordinates become very difficult to grasp. The approach is therefore ill-suited for Label decoration
+Observation:
+*a Move statement to start is absolutely necessary
+*the maximum size of the path string (outer bounds) will be scaled down to fit the node dimensions, no matter what values are chosen
+*it is near impossible to define a path that does not somehow anchor to the edges, unless you draw invisible parts in three of 4 corners to set the boundary of the SVG path
+*at best you will be able to shrink down the visible boundaries of a label, and fill it with the label background. Best to overlay/anchor a smaller Shape (with a simpler SVG path defined) on top of the Label if you can afford it.</pre>
 </div>
 <div title="SearchOptionsPlugin" creator="Fred" modifier="Fred" created="201510290130" tags="systemConfig" changecount="1">
 <pre>/***
@@ -2689,7 +2697,7 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *Are TableViews the best for answers and clues list. 
 *Are tabs the best way to divide out, can we look at accordion?</pre>
 </div>
-<div title="ToDo" modifier="phiv" created="200807181952" modified="201602010231" changecount="19">
+<div title="ToDo" modifier="phiv" created="200807181952" modified="201602011521" changecount="20">
 <pre>*legend overlay to indicate LogicType highlighting colours when Investigate
 *print dialog to decide where/if put problem text, answer grid, etc... and provide a printer selection dialog next
 *webview to browse the user manual
@@ -2711,7 +2719,8 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *--dependencies for COMMONALITY need to be inverted and show the valid options and where the valid options are common-- -&gt; code inspection seems fine
 *--printing, figure out a way to print problem title &amp; source on page--
 *--wire-up GridLabel context menu to show the same dialog as when double-click is invoked--
-*--implement ''Save as...'' feature--</pre>
+*--implement ''Save as...'' feature--
+*--visual indicator for special category (decorator), along with tooltip--</pre>
 </div>
 <div title="Toolbar" creator="Fred" modifier="Fred" created="201511290154" changecount="1">
 <pre>Under the menu there will be a toolbar containing frequently-used buttons with graphic+text.

@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class ItemPair extends TreeSet<Item>{
     

@@ -31,7 +31,7 @@ import puzzled.exceptions.RelationshipConflictException;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class GridCell extends StackPane {
 

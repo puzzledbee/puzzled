@@ -25,7 +25,7 @@ import puzzled.processor.Parser;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 
 @XmlRootElement

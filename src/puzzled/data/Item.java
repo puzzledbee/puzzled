@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 @XmlRootElement
 public class Item {

@@ -20,7 +20,7 @@ import org.controlsfx.control.HiddenSidesPane;
 
 /**
  *
- * @author Sonia-Fred
+ * @author phiv
  */
 public class SlideOutPane extends AnchorPane {
     private TextArea textArea = new TextArea();

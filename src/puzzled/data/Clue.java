@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 
 @XmlRootElement

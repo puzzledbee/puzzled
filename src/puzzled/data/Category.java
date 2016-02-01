@@ -19,19 +19,27 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 @XmlRootElement
 @XmlType(propOrder={"name","type","items"})
 public class Category {
     
+    //strings are used as decorator background colour through a binding
     public enum CategoryType {
-        NORMAL,
-        NUMERICAL, //mathematical computation possible
-        TIME, //time handling (force 24 hrs representation)
-        DATE, 
-        ORDINAL,   //requires interpretation of text into value e.g. days/months/ranking
-        ORDINAL_WITH_WRAPAROUND
+        NORMAL ("transparent"), //no decorator shown
+        NUMERICAL ("red"), //mathematical computation possible
+        TIME ("green"), //time handling (force 24 hrs representation)
+        DATE ("purple"), 
+        ORDINAL ("orange"),   //requires interpretation of text into value e.g. days/months/ranking
+        ORDINAL_WITH_WRAPAROUND ("brown");
+        
+        public String color;
+        
+        CategoryType(String color) {
+            this.color = color;
+        }
+        
     }
     
 //    @XmlElement
@@ -108,5 +116,4 @@ public class Category {
     public int getNumItems(){
         return items.size();
     }
-    
 }

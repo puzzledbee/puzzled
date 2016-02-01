@@ -10,7 +10,7 @@ import puzzled.data.Relationship;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class SuperfluousRelationshipException extends Exception {
     private ItemPair pair;

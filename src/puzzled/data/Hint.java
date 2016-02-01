@@ -12,7 +12,7 @@ import javafx.geometry.Point2D;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class Hint implements Dependable {
     

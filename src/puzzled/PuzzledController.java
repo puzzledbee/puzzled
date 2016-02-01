@@ -98,7 +98,7 @@ import puzzled.processor.Processor;
 
 /**
  *
- * @author Fred
+ * @author phiv
  */
 public class PuzzledController implements Initializable {
     
