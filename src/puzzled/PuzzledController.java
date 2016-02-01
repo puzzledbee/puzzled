@@ -88,6 +88,7 @@ import puzzled.UI.Grid;
 import puzzled.UI.SlideOutPane;
 import puzzled.data.Category;
 import puzzled.data.Clue;
+import puzzled.data.Clue.ClueType;
 import puzzled.data.Item;
 import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
@@ -387,9 +388,15 @@ public class PuzzledController implements Initializable {
     private void addClueButtonAction(ActionEvent event) {
         Clue newClue = new Clue(clueText.getText());
         logicProblem.get().getClues().add(newClue);
+        
+        //parse to determine if it is a special clue
+        
         logicProblem.get().setFileDirty(true);
         Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().size()));
         label.setTooltip(new Tooltip(clueText.getText()+" ("+newClue.getType()+")"));
+        
+        label.getStyleClass().add("clue_"+newClue.getType());
+        
         clueGlyphBox.getChildren().add(label);
         clueText.clear();
         notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
@@ -463,6 +470,8 @@ public class PuzzledController implements Initializable {
         soPane = new SlideOutPane(hsPane);
         //steal tPane from scene
         hsPane.setContent(tPane);
+//        System.out.println("trigger distance:"+hsPane.getTriggerDistance());
+        hsPane.setTriggerDistance(3);
         hsPane.setRight(soPane);
         //inject into scene
         bPane.setCenter(hsPane);
@@ -618,6 +627,9 @@ public class PuzzledController implements Initializable {
                             Label label = new Label(Integer.toString(logicProblem.get()
                                     .getFilteredClues().indexOf(newClue)+1));
                             label.setTooltip(new Tooltip(newClue.getText()+" ("+newClue.getType()+")"));
+                            
+                            label.getStyleClass().add("clue_"+newClue.getType());
+                            
                             clueGlyphBox.getChildren().add(label);
                         }
                     }
@@ -691,6 +703,9 @@ public class PuzzledController implements Initializable {
 //                Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
                 Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
                 label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
+                
+                label.getStyleClass().add("clue_"+clue.getType());
+                
                 clueGlyphBox.getChildren().add(label);
             }
             

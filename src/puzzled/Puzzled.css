@@ -107,7 +107,6 @@
     
     -fx-background-radius: 3em;
     -fx-border-radius: 3em;
-    -fx-border-color: blueviolet;
     -fx-min-width: 34px;
     -fx-min-height: 34px;
     -fx-max-width: 34px;
@@ -118,10 +117,19 @@
 }
 
 .glyphbox .label:hover {
-    -fx-border-color: blueviolet;
     -fx-background-color: blueviolet;
     -fx-text-fill: white;
 }
+
+.clue_NORMAL {
+    -fx-border-color: blueviolet;
+}
+
+.clue_SPECIAL {
+    -fx-border-color: red;
+}
+
+.clue_CONSTRAINT {}
 
 .tooltip {
     -fx-background-color: blueviolet;

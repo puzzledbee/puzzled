@@ -35,6 +35,9 @@ Last Name;ORDINAL_WITH_WRAPAROUND
 	Koenig
 	Rawlins
 	Wright
+clue 1 text
+clue 2 text;SPECIAL
+clue 3 text;CONSTRAINT
 
 Between the demands of her job as a production editor and those of her growing family, Sabrina rarely has time to indulge in her favorite pastime – reading!  Knowing her free time is scarce, Sabrina often reads several books at once.  Last night, for instance, she read a different number of pages (15 through 19) from five different books!  Each book was written by a different author and is of a different genre.  Fortunately, Sabrina’s family always knows what to get her for her birthday – bookmarks!  From the information provided, can you determine the author (identified by first and last names) and genre of each book, as well as the number of pages Sabrina read in each?.
 1.	Neither Peyton’s book nor the science-fiction novel is Starburst.  Sabrina read exactly one page fewer of the biography than she did of Passion Play.  Frederick (who didn’t pen the fantasy novel) isn’t the one surnamed Wright (who isn’t the one who wrote Haley’s Comet).
