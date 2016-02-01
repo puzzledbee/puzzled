@@ -18,6 +18,34 @@
     -fx-graphic: url("/icons/toolbar/reset.png");
 }
 
+.decorator {
+    -fx-shape: "M0,0 L1,1 L1,0 Z"; 
+}
+
+#decorator-NORMAL {
+    -fx-background-color: transparent;
+}
+
+#decorator-NUMERICAL {
+    -fx-background-color: red;
+}
+
+#decorator-DATE {
+    -fx-background-color: orange;
+}
+
+#decorator-TIME {
+    -fx-background-color: purple;
+}
+
+#decorator-ORDINAL {
+    -fx-background-color: green;
+}
+#decorator-ORDINAL_WITH_WRAPAROUND {
+    -fx-background-color: brown;
+}
+
+
 .tool-bar .button {
     -fx-text-fill: #673AB7;
 }

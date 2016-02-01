@@ -106,14 +106,29 @@ public class GridLabel extends AnchorPane {
             Label decorator = new Label();
             decorator.setPrefSize(20,20);
             decorator.setMouseTransparent(true);
-//          decorator.getStyleClass().add("decorator");
             
-            //create a binding with the type of category, in order to update
-            //the decorator colour whenever/if the category type changes
-            decorator.styleProperty().bind(Bindings.createStringBinding(() -> 
-                "-fx-shape: \"M0,0 L1,1 L1,0 Z\"; -fx-background-color: "+
-                this.categoryTypeProperty.get().color));
+            //binding the colour of the decorator to the CategoryType in order
+            //to update the decorator when/if the CategoryType changes
             
+            //the first binding solution was hard coded using the "styleProperty"
+            //using color strings embedded in the CategoryType enum
+            //this unfortunately keeps style information hard coded in java code
+//            decorator.styleProperty().bind(Bindings.createStringBinding(() -> 
+//                "-fx-shape: \"M0,0 L1,1 L1,0 Z\"; -fx-background-color: "+
+//                this.categoryTypeProperty.get().color));
+
+            //the second colour binding solution instead uses the idProperty
+            //this has the advantage of capturing the style information in the .css file
+            //by combining a style class (unbound), for generic shape, and an ID for the colour
+            //Although it is an unorthodox way to use the idProperty
+            //(there will be non-unique elements in the scene with the same ID)
+            //it is preferred to the first solution as it keeps
+            //CSS information from being stored in the java code
+            //and simplifies the CategoryType enum
+            decorator.getStyleClass().add("decorator"); //generic shape information
+            decorator.idProperty().bind(Bindings.createStringBinding(() -> 
+                "decorator-" + this.categoryTypeProperty.get().toString()));         
+
             this.getChildren().add(decorator);
             AnchorPane.setTopAnchor(decorator, 0.0);
             AnchorPane.setRightAnchor(decorator, 0.0); 
