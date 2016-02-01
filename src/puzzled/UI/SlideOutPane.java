@@ -56,7 +56,7 @@ public class SlideOutPane extends AnchorPane {
         AnchorPane.setRightAnchor(textArea, 0.0);
         AnchorPane.setTopAnchor(textArea, 35.0);
         AnchorPane.setLeftAnchor(textArea, 0.0);
-        AnchorPane.setTopAnchor(tackLabel, 5.0);
+        AnchorPane.setTopAnchor(tackLabel, 3.0);
         AnchorPane.setLeftAnchor(tackLabel, 5.0);
         AnchorPane.setTopAnchor(titleLabel, 5.0);
         AnchorPane.setLeftAnchor(titleLabel, 40.0);

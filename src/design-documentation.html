@@ -583,6 +583,13 @@ this is the problem text, with all the clues for the humans to read
 It can be on multiple lines]
 }}}</pre>
 </div>
+<div title="Android" creator="phiv" modifier="phiv" created="201602010230" changecount="1">
+<pre>The Android/iOS version needs the following tweaks:
+*library of problem books and problems, that can be purchased
+*no menu bar
+*the slide out trigger region works best with a mouse, what to do re: gestures?
+*no clue parsing ?</pre>
+</div>
 <div title="Answers" creator="Fred" modifier="Fred" created="201511290246" changecount="1">
 <pre>Simple table of the answers, listing [[categories|Category]] in the column heading and all associated [[items|Item]] on each row.</pre>
 </div>
@@ -1447,18 +1454,17 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
-<div title="Features (Wish List)" creator="Fred" modifier="Fred" created="201511230213" modified="201601050155" changecount="28">
+<div title="Features (Wish List)" creator="Fred" modifier="phiv" created="201511230213" modified="201602010236" changecount="29">
 <pre>Ordered list of nice-to-have features:
 #should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (predecessors)... and also show all the relationships that depend on it (successors)... Best if those dependencies also track and indicate the type of [[Logic Element]] used to derive it (perhaps with a colour code, when presented visually)
 #[[RollBack]] or undo for [[constraints|Constraint]] and [[clues|Clue]]
 #when loading a problem from file, it would be interesting to have the option to step through processing of clues, or have it automatically process everything ([[Preferences]])
+#[[Android]] version
 #internationalization support, particularly for UI and [[Ordinals|SpecialCategory]]
 #automatic discovery of [[SpecialCategory]] types based on list of known words, but users will be able to force ordinals if words are not known from a list. The list should be in a text file with headings such as [weekdays] that match the category types and a different text file can be generated for each language
 #improved validation on unmarshalling XML files
 #aim to automatically recognize [[special categories|SpecialCategory]] automatically when entering [[items|Item]], and prompt user to validate
 #auto-complete when entering [[clues|Clue]], based on recognized [[items|Item]] or [[category|Category]] names (see TextField from ControlsFX)
-#add look and feel options or skins.... Look at p.159- for look and feel setting code. 
-
 
 !!!Completed features
 #--notification pane for errors--
@@ -1469,7 +1475,124 @@ Graphically entered relationships need to be listed as well.</pre>
 #--provide zoom in/zoom out capability (see example in Mastering... p.48) using buttons on the top left of the [[Grid]] (see [[Layout]])--
 #--mnemonic and shortcut keys for menu items--
 #--provide tool tips--
-#--package some sample problem files with the .jar file and extract them from the .jar file when the application is launched--</pre>
+#--package some sample problem files with the .jar file and extract them from the .jar file when the application is launched--
+
+!!!Abandonned features
+#add look and feel options or skins.... Look at p.159- for look and feel setting code. </pre>
+</div>
+<div title="FoldHeadingsPlugin" creator="phiv" modifier="phiv" created="201602010232" tags="systemConfig" changecount="1">
+<pre>/***
+|Name|FoldHeadingsPlugin|
+|Source|http://www.TiddlyTools.com/#FoldHeadingsPlugin|
+|Version|1.1.2|
+|Author|Eric Shulman|
+|License|http://www.TiddlyTools.com/#LegalStatements|
+|~CoreVersion|2.1|
+|Type|plugin|
+|Description|automatically turn headings into slider-like panels that can be folded/unfolded with a single click|
+This plugin defines a macro that automatically converts heading-formatted content into sliders that let you expand/collapse their content by clicking on individual headings.
+!!!!!Usage
+&lt;&lt;&lt;
+{{{
+&lt;&lt;foldHeadings opened|closed tag tag tag...&gt;&gt;
+}}}
+where: ''opened'' or ''closed'' is a keyword indicating the initial state of the sections (default: opened), and ''tag tag tag...'' is an optional list of tags to match, so that the foldable effect is only applied to tiddlers that contain one (or more) of the indicated tags.  
+
+When you place the macro in a tiddler, any heading-formatted content (i.e, &quot;!&quot; through &quot;!!!!!&quot;) in that tiddler will automatically become //'fold-able'//, allowing you to expand/collapse the content that follows each heading simply by clicking on that heading.  Each content section begins with the first element following a heading, and continues until either another heading is found or the end of the tiddler is reached.  For example:
+{{{
+&lt;&lt;foldHeadings closed&gt;&gt;
+}}}
+is embedded in ''this'' tiddler in order to make all the headings it contains 'fold-able'.  Note that the macro has been placed at the //end// of the tiddler because it only operates on *rendered* content.  Thus, only headings that //precede// it in the same tiddler will become fold-able, as any headings that //follow// it are not actually rendered until //after// the macro has been processed.
+
+You can further limit the effect of the macro within the tiddler by surrounding several headings in a &quot;CSS class wrapper&quot; (&quot;&quot;&quot;{{classname{...}}}&quot;&quot;&quot;) or other containing DOM element (e.g., &quot;&quot;&quot;@@display:inline;...@@&quot;&quot;&quot;) and then embedding the {{{&lt;&lt;foldHeadings&gt;&gt;}}} macro inside that container (at the end)... only those headings that are also within that container will be made fold-able, instead of converting ''all'' the headings in that tiddler.
+
+Conversely, if you want the fold-able ability to apply to the headings in //all// tiddlers, ''without having to alter //any// of those individual tiddlers'', you can add the macro to the end of your [[ViewTemplate]], so that it will be invoked after the content in each tiddler has been rendered, causing all headings they contain to automatically become fold-able.  For example:
+{{{
+&lt;span macro=&quot;foldHeadings closed&quot;&gt;&lt;/span&gt;
+}}}
+You can also limit this effect to selected tiddlers by specifying one or more tags as additional macro parameters.  For example:
+{{{
+&lt;span macro=&quot;foldHeadings closed systemConfig&quot;&gt;&lt;/span&gt;
+}}}
+is only applied to headings contained in //plugin tiddlers// (i.e., tiddlers tagged with &lt;&lt;tag systemConfig&gt;&gt;), while headings in other tiddlers remain unaffected by the macro, even though it is embedded in the common [[ViewTemplate]] definition.
+&lt;&lt;&lt;
+!!!!!Revisions
+&lt;&lt;&lt;
+2009.11.30 [1.1.2] corrected CSS 'text-weight' to 'font-weight'
+2009.01.06 [1.1.1] removed hijack of scrollToSection() (see [[SectionLinksPlugin]] for equivalent code)
+2008.11.17 [1.1.0] added hijack of 'scrollToSection()' function (see [[CoreTweaks]] and http://trac.tiddlywiki.org/ticket/784)
+2007.12.06 [1.0.2] fix handling for empty sections when checking for sliderPanel/floatingPanel
+2007.12.02 [1.0.1] fix handling when content following a heading is already a sliderPanel/floatingPanel
+2007.12.01 [1.0.0] initial release
+&lt;&lt;&lt;
+!!!!!Code
+***/
+//{{{
+version.extensions.FoldHeadingsPlugin= {major: 1, minor: 1, revision: 2, date: new Date(2009,11,30)};
+
+config.macros.foldHeadings = {
+	guideText: &quot;opened|closed className&quot;,
+	showtip: &quot;click to show '%0'&quot;,
+	hidetip: &quot;click to hide '%0'&quot;,
+	showlabel: &quot;more...&quot;,
+	hidelabel: &quot;[x]&quot;,
+	html: &quot;&lt;span style='float:right;font-weight:normal;font-size:80%;' class='TiddlyLinkExisting'&gt;%0&amp;nbsp;&lt;/span&gt;&quot;,
+	handler: function(place,macroName,params) {
+		var show=params[0] &amp;&amp; params.shift().toLowerCase()!=&quot;closed&quot;;
+		if (params.length) { // if filtering by tag(s)
+			var here=story.findContainingTiddler(place);
+			if (here) var tid=store.getTiddler(here.getAttribute(&quot;tiddler&quot;));
+			if (!tid || !tid.tags.containsAny(params)) return; // in a tiddler and not tagged... do nothing...
+		}
+		var elems=place.parentNode.getElementsByTagName(&quot;*&quot;);
+		var heads=[]; for (var i=0; i&lt;elems.length; i++) { // get non-foldable heading elements
+			var n=elems[i].nodeName; var foldable=hasClass(elems[i],&quot;foldable&quot;);
+			if ((n==&quot;H1&quot;||n==&quot;H2&quot;||n==&quot;H3&quot;||n==&quot;H4&quot;||n==&quot;H5&quot;)&amp;&amp;!foldable)
+				heads.push(elems[i]);
+			}
+		for (var i=0; i&lt;heads.length; i++) { var h=heads[i]; // for each heading element...
+			// find start/end of section content (up to next heading or end of content)
+			var start=end=h.nextSibling; while (end &amp;&amp; end.nextSibling) {
+				var n=end.nextSibling.nodeName.toUpperCase();
+				if (n==&quot;H1&quot;||n==&quot;H2&quot;||n==&quot;H3&quot;||n==&quot;H4&quot;||n==&quot;H5&quot;) break;
+				end=end.nextSibling;
+			}
+			if (start &amp;&amp; hasClass(start,&quot;sliderPanel&quot;)||hasClass(start,&quot;floatingPanel&quot;)) continue; // heading is already a slider!
+			var span=createTiddlyElement(null,&quot;span&quot;,null,&quot;sliderPanel&quot;); // create container
+			span.style.display=show?&quot;inline&quot;:&quot;none&quot;; // set initial display state
+			h.parentNode.insertBefore(span,start); // and insert it following the heading element
+			// move section elements into container...
+			var e=start; while (e) { var next=e.nextSibling; span.insertBefore(e,null); if (e==end) break; e=next; }
+			// set heading label/tip/cursor...
+			h.title=(show?this.hidetip:this.showtip).format([h.textContent])
+			h.innerHTML=this.html.format([show?this.hidelabel:this.showlabel])+h.innerHTML;
+			h.style.cursor='pointer';
+			addClass(h,&quot;foldable&quot;); // so we know it been done (and to add extra styles)
+			h.onclick=function() {
+				var panel=this.nextSibling; var show=panel.style.display==&quot;none&quot;;
+				// update panel display state
+				if (config.options.chkAnimate) anim.startAnimating(new Slider(panel,show));
+				else panel.style.display = show?&quot;inline&quot;:&quot;none&quot;;
+				// update heading label/tip
+				this.removeChild(this.firstChild); // remove existing label
+				var fh=config.macros.foldHeadings; // abbreviation for readability...
+				this.title=(show?fh.hidetip:fh.showtip).format([this.textContent])
+				this.innerHTML=fh.html.format([show?fh.hidelabel:fh.showlabel])+this.innerHTML;
+			}
+		}		
+	}
+}
+
+if (story.scrollToSection) {
+Story.prototype.foldheadings_scrollToSection=Story.prototype.scrollToSection;
+Story.prototype.scrollToSection=function(title,section) {
+	var e=this.foldheadings_scrollToSection.apply(this,arguments);
+	// if scrolling to a folded section heading, click to expand it
+	if (e &amp;&amp; hasClass(e,'foldable') &amp;&amp; e.nextSibling.style.display=='none') e.onclick();
+}
+}
+//}}}
+// //&lt;&lt;foldHeadings closed&gt;&gt;</pre>
 </div>
 <div title="Gender" modifier="Fred" created="200807182037" modified="200807182039" tags="Clue">
 <pre>Using the gender of names in the clue text:
@@ -1862,18 +1985,16 @@ HintsTable
 	place.lastChild.style.fontWeight=&quot;normal&quot;;
 &lt;/script&gt;</pre>
 </div>
-<div title="Next" creator="Fred" modifier="phiv" created="201511230254" modified="201601310338" changecount="52">
-<pre>*wire-up GridLabel context menu to show the same dialog as when double-click is invoked -&gt; this is harder than I thought... try doing away with the anonymous class altogether
-*visual indicator for special category (triangle), along with tooltip, and special clues (different circle), see controlsFX decorator
+<div title="Next" creator="Fred" modifier="phiv" created="201511230254" modified="201602010234" changecount="56">
+<pre>*visual indicator for special category (triangle), along with tooltip, and special clues (different circle), see controlsFX decorator
 *some relationships seem to have way too many dependencies
-*implement ''Save as...'' feature
 *work on clue tab and answer tab
 *become a layout king
 **learn what preferred size means in UI components
 *problem properties dialog
 *new problem dialogs
 *better dialogs for editing Category from context menu
-*application properties file for preferences
+*application properties file for [[Preferences]]
 *right-click on clue glyph to remove clue
 *javadoc, tons of javadoc
 *[[ToDo]]</pre>
@@ -1934,10 +2055,11 @@ See also [[Design considerations]]
 <div title="Parser" modifier="Fred" created="200807211508" tags="Object">
 <pre>Object responsible to extract NormalClue or [[special clues|SpecialClue]] from the [[PseudoEnglish]] text entered.</pre>
 </div>
-<div title="Preferences" creator="Fred" modifier="Fred" created="201512050448" changecount="1">
+<div title="Preferences" creator="Fred" modifier="phiv" created="201512050448" modified="201602010234" changecount="2">
 <pre>List of interesting application preferences, or options that could be all be interesting in different situations
-* step through processing of clues upon loading from file
-* </pre>
+*step through processing of clues upon loading from file
+*working directory
+*various view/hide options ?</pre>
 </div>
 <div title="ProblemDatabase" modifier="Fred" created="200807160005" modified="201510290122" tags="menu" changecount="1">
 <pre>!Purpose
@@ -2567,8 +2689,9 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *Are TableViews the best for answers and clues list. 
 *Are tabs the best way to divide out, can we look at accordion?</pre>
 </div>
-<div title="ToDo" modifier="phiv" created="200807181952" modified="201601310338" changecount="13">
+<div title="ToDo" modifier="phiv" created="200807181952" modified="201602010231" changecount="19">
 <pre>*legend overlay to indicate LogicType highlighting colours when Investigate
+*print dialog to decide where/if put problem text, answer grid, etc... and provide a printer selection dialog next
 *webview to browse the user manual
 *printing, improve page centering for various grid sizes
 *RollBack handling
@@ -2580,12 +2703,15 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *how to handle &gt; &lt; : as special clue only or in table (ref [[Type 2]])
 *[[delta]] (no direction for offset): SpecialClue until sign is determined and then into HintsTable, or dormant in the HintsTable as an unsigned [[offset]] used for RestrictedValues only?? (should a delta simply be considered as an [[Or]] rule?)
 *[[Enumeration]] handling, [[Or]] handling
+*do we need a mode where the slide out panel is part of the border pane instead of the overlay, if for example we want to keep it on screen and work on the entire grid? The current implementation does not allow that.
 
+!!!Completed
 *--consider using CSS for context menu graphics-- -&gt; tried with setting up the node's ID using .setID and a #entry in the .css file or using a class, without success
 *--try the funky circular contextmenu for gridcells (http://jfxtras.org/doc/8.0/jfxtras-menu/index.html)-- -&gt; very cool but does not respect disabled items
-*--dependencies for COMMONALITY need to be inverted and show the valid options and where the valid options are common-- -&gt; code inspection 
-seems fine
-*--printing, figure out a way to print problem title &amp; source on page--</pre>
+*--dependencies for COMMONALITY need to be inverted and show the valid options and where the valid options are common-- -&gt; code inspection seems fine
+*--printing, figure out a way to print problem title &amp; source on page--
+*--wire-up GridLabel context menu to show the same dialog as when double-click is invoked--
+*--implement ''Save as...'' feature--</pre>
 </div>
 <div title="Toolbar" creator="Fred" modifier="Fred" created="201511290154" changecount="1">
 <pre>Under the menu there will be a toolbar containing frequently-used buttons with graphic+text.
@@ -2626,6 +2752,19 @@ It is necessary to create all the [[relationships|Relationship]] even before VAL
 *In [[puzzled|http://puzzled.sf.net]], its value is arbitrarily defined in the puzzled.data.Constants interface as 1.
 
 See also [[VALUE_NO]] and [[VALUE_UNKNOWN]].</pre>
+</div>
+<div title="ViewTemplate" creator="phiv" modifier="phiv" created="201602010233" changecount="1">
+<pre>&lt;!--{{{--&gt;
+&lt;div class='toolbar' role='navigation' macro='toolbar [[ToolbarCommands::ViewToolbar]]'&gt;&lt;/div&gt;
+&lt;div class='title' macro='view title'&gt;&lt;/div&gt;
+&lt;div class='subtitle'&gt;&lt;span macro='view modifier link'&gt;&lt;/span&gt;, &lt;span macro='view modified date'&gt;&lt;/span&gt; (&lt;span macro='message views.wikified.createdPrompt'&gt;&lt;/span&gt; &lt;span macro='view created date'&gt;&lt;/span&gt;)&lt;/div&gt;
+&lt;div class='tagging' macro='tagging'&gt;&lt;/div&gt;
+&lt;div class='tagged' macro='tags'&gt;&lt;/div&gt;
+&lt;div class='viewer' macro='view text wikified'&gt;&lt;/div&gt;
+&lt;div class='tagClear'&gt;&lt;/div&gt;
+&lt;!--}}}--&gt;
+&lt;span macro=&quot;foldHeadings closed&quot;&gt;&lt;/span&gt;
+</pre>
 </div>
 <div title="XML binding" creator="Fred" modifier="Fred" created="201512170317" modified="201512292353" changecount="8">
 <pre>Early experiments indicate that FAXB can be used to marshall the [[LogicProblem]] object to file and unmarshall the object from file.

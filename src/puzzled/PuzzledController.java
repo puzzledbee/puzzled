@@ -161,7 +161,8 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private Label clueCounter;
-    
+    @FXML
+    private MenuItem openMenuItem;    
     @FXML
     private MenuItem saveMenuItem;
     
@@ -180,7 +181,6 @@ public class PuzzledController implements Initializable {
     @FXML
     private MenuItem zoomOutMenuItem;
     
-    
     @FXML
     private ToolBar toolbar;
     
@@ -189,6 +189,12 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private Button saveButton;
+
+    @FXML
+    private Button resetButton;
+
+    @FXML
+    private Button undoButton;
     
     @FXML
     private Button zoomOutButton;
@@ -413,10 +419,10 @@ public class PuzzledController implements Initializable {
         clueText.disableProperty().bind(logicProblem.isNull());
         addClueButton.disableProperty().bind(logicProblem.isNull());
         automaticProcessingMenuItem.disableProperty().bind(logicProblem.isNull());
-        saveMenuItem.disableProperty().bind(Bindings.or(Bindings.or(this.logicProblem.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
-        saveAsMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.dirtyFileProperty.not()));
+        saveMenuItem.disableProperty().bind(Bindings.or(Bindings.and(this.logicProblem.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
+        saveAsMenuItem.disableProperty().bind(Bindings.and(logicProblem.isNull(),this.dirtyFileProperty.not()));
         
-        saveButton.disableProperty().bind(Bindings.or(Bindings.or(this.logicProblem.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
+        saveButton.disableProperty().bind(Bindings.or(Bindings.and(this.logicProblem.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
         propertiesMenuItem.disableProperty().bind(logicProblem.isNull());
         printMenuItem.disableProperty().bind(logicProblem.isNull());
         toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
@@ -518,13 +524,12 @@ public class PuzzledController implements Initializable {
     * @param myFile string representing the filename to be loaded.
     */
     public void loadProblem(String myFile){
-        fLogger.log(Level.INFO, "loading logic problem file: " + myFile);
         loadProblem(new File(myFile));
     }
         
     private void loadProblem(File file){
         //check that there are no problem already loaded
-        
+        fLogger.log(Level.INFO, "loading logic problem file: " + file.getName());
         LogicProblem newProblem = null;
         String extension = file.getName().replaceAll("^.*\\.([^.]+)$", "$1");
         if (extension.equalsIgnoreCase("lpf")) {
@@ -591,6 +596,7 @@ public class PuzzledController implements Initializable {
                 if (!problemText.trim().isEmpty()) newProblem.setText(problemText);
 
                 logicProblem.set(newProblem);
+                this.dirtyFileProperty.set(true);//to enable save as (one cannot save an .lps file)
                 initializeProblem();
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
             
@@ -627,7 +633,8 @@ public class PuzzledController implements Initializable {
         }
     }
     
-    public void resetButtonActtion(ActionEvent event) {
+    @FXML
+    public void resetButtonAction(ActionEvent event) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Reset Logic Problem");
         alert.initStyle(StageStyle.UTILITY);
@@ -680,15 +687,18 @@ public class PuzzledController implements Initializable {
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+"*":
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue(),this.dirtyFileProperty));
 //          
-            for (Clue clue : logicProblem.get().getClues()){
+            for (Clue clue : logicProblem.get().getFilteredClues()){
 //                Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
                 Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
                 label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
                 clueGlyphBox.getChildren().add(label);
             }
+            
+            //processClues
     }
     
-    public void openFile() {
+    @FXML
+    public void openAction() {
         fLogger.log(Level.INFO, "opening file invoked");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Logic Problem File");
@@ -779,10 +789,36 @@ public class PuzzledController implements Initializable {
         
     }
     
-    public void saveFile(){
+    @FXML
+    public void saveAction(ActionEvent event) {
+        saveFile("test.lpf");
+    }
+    
+    @FXML
+    public void saveAsAction(ActionEvent event) {
+        fLogger.log(Level.INFO, "save as action invoked");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Logic Problem File as");
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("Logic Problem Files", "*.lpf"));
+
+        Stage mainStage = (Stage) root.getScene().getWindow();
+        File selectedFile = fileChooser.showSaveDialog(mainStage);
+        if (selectedFile != null) {
+            fLogger.log(Level.INFO, "file "+selectedFile.getName());
+            saveFile(selectedFile);
+        } else {
+            fLogger.log(Level.INFO, "no file selected");
+        }
+    }
+    
+    public void saveFile(String filename) {
+        saveFile(new File(filename));
+    }
+    
+    public void saveFile(File file){
         
         fLogger.log(Level.INFO, "saveFile invoked");
-        File file = new File("test.lpf");
         
         //remove constraints from clue list
         //better add to a list and then removing
@@ -798,25 +834,25 @@ public class PuzzledController implements Initializable {
             );
             
         try {
-                   
-                    JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
-                    Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
-                    // output pretty printed
-                    jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                    
+            // output pretty printed
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
 //                    LogicProblem newProblem = DemoProblems.generateDemoProblem47();
-                    jaxbMarshaller.marshal(logicProblem.get(), file);
-                    
-                    jaxbMarshaller.marshal(logicProblem.get(), System.out);
-                    logicProblem.get().dirtyFileProperty().set(false);
-                    notify(WarningType.SUCCESS, "File "+file.getName()+" saved successfully!");
+            jaxbMarshaller.marshal(logicProblem.get(), file);
+
+            jaxbMarshaller.marshal(logicProblem.get(), System.out);
+            logicProblem.get().dirtyFileProperty().set(false);
+            notify(WarningType.SUCCESS, "File "+file.getName()+" saved successfully!");
+            this.filenameProperty.set(file.getName());
         } catch (JAXBException e) {
-                    notify(WarningType.WARNING, "Unable to save file "+file.getName()+"!");
-                    e.printStackTrace();
+            notify(WarningType.WARNING, "Unable to save file "+file.getName()+"!");
+            e.printStackTrace();
         }
     }
-
+        
     public void setupNotifier() {
         nPane.setContent(bPane);
         //nPane.getStylesheets().add(getClass().getResource("Puzzled.css").toExternalForm());

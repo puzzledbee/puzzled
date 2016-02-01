@@ -23,7 +23,7 @@
                       <Menu mnemonicParsing="false" text="File">
                         <items>
                               <MenuItem mnemonicParsing="false" text="New Logic Problem ..." />
-                              <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open Logic Problem ...">
+                              <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openAction" text="Open Logic Problem ...">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
@@ -33,12 +33,12 @@
                                     <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveFile" text="Save Logic Problem">
+                              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveAction" text="Save Logic Problem">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" text="Save Logic Problem As..." />
+                              <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsAction" text="Save Logic Problem As..." />
                               <MenuItem fx:id="printMenuItem" mnemonicParsing="false" onAction="#print" text="Print">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -53,7 +53,7 @@
                       <Menu mnemonicParsing="false" text="Edit">
                         <items>
                           <MenuItem mnemonicParsing="false" text="Undo last operation" />
-                              <MenuItem mnemonicParsing="false" onAction="#resetButtonActtion" text="Reset problem ...">
+                              <MenuItem fx:id="resetMenuItem" mnemonicParsing="false" onAction="#resetButtonAction" text="Reset problem ...">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator></MenuItem>
@@ -99,11 +99,11 @@
                   </MenuBar>
                   <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="200.0">
                     <items>
-                      <Button id="btn_new" mnemonicParsing="false" text="New" />
-                        <Button id="btn_open" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#openFile" text="Open" />
-                        <Button id="btn_save" fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#saveFile" text="Save" />
-                        <Button id="btn_undo" fx:id="resetButton" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Undo" />
-                        <Button id="btn_reset" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" onAction="#resetButtonActtion" text="Reset" />
+                      <Button id="btn_new" fx:id="newButton" mnemonicParsing="false" text="New" />
+                        <Button id="btn_open" fx:id="openButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#openAction" text="Open" />
+                        <Button id="btn_save" fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#saveAction" text="Save" />
+                        <Button id="btn_undo" fx:id="undoButton" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Undo" />
+                        <Button id="btn_reset" fx:id="resetButton" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" onAction="#resetButtonAction" text="Reset" />
                     </items>
                   </ToolBar>
                </children>
