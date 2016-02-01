@@ -35,6 +35,7 @@ import org.controlsfx.control.decoration.Decorator;
 import org.controlsfx.control.decoration.GraphicDecoration;
 import org.controlsfx.control.decoration.StyleClassDecoration;
 import puzzled.data.Category;
+import puzzled.data.DataElement;
 
 /**
  *
@@ -47,21 +48,14 @@ public class GridLabel extends AnchorPane {
         ITEM
     }
 
-    private LabelType labelType;
+    private DataElement dataElement;
     private Label mainLabel = new Label();
     private ContextMenu contextMenu = new ContextMenu();
-    private ObjectProperty<Category.CategoryType> categoryTypeProperty;
-    
-    public GridLabel(LabelType labelType_arg, StringProperty bound, int width, int height) {
-        this(labelType_arg, bound, width, height, null);
-    }
 
-    //overloaded
-    public GridLabel(LabelType labelType_arg, StringProperty bound, int width, int height, ObjectProperty<Category.CategoryType> arg_typeProperty) {
-        this.labelType = labelType_arg;
-        this.categoryTypeProperty = arg_typeProperty;
+    public GridLabel(DataElement dataElement, int width, int height) {
+        this.dataElement = dataElement;
         
-        mainLabel.textProperty().bindBidirectional(bound);
+        mainLabel.textProperty().bindBidirectional(dataElement.nameProperty());
         this.setOnMouseClicked(this.labelDoubleClickHandler);
         this.getStyleClass().add("gridLabel");
         mainLabel.setAlignment(Pos.CENTER);
@@ -79,15 +73,15 @@ public class GridLabel extends AnchorPane {
 //        Decorator.addDecoration(this, new GraphicDecoration(createDecoratorNode(Color.RED),Pos.TOP_CENTER));
 //        Decorator.addDecoration(this, new GraphicDecoration(createImageNode(),Pos.TOP_CENTER));
         
-        MenuItem editMenuItem = new MenuItem("Edit "+((labelType==LabelType.CATEGORY)?"category...":"item..."));
+        MenuItem editMenuItem = new MenuItem("Edit "+((dataElement instanceof Category)?"category...":"item..."));
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         editMenuItem.setGraphic(new ImageView("/icons/context-menus/edit.png"));
         editMenuItem.setOnAction(new ContextMenuActionHandler(this));
         contextMenu.getItems().add(editMenuItem);
 //        this.setOnMouseClicked(e -> contextMenu.show(this, Side.RIGHT, 0, 0)); 
-        if (labelType==LabelType.CATEGORY) {
+        if (dataElement instanceof Category) {
             Tooltip newTooltip = new Tooltip();
-            newTooltip.textProperty().bind(Bindings.format("category of type %s", arg_typeProperty.asString()));
+            newTooltip.textProperty().bind(Bindings.format("category of type %s", ((Category)dataElement).getType()));
             mainLabel.setTooltip(newTooltip);
         }
     }
@@ -102,7 +96,7 @@ public class GridLabel extends AnchorPane {
     
     private void decorate() {
        
-        if (this.labelType == LabelType.CATEGORY) {
+        if (dataElement instanceof Category) {
             Label decorator = new Label();
             decorator.setPrefSize(20,20);
             decorator.setMouseTransparent(true);
@@ -127,7 +121,7 @@ public class GridLabel extends AnchorPane {
             //and simplifies the CategoryType enum
             decorator.getStyleClass().add("decorator"); //generic shape information
             decorator.idProperty().bind(Bindings.createStringBinding(() -> 
-                "decorator-" + this.categoryTypeProperty.get().toString()));         
+                "decorator-" + ((Category)dataElement).getType()));         
 
             this.getChildren().add(decorator);
             AnchorPane.setTopAnchor(decorator, 0.0);

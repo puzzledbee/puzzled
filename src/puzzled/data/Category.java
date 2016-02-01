@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement
 @XmlType(propOrder={"name","type","items"})
-public class Category {
+public class Category implements DataElement {
     
     //when changing the CategoryTypes, update the decorator styles in Puzzled.css
     public enum CategoryType {
@@ -37,7 +37,6 @@ public class Category {
     
 //    @XmlElement
     private StringProperty nameProperty = new SimpleStringProperty();
-    
 
     private LogicProblem parent;
     
@@ -48,8 +47,9 @@ public class Category {
     
     //necessary for unmarshalling
     public Category(){
-        
     }
+    
+    
     
     public Category(String myTitle,List<Item> myItems) {
         nameProperty.set(myTitle);

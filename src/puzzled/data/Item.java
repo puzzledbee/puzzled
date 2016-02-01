@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author phiv
  */
 @XmlRootElement
-public class Item {
+public class Item implements DataElement {
     
     private StringProperty nameProperty = new SimpleStringProperty();
     @XmlTransient
