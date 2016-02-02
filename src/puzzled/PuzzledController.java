@@ -451,7 +451,10 @@ public class PuzzledController implements Initializable {
         
         
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
-            if (newvalue!=null) setupDragNDrop(mainGrid.getScene());
+            if (newvalue!=null) {
+                setupDragNDrop(mainGrid.getScene());
+//                mainGrid.getScene().getStylesheets().add(PuzzledController.class.getResource("Puzzled.css").toExternalForm());
+            }
         });
         
         

@@ -75,7 +75,8 @@ public class GridLabel extends AnchorPane {
         
         MenuItem editMenuItem = new MenuItem("Edit "+((dataElement instanceof Category)?"category...":"item..."));
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        editMenuItem.setGraphic(new ImageView("/icons/context-menus/edit.png"));
+//        editMenuItem.setGraphic(new ImageView("/icons/context-menus/edit.png"));
+        editMenuItem.setStyle("-fx-graphic: url(\"/icons/context-menus/edit.png\");");
         editMenuItem.setOnAction(new ContextMenuActionHandler(this));
         contextMenu.getItems().add(editMenuItem);
 //        this.setOnMouseClicked(e -> contextMenu.show(this, Side.RIGHT, 0, 0)); 
