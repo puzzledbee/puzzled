@@ -387,18 +387,11 @@ public class PuzzledController implements Initializable {
     @FXML
     private void addClueButtonAction(ActionEvent event) {
         Clue newClue = new Clue(clueText.getText());
-        logicProblem.get().getClues().add(newClue);
-        
-        //parse to determine if it is a special clue
-        
-        logicProblem.get().setFileDirty(true);
-        Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().size()));
-        label.setTooltip(new Tooltip(clueText.getText()+" ("+newClue.getType()+")"));
-        
-        label.getStyleClass().add("clue_"+newClue.getType());
-        
-        clueGlyphBox.getChildren().add(label);
+        logicProblem.get().getClues().add(newClue); //this invokes clue parsing
         clueText.clear();
+        clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
+
+        logicProblem.get().setFileDirty(true);
         notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
     }
     
@@ -490,7 +483,7 @@ public class PuzzledController implements Initializable {
     }
     
     
-        /*
+    /*
     * Sets up the drag and drop capability for files and URLs to be
     * dragged and dropped onto the scene. This will load the image into
     * the current image view area.
@@ -596,7 +589,7 @@ public class PuzzledController implements Initializable {
                                     System.out.println("adding clue "+lines.get(i)+" ("+i+")");
                                     String[] clueInfo = lines.get(i++).split(";");
                                     Clue newClue = new Clue(clueInfo);
-                                    newProblem.addClue(newClue);
+                                    newProblem.addClue(newClue); //this will parse the clue
                                 }
                             }
                         } //else there are no clues present
@@ -606,7 +599,7 @@ public class PuzzledController implements Initializable {
 
                 logicProblem.set(newProblem);
                 this.dirtyFileProperty.set(true);//to enable save as (one cannot save an .lps file)
-                initializeProblem();
+                initializeProblem(); //this will add the clue glyphs
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
             
             } catch (IOException e) {
@@ -616,21 +609,14 @@ public class PuzzledController implements Initializable {
         } else if (extension.equalsIgnoreCase("lpc")) {
             if (logicProblem.isNotNull().getValue()) {
                 try {
-
                     List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
                     for (String line : lines) {
                         String[] clueInfo = line.split(";");
                         Clue newClue = new Clue(clueInfo);
-                        logicProblem.get().addClue(newClue);
+                        logicProblem.get().addClue(newClue); //this will parse the clue
                         logicProblem.get().setFileDirty(true);
                         if (newClue.getType() != Clue.ClueType.CONSTRAINT) {
-                            Label label = new Label(Integer.toString(logicProblem.get()
-                                    .getFilteredClues().indexOf(newClue)+1));
-                            label.setTooltip(new Tooltip(newClue.getText()+" ("+newClue.getType()+")"));
-                            
-                            label.getStyleClass().add("clue_"+newClue.getType());
-                            
-                            clueGlyphBox.getChildren().add(label);
+                            clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
                         }
                     }
                 } catch (IOException e) {
@@ -677,8 +663,6 @@ public class PuzzledController implements Initializable {
             //bind relationships layer visibility to checkMenuItem        
             logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
             
-            
-           //test
             this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());
@@ -699,17 +683,22 @@ public class PuzzledController implements Initializable {
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+"*":
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue(),this.dirtyFileProperty));
 //          
-            for (Clue clue : logicProblem.get().getFilteredClues()){
+
+            //clues have already been added to the problem and parsed when loading the file
+            //this is only to draw the glyph
+            for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
 //                Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
-                Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
-                label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
-                
-                label.getStyleClass().add("clue_"+clue.getType());
-                
-                clueGlyphBox.getChildren().add(label);
-            }
-            
-            //processClues
+//                Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
+//                label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
+//                
+//                label.getStyleClass().add("clue_"+clue.getType());
+    }
+    
+    private Label generateClueGlyph(Clue clue){
+        Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
+        label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
+        label.getStyleClass().add("clue_"+clue.getType());
+        return label;
     }
     
     @FXML
