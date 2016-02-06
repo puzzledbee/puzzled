@@ -367,7 +367,7 @@ public class PuzzledController implements Initializable {
         
         PrinterJob printerJob = PrinterJob.createPrinterJob();
         
-        if (printerJob != null) {
+        if (printerJob != null && printerJob.showPrintDialog(null)) {
             printerJob.getJobSettings().setPageLayout(pageLayout);
             
             boolean success = printerJob.printPage(borderPane);

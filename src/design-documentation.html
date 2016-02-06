@@ -2140,8 +2140,8 @@ See also [[Undo]].
 *--Relationships that are not manually entered, such as those derived from text clues or using any of the logic elements, cannot be modified by the user using the Graphical User Interface.--
 *--In order to achieve roll-back, a [[Sequencer]] object needs to exist and its current value needs to be assigned to each relationship.--</pre>
 </div>
-<div title="SVGPath" creator="phiv" modifier="phiv" created="201602010441" modified="201602010443" changecount="3">
-<pre>When using the -fx-shape CSS attribute inside a label, coordinates become very difficult to grasp. The approach is therefore ill-suited for Label decoration
+<div title="SVGPath" creator="phiv" modifier="phiv" created="201602010441" modified="201602020508" changecount="4">
+<pre>When using the -fx-shape CSS attribute for a label, coordinates become very difficult to grasp. The approach is therefore ill-suited for Label decoration alone, without a StackPane or AnchorPane.
 Observation:
 *a Move statement to start is absolutely necessary
 *the maximum size of the path string (outer bounds) will be scaled down to fit the node dimensions, no matter what values are chosen
@@ -2690,7 +2690,7 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *Are TableViews the best for answers and clues list. 
 *Are tabs the best way to divide out, can we look at accordion?</pre>
 </div>
-<div title="ToDo" modifier="phiv" created="200807181952" modified="201602020454" changecount="27">
+<div title="ToDo" modifier="phiv" created="200807181952" modified="201602061642" changecount="28">
 <pre>Next:
 *some relationships seem to have way too many dependencies
 *work on clue tab and answer tab
@@ -2705,7 +2705,7 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 
 !!!Later
 *legend overlay to indicate LogicType highlighting colours when Investigate
-*print dialog to decide where/if put problem text, answer grid, etc... and provide a printer selection dialog next
+*print dialog to decide where/if put problem text, answer grid, etc...
 *webview to browse the user manual
 *printing, improve page centering for various grid sizes
 *[[RollBack]] and [[Undo]] handling
@@ -2730,7 +2730,8 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *--wire-up GridLabel context menu to show the same dialog as when double-click is invoked--
 *--implement ''Save as...'' feature--
 *--visual indicator for special category (decorator), along with tooltip--
-*--visual indicator for special clues, like the [[Category]] decorator--</pre>
+*--visual indicator for special clues, like the [[Category]] decorator--
+*--and provide a printer selection dialog next--</pre>
 </div>
 <div title="Toolbar" creator="Fred" modifier="Fred" created="201511290154" changecount="1">
 <pre>Under the menu there will be a toolbar containing frequently-used buttons with graphic+text.
