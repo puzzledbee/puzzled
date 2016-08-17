@@ -24,7 +24,7 @@ import org.controlsfx.control.NotificationPane;
 public class Puzzled extends Application {
     
     private static final String banner = "Puzzled! - Computer-aided logic problem solver";
-    public static final String version = "2.0.1";
+    public static final String version = "2.0.2";
     
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
