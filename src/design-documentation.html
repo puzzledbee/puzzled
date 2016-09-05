@@ -532,8 +532,8 @@ clue 2 text[; type]
 clue 3 text[; type]
 }}}</pre>
 </div>
-<div title=".lpf" creator="Fred" modifier="Fred" created="201512281238" modified="201512281239" changecount="2">
-<pre>''Logic Problem File''. XML-based filetype used to save (or load) [[LogicProblem]] data. See also [[.lps]] and [[.lpc]].</pre>
+<div title=".lpf" creator="Fred" modifier="phiv" created="201512281238" modified="201609051244" changecount="3">
+<pre>''Logic Problem File''. XML-based filetype used to save (or load) [[LogicProblem]] data. See also [[.lps]], [[.lpc]] and [[.lpb|LogicProblemBook]]</pre>
 </div>
 <div title=".lps" creator="Fred" modifier="phiv" created="201512190050" modified="201601290210" changecount="15">
 <pre>''Logic Problem Shorthand''. simple text file used to rapidly input problems into Puzzled, faster than manually generating an XML [[.lpf]] file or using the GUI to input all persistent [LogicProblem]] data. It is convenient for command-line operations and testing. See also [[.lpc]].
@@ -1933,7 +1933,7 @@ For n categories, the layout of the grid is as follows:
 * [[VALUE_NO]] relationship discovered following the elimination of options as part of an enumeration.
 </pre>
 </div>
-<div title="LogicProblem" creator="Fred" modifier="Fred" created="201510312313" modified="201512281238" changecount="8">
+<div title="LogicProblem" creator="Fred" modifier="phiv" created="201510312313" modified="201609051243" changecount="9">
 <pre>Main class describing the problem data. It --is serializable--  can be saved to / loaded from an XML [[.lpf]] file.
 Must contain as fields:
 *Problem title, source, notes
@@ -1943,6 +1943,14 @@ Must contain as fields:
 *[[Constraints|Constraint]]
 
 [[Relationships|Relationship]] and [[HintsTable]] are not saved with the [[LogicProblem]], but are instead regenerated from the [[constraints|Constraint]] and [[clues|Clue]].</pre>
+</div>
+<div title="LogicProblemBook" creator="phiv" modifier="phiv" created="201609051246" changecount="1">
+<pre>'Archive' used as a container of multiple[[logic problems|LogicProblem]]. Proposed file extension: {{{.lpb}}}. In addition to the problem, the 'archive' should contain the following metadata:
+*Book/magazine title
+*Book/magazine number
+*Book/magazine publisher
+*Book/magazine publication date
+*Book/magazine publication country</pre>
 </div>
 <div title="MainMenu" modifier="phiv" created="200807152359" modified="201602012313" changecount="9">
 <pre>[[Puzzled|Puzzled]]
