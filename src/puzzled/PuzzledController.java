@@ -108,8 +108,7 @@ public class PuzzledController implements Initializable {
     private static double minZoom = 0.4;
     private static int notificationTimer = 3000;
     
-    StringProperty filenameProperty = new SimpleStringProperty(null);
-    
+   
     public enum WarningType {
         SUCCESS ("success.png"), 
         INFO ("info.png"), 
@@ -243,7 +242,9 @@ public class PuzzledController implements Initializable {
     private String appTitle;
     private String appVersion;
 
+    
     private StringProperty appTitleProperty = new SimpleStringProperty();
+    private StringProperty filenameProperty = new SimpleStringProperty(null); //used to store loaded file name
     
     @FXML
     private void handleAutomaticProcessingAction(ActionEvent event) {
@@ -546,8 +547,8 @@ public class PuzzledController implements Initializable {
                     newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
                     fLogger.log(Level.INFO, newProblem.toString());
                     logicProblem.set(newProblem);
-                    initializeProblem();
                     this.filenameProperty.set(file.getName());
+                    initializeProblem();
                     notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
               } catch (JAXBException e) {
                     notify(WarningType.WARNING, "Unable to load problem file "+file.getName()+ "!");
@@ -602,6 +603,7 @@ public class PuzzledController implements Initializable {
 
                 logicProblem.set(newProblem);
                 this.dirtyFileProperty.set(true);//to enable save as (one cannot save an .lps file)
+                this.filenameProperty.set(file.getName());
                 initializeProblem(); //this will add the clue glyphs
                 notify(WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
             
@@ -651,6 +653,7 @@ public class PuzzledController implements Initializable {
             notify(WarningType.SUCCESS, "Logic problem reset successfully!");
         }
     }
+
     
     private void initializeProblem(){
         
@@ -683,8 +686,8 @@ public class PuzzledController implements Initializable {
             clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getFilteredClues()).add(1).asString().concat("->"));
             
             this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblem.get().dirtyFileProperty().get()?
-                    appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+"*":
-                    appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue(),this.dirtyFileProperty));
+                    appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.getValue()+") *"):
+                    appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.getValue()+")"),this.dirtyFileProperty, this.filenameProperty));
 //          
 
             //clues have already been added to the problem and parsed when loading the file

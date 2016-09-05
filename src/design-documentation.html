@@ -1454,16 +1454,17 @@ Graphically entered relationships need to be listed as well.</pre>
 ##the higher element will see the 'offset'-lowest values 'taken-out'
 *e.g. A's baby is two (note that the offset is 2) pounds lighter than B's baby, where the weight items are 6,7,8,9,10 pounds, means that A's baby (the lower element) cannot be 9 or 10 pounds and that B's baby (the higher element) cannot be 6 or 7 pounds.</pre>
 </div>
-<div title="Features (Wish List)" creator="Fred" modifier="phiv" created="201511230213" modified="201602012021" changecount="34">
+<div title="Features (Wish List)" creator="Fred" modifier="phiv" created="201511230213" modified="201602261910" changecount="37">
 <pre>Ordered list of nice-to-have features:
 #should find a way to //inspect// a [[Relationship]] and view arrows to the parent dependencies (predecessors)... and also show all the relationships that depend on it (successors)... Best if those dependencies also track and indicate the type of [[Logic Element|Logic Elements]] used to derive it (perhaps with a colour code, when presented visually)
 #hints -&gt; application provides hints when [[Automatic Processing|Preferences]] is not enabled
 #[[RollBack]] and [[Undo]] for [[constraints|Constraint]] and [[clues|Clue]]
 #when loading a problem from file, it would be interesting to have the option to step through processing of clues, or have it automatically process everything ([[Preferences]])
-#[[Android]] version
+#[[Android]] version (see http://ladstatt.blogspot.ca/2016/02/fx-tictactoe-deploy-javafx-app-into.html)
 #internationalization support, particularly for UI and [[Ordinals|SpecialCategory]]
 #automatic discovery of [[SpecialCategory]] types based on list of known words, but users will be able to force ordinals if words are not known from a list. The list should be in a text file with headings such as [weekdays] that match the category types and a different text file can be generated for each language
 #improved validation on unmarshalling XML files
+#FXLauncher for automatic app update https://github.com/edvin/fxlauncher
 #aim to automatically recognize [[special categories|SpecialCategory]] automatically when entering [[items|Item]], and prompt user to validate
 #auto-complete when entering [[clues|Clue]], based on recognized [[items|Item]] or [[category|Category]] names (see TextField from ControlsFX)
 
@@ -1890,6 +1891,20 @@ For n categories, the layout of the grid is as follows:
 |...|||||~|~|
 |Cat n||||~|~|~|
 </pre>
+</div>
+<div title="Library" creator="phiv" modifier="phiv" created="201602150248" modified="201602280332" changecount="5">
+<pre>*users should be able to buy problems or problem albums, or subscribe to automatically receive albums as they become available
+*the app should have a library that shows the purchased  and available albums
+*as users attempt solving puzzles,they can save and resume their problems
+*an album could be a a compressed archive of .lpf files (.lpz), encrypted (AES) with a symmetric key shared via pki (ECDSA) (see truevfs.java.net)
+*maybe the key pair can be generated when the app is installed and the public key is sent back to the server, then used to send symmetric key back
+*the all would periodically poll the server to see if pr-paid albums are released
+*the server would keep track of subscriptions for customers and generate encrypted bundles for subscribers with public keys, which apps will fetch
+
+*subscriptions can only be handled through web but maybe a browser can be included
+*the application will be associated with an account using the email and password through a crypto hash?
+*each time the application is registered, account info (hash) is saved on the device and a key pair is generated.--The public key is then sent up to the server with the subscribees credential hash whereas -- the private key is saved along side the account info.The server tracks the number of public keys each account has. When downloading magazines, the client requests by submitting its public key, then if needed a new symmetric key is encrypted with the public key and sent back. The server encrypts the magazines based on valid entitlements, using the new key and makes  then available to the client.
+*can the server generate the fly or does the client have to wait and ask again???  requests submit the public key and creds hash</pre>
 </div>
 <div title="Logic Elements" modifier="Fred" created="200807160004" modified="201512310506" changecount="6">
 <pre>This tiddler describes the various logic elements used by puzzled.

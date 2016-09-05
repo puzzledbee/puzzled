@@ -122,7 +122,7 @@ public class LogicProblem {
     public StringProperty titleProperty() {
         return titleProperty;
     }
-    
+   
     public StringProperty problemTextProperty() {
         return problemTextProperty;
     }
