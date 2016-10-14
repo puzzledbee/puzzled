@@ -2713,8 +2713,20 @@ Note however that some [[special clue|SpecialClue]] such as the example above im
 *Are TableViews the best for answers and clues list. 
 *Are tabs the best way to divide out, can we look at accordion?</pre>
 </div>
-<div title="ToDo" modifier="phiv" created="200807181952" modified="201602061642" changecount="28">
-<pre>Next:
+<div title="ToDo" modifier="phiv" created="200807181952" modified="201610140152" changecount="37">
+<pre>Problems:
+*issue with transpose examining category pairs multiple times through the double for loop; fixed with the category pair TreeSet which includes each pair only once. Does that need to be applied to the other logic elements?
+*issue with loading a 2nd lpf file over a first one. The problem does not show until refreshing.
+*binding the value of the [[GridCell]] to that of its linked [[Relationship]] does not appear to be sufficient. At least changing the [[GridCell]]'s value upon the user setting a [[Constraint]] achieves the &quot;synchronization&quot; of the [[GridCell]]&lt;-&gt;[[Relationship]] values that is pretty important. However, the fact that the [[Relationship]] was set as a constraint is lost.
+**one could add a new bound property that is the logicType that is also set when the context menu is used for [[constraints|Constraint]]
+**one could instead call a setter method on the Relationship which passes value and [[LogicType|Logic Elements]]
+***the method {{{public void setValue(ItemPair pair, ValueType value, LogicType arg_logicType, Dependable ... arg_predecessors)}}} seems to already have this 'feature' ?!
+*the fact that [[Relationship]] objects are not aware of what items they relate to, it makes it difficult to log information about user interaction
+**item pair information could be passed to the object during construction, and the {{{toString}}} method could be used to output meaningful information
+***the method {{{public void setValue(ItemPair pair, ValueType value, LogicType arg_logicType, Dependable ... arg_predecessors)}}} seems to get pair info during value being set ?!
+**a utility function could be used to find the [[Relationship]] object in the [[RelationshipTable]] and retrieve its pair information
+
+Next::
 *some relationships seem to have way too many dependencies
 *work on clue tab and answer tab
 *become a layout king

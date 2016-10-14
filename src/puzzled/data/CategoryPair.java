@@ -12,17 +12,19 @@ import java.util.TreeSet;
  *
  * @author phiv
  */
-public class ItemPair extends TreeSet<Item>{
-    
-    public ItemPair(Item item1, Item item2) {
-                super(Comparator.comparing(p1 -> p1.getCatIndex()));
-                this.add(item1);
-                this.add(item2);
+public class CategoryPair extends TreeSet<Category>{
+    public CategoryPair(Category cat1, Category cat2) {
+        super(Comparator.comparing(p1 -> p1.getCatIndex())); 
+        this.add(cat1);
+        this.add(cat2);
     }
     
     @Override
     public String toString() {
         return this.first().toString() + " and " + this.last().toString();
     }
-        
+    
+    
+    
+    
 }

@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 
-
-
 package puzzled.data;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -57,4 +55,9 @@ public class Item implements DataElement {
         return parent.getParent().getCategories().indexOf(parent);
     }
     
+    @Override
+    public String toString(){
+        //return this.nameProperty.getValue() + "(" + this.parent.toString() + ")";
+        return this.nameProperty.getValue();
+    }
 }

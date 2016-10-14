@@ -18,6 +18,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -50,6 +51,7 @@ public class GridCell extends StackPane {
     private Relationship linkedRelationship;
     private BooleanProperty fileDirtyProperty;
     private StringProperty highlight = new SimpleStringProperty();
+    //private StringProperty relationshipText = new SimpleStringProperty();
     private BooleanProperty investigateProperty = new SimpleBooleanProperty(false);
     private ObjectProperty<Relationship.LogicType> logicTypeProperty = new SimpleObjectProperty<Relationship.LogicType>();
 
@@ -60,7 +62,7 @@ public class GridCell extends StackPane {
         investigateProperty.bindBidirectional(linkedRelationship.investigateProperty());
         logicTypeProperty.bind(linkedRelationship.logicTypeProperty());
         highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.logicTypeProperty().getValue().toString(),linkedRelationship.logicTypeProperty()));
-
+        
         investigateProperty.addListener((e,oldValue,newValue) -> {
             if (newValue==true) {
                 this.getStyleClass().add("highlight-PREDECESSOR");
@@ -190,6 +192,11 @@ public class GridCell extends StackPane {
         this.getStyleClass().add("gridCell");
 //        this.setMouseTransparent(false);
         this.getChildren().addAll(myRectangle,circle,line1,line2);
+        
+        Tooltip tooltip = new Tooltip();
+        tooltip.textProperty().bind(this.linkedRelationship.relationshipTextProperty());
+        Tooltip.install(myRectangle, tooltip);
+        
     
         
         linkedRelationship.centerXProperty().bind(Bindings.createDoubleBinding(
@@ -211,15 +218,27 @@ public class GridCell extends StackPane {
     }
     
     public void setFalse() throws RelationshipConflictException {
-        this.valueProperty.set(ValueType.VALUE_NO);
+        //this.valueProperty.set(ValueType.VALUE_NO);
         fLogger.info("setting FALSE");
-        fileDirtyProperty.set(true);
+        try {
+            linkedRelationship.setValue(ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT);
+            fLogger.info("setting FALSE");
+        } catch (Exception e) {
+            fLogger.info("exception setting FALSE");
+        }
     }
      
     
-    public void setTrue() throws RelationshipConflictException{
-        this.valueProperty.set(ValueType.VALUE_YES);
+    public void setTrue() throws RelationshipConflictException {
+        //this.valueProperty.set(ValueType.VALUE_YES);
         fLogger.info("setting TRUE");
+        try {
+            linkedRelationship.setValue(ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT);
+            fLogger.info("setting TRUE");
+        } catch (Exception e) {
+            fLogger.info("exception setting TRUE");
+        }
+        
         fileDirtyProperty.set(true);
     }
  
@@ -228,5 +247,4 @@ public class GridCell extends StackPane {
         fLogger.info("setting UNKNOWN");
         fileDirtyProperty.set(true);
     }
-  
 }

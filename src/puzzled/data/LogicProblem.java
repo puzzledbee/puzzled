@@ -7,7 +7,9 @@ package puzzled.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -51,7 +53,6 @@ public class LogicProblem {
 //    private int numItems; //is this necessary or can it not be recovered, what is the point???
     @XmlElement
     private List<Category> categories;
-    
     
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     
@@ -182,7 +183,7 @@ public class LogicProblem {
                             
 //                            System.out.println("joining "+pair.first().getName()+" <-> "+ pair.last().getName());
                             if (!relationshipTable.containsKey(pair)){
-                                relationshipTable.put(pair,new Relationship(this));
+                                relationshipTable.put(pair,new Relationship(this,pair));
                             }
                         }
                     }
@@ -234,6 +235,19 @@ public class LogicProblem {
     
     public List<Category> getCategories() {
         return categories;
+    }
+    
+    public HashSet<TreeSet<Category>> getCategoryPairs() {
+        HashSet<TreeSet<Category>> categoryPairs = new HashSet();
+        for (Category catA : categories) {
+            for (Category catB : categories) {
+                if (catA != catB) {
+                    CategoryPair categoryPair = new CategoryPair(catA,catB);
+                    categoryPairs.add(categoryPair);
+                }
+            }
+        }
+        return categoryPairs;
     }
     
     public void addCategory(Category newCategory) {

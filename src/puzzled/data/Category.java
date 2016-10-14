@@ -62,6 +62,10 @@ public class Category implements DataElement {
         if (catInfo.length>1) categoryTypeProperty.set(CategoryType.valueOf(catInfo[1].trim()));
     }
     
+    public int getCatIndex() {
+        return this.getParent().getCategories().indexOf(this);
+    }
+    
     public void setParent(LogicProblem arg_parent){
         this.parent = arg_parent;
     }
