@@ -108,7 +108,7 @@ public class Processor {
     
     
     public static void uniqueness(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
-        System.out.println("findUnique invoked");
+        System.out.println("uniqueness invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
         HashSet<TreeSet<Category>> categoryPairs = logicProblem.getCategoryPairs();
@@ -123,33 +123,67 @@ public class Processor {
         //for (Category cat1 : logicProblem.getCategories()){
         //    for (Category cat2 : logicProblem.getCategories()){
         //        if (cat1!=cat2) {
+            
+            
+            
             for (Item item1 : cat1.getItems()){
-
-                ArrayList<Relationship> noRelationships = new ArrayList<Relationship>();
+                ArrayList<Relationship> verticalNoRelationships = new ArrayList<Relationship>();
 //                        System.out.println("counting "+item1.getName()+" with "+cat2.getName());
                 for (Item item2 : cat2.getItems()){
                     Relationship relationship = relationshipTable.get(new ItemPair(item1,item2));
                     if (relationship.getValue()==Relationship.ValueType.VALUE_YES) {
                         break;
                     } else if (relationship.getValue()==Relationship.ValueType.VALUE_NO) {
-                        noRelationships.add(relationship);
+                        verticalNoRelationships.add(relationship);
                     }
                 }
 
+                
+                //debug
+                //System.out.println("\tsize of noRelationships: " + noRelationships.size());
+                //System.out.println("\tsize of getNumItems: " + (logicProblem.getNumItems()-1));
                 //are there enough VALUE_NO to force a VALUE_YES?
-                if (noRelationships.size() == logicProblem.getNumItems()-1) {
+                if (verticalNoRelationships.size() == logicProblem.getNumItems()-1) {
 //                          //search item that does not have a VALUE_NO and set it
                     for (Item itemB : cat2.getItems()){
                         Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
                         if (rel.getValue()!=Relationship.ValueType.VALUE_NO)
-                            rel.setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.UNIQUE,noRelationships.toArray(new Relationship[noRelationships.size()]));
+                            rel.setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.UNIQUE,verticalNoRelationships.toArray(new Relationship[verticalNoRelationships.size()]));
                     }
 
                 }
+                
+            }
+            for (Item item1 : cat2.getItems()){
+                ArrayList<Relationship> horizontalNoRelationships = new ArrayList<Relationship>();
+//                        System.out.println("counting "+item1.getName()+" with "+cat2.getName());
+                for (Item item2 : cat1.getItems()){
+                    Relationship relationship = relationshipTable.get(new ItemPair(item1,item2));
+                    if (relationship.getValue()==Relationship.ValueType.VALUE_YES) {
+                        break;
+                    } else if (relationship.getValue()==Relationship.ValueType.VALUE_NO) {
+                        horizontalNoRelationships.add(relationship);
+                    }
+                }
+
+                
+                //debug
+                //System.out.println("\tsize of noRelationships: " + noRelationships.size());
+                //System.out.println("\tsize of getNumItems: " + (logicProblem.getNumItems()-1));
+                //are there enough VALUE_NO to force a VALUE_YES?
+                if (horizontalNoRelationships.size() == logicProblem.getNumItems()-1) {
+//                          //search item that does not have a VALUE_NO and set it
+                    for (Item itemB : cat1.getItems()){
+                        Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
+                        if (rel.getValue()!=Relationship.ValueType.VALUE_NO)
+                            rel.setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.UNIQUE,horizontalNoRelationships.toArray(new Relationship[horizontalNoRelationships.size()]));
+                    }
+
+                }
+                
             }
         }
 
-        
     }
     
     public static void commonality(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {

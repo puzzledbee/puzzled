@@ -23,7 +23,7 @@ import org.controlsfx.control.NotificationPane;
  */
 public class Puzzled extends Application {
     
-    private static final String banner = "Puzzled! - Computer-aided logic problem solving";
+    private static final String banner = "Puzzled! - Logic problem solver";
     public static final String version = "2.0.3";
     
     private static final Logger fLogger =
