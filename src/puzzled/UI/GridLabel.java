@@ -163,7 +163,7 @@ public class GridLabel extends AnchorPane {
         
         @Override
         public void handle(ActionEvent actionEvent) {
-
+//test
 //                controller.notify(WarningType.INFO, "Hello World "+ sourceLabel.getText());
 
                 EditDialog editDialog = new EditDialog(refLabel.getText());
