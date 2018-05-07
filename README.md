@@ -5,7 +5,7 @@ Puzzled helps resolve grid-type logic puzzles by parsing pseudo-english text clu
 
 Requirements:
 * JDK 1.8
-* commons-io-2.5
-* controlsfx-8.40.11
+* commons-io-2.6
+* controlsfx-8.40.14
 
 ![screen-mainui](https://user-images.githubusercontent.com/17093421/39663708-2d37d63a-5046-11e8-9fa4-c178ddd99e37.png)
