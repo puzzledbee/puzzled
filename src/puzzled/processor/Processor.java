@@ -152,7 +152,7 @@ public class Processor {
                     }
 
                 }
-                
+
             }
             for (Item item1 : cat2.getItems()){
                 ArrayList<Relationship> horizontalNoRelationships = new ArrayList<Relationship>();
