@@ -1,125 +1,106 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <logicProblem>
-    <title>Problem 47</title>
-    <source>Penny Press Original Logic Problems Mar 1999</source>
+    <title>Charity Begins</title>
+    <source>Puzzler Logic Problems Issue 85 2016</source>
     <scale>1.0</scale>
     <categories>
-        <name>Book</name>
-        <type>NORMAL</type>
-        <items>
-            <name>Haley's Comet</name>
-        </items>
-        <items>
-            <name>Into The Fire</name>
-        </items>
-        <items>
-            <name>Never Again</name>
-        </items>
-        <items>
-            <name>Passion Play</name>
-        </items>
-        <items>
-            <name>Starburst</name>
-        </items>
-    </categories>
-    <categories>
-        <name>Author</name>
-        <type>NORMAL</type>
-        <items>
-            <name>Bettany</name>
-        </items>
-        <items>
-            <name>Donovan</name>
-        </items>
-        <items>
-            <name>Elizabeth</name>
-        </items>
-        <items>
-            <name>Frederick</name>
-        </items>
-        <items>
-            <name>Peyton</name>
-        </items>
-    </categories>
-    <categories>
-        <name>Pages</name>
+        <name>Position</name>
         <type>NUMERICAL</type>
         <items>
-            <name>15</name>
+            <name>1</name>
         </items>
         <items>
-            <name>16</name>
+            <name>2</name>
         </items>
         <items>
-            <name>17</name>
+            <name>3</name>
         </items>
         <items>
-            <name>18</name>
+            <name>4</name>
         </items>
         <items>
-            <name>19</name>
+            <name>5</name>
+        </items>
+        <items>
+            <name>6</name>
         </items>
     </categories>
     <categories>
-        <name>Genre</name>
+        <name>Artist</name>
         <type>NORMAL</type>
         <items>
-            <name>Biography</name>
+            <name>Adam Ace</name>
         </items>
         <items>
-            <name>Fantasy</name>
+            <name>Bella Brill</name>
         </items>
         <items>
-            <name>Mystery</name>
+            <name>Craig Crack</name>
         </items>
         <items>
-            <name>Romance</name>
+            <name>Donna Demon</name>
         </items>
         <items>
-            <name>Science-Fiction</name>
+            <name>Emma ExL</name>
+        </items>
+        <items>
+            <name>Fergus Flash</name>
         </items>
     </categories>
     <categories>
-        <name>Last Name</name>
+        <name>Word</name>
         <type>NORMAL</type>
         <items>
-            <name>Chapman</name>
+            <name>We</name>
         </items>
         <items>
-            <name>Holden</name>
+            <name>come</name>
         </items>
         <items>
-            <name>Koenig</name>
+            <name>on</name>
         </items>
         <items>
-            <name>Rawlins</name>
+            <name>the</name>
         </items>
         <items>
-            <name>Wright</name>
+            <name>sloop</name>
+        </items>
+        <items>
+            <name>John B</name>
+        </items>
+    </categories>
+    <categories>
+        <name>Band</name>
+        <type>NORMAL</type>
+        <items>
+            <name>Broken Key</name>
+        </items>
+        <items>
+            <name>Hi Savana</name>
+        </items>
+        <items>
+            <name>The Haunted</name>
+        </items>
+        <items>
+            <name>The Spindles</name>
+        </items>
+        <items>
+            <name>The Tailors</name>
+        </items>
+        <items>
+            <name>Wasted Age</name>
         </items>
     </categories>
     <clues>
-        <text>Never Again is Elizabeth</text>
+        <text>3 is not The Tailors</text>
         <type>CONSTRAINT</type>
     </clues>
     <clues>
-        <text>Never Again is not 17</text>
+        <text>3 is not The Haunted</text>
         <type>CONSTRAINT</type>
     </clues>
     <clues>
-        <text>Haley's Comet is not 17</text>
-        <type>CONSTRAINT</type>
-    </clues>
-    <clues>
-        <text>Starburst is not 17</text>
-        <type>CONSTRAINT</type>
-    </clues>
-    <clues>
-        <text>Passion Play is not Mystery</text>
-        <type>CONSTRAINT</type>
-    </clues>
-    <clues>
-        <text>Into The Fire is not Mystery</text>
+        <text>3 is not The Spindles</text>
         <type>CONSTRAINT</type>
     </clues>
 </logicProblem>
