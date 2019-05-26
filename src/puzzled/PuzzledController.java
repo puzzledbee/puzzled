@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -19,9 +21,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.controlsfx.control.NotificationPane;
 
 
@@ -33,29 +37,28 @@ import org.controlsfx.control.NotificationPane;
  */
 public class PuzzledController {
     
-        private static double zoomFactor = 1.3;
-        private static double maxZoom = 2.3;
-        private static double minZoom = 0.4;
-        private static int notificationTimer = 3000;
+    private static double zoomFactor = 1.3;
+    private static double maxZoom = 2.3;
+    private static double minZoom = 0.4;
+    private static int notificationTimer = 3000;
 
-        public enum WarningType {
-            SUCCESS ("success.png"), 
-            INFO ("info.png"), 
-            WARNING ("fail.png");
+    public enum WarningType {
+        SUCCESS ("success.png"), 
+        INFO ("info.png"), 
+        WARNING ("fail.png");
 
-            private String imageName;
+        private String imageName;
 
-            WarningType(String image){
-                imageName = image;
-            }
-
-            public String getImageName() {
-                return imageName;
-            }
+        WarningType(String image){
+            imageName = image;
         }
-    /**
-     * Initializes the controller class.
-     */
+
+        public String getImageName() {
+            return imageName;
+        }
+    }
+    
+
     @FXML
     private Label label;
     
@@ -100,7 +103,7 @@ public class PuzzledController {
     }
     
     public void notify(WarningType type, String text) {
-        nPane.setGraphic(new ImageView(new Image("/icons/notification-pane/"+type.getImageName())));  
+        //nPane.setGraphic(new ImageView(new Image("/icons/notification-pane/"+type.getImageName())));  
         nPane.setText(text);
         nPane.show();
     }
@@ -113,12 +116,30 @@ public class PuzzledController {
         this.appTitleProperty.set(banner+" - "+version);
     }
     
-    
+    /**
+     * Initializes the controller class.
+     */
     public void initialize() {
+        setupNotifier(); //configures the notification pane slide down
         fLogger.log(Level.INFO, "java version:" + System.getProperty("java.version"));
         fLogger.log(Level.INFO, "javafx version:" + System.getProperty("javafx.version"));
-        //label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
     }
-
     
+    
+    public void setupNotifier() {
+        nPane.setContent(bPane);
+        //nPane.getStylesheets().add(getClass().getResource("Puzzled.css").toExternalForm());
+        nPane.setOnShown(e -> {
+            Timeline timeline = new Timeline();
+            timeline.getKeyFrames().add(
+                new KeyFrame(Duration.millis(notificationTimer), f -> nPane.hide()));
+            timeline.play();
+        });
+        nPane.setOnKeyPressed(e -> {
+             KeyCode key = e.getCode();
+             if (key == KeyCode.ESCAPE) {
+                 nPane.hide();
+             }
+        });
+    }
 }
