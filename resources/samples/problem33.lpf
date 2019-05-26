@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<logicProblem>
+    <title>Problem 33</title>
+    <source>PennyPress Original Logic Problems Special Collector's Edition December 2015</source>
+    <scale>1.0</scale>
+    <categories>
+        <name>Time</name>
+        <type>TIME</type>
+        <items>
+            <name>2:30</name>
+        </items>
+        <items>
+            <name>3:30</name>
+        </items>
+        <items>
+            <name>4:30</name>
+        </items>
+        <items>
+            <name>5:30</name>
+        </items>
+        <items>
+            <name>6:30</name>
+        </items>
+    </categories>
+    <categories>
+        <name>Restaurant</name>
+        <type>NORMAL</type>
+        <items>
+            <name>Emilio's Eatery</name>
+        </items>
+        <items>
+            <name>Feeding Frenzy</name>
+        </items>
+        <items>
+            <name>Hungry Hyena</name>
+        </items>
+        <items>
+            <name>Nineteenth Hole</name>
+        </items>
+        <items>
+            <name>Tony's Through</name>
+        </items>
+    </categories>
+    <categories>
+        <name>Metal</name>
+        <type>NORMAL</type>
+        <items>
+            <name>Aluminium</name>
+        </items>
+        <items>
+            <name>Copper</name>
+        </items>
+        <items>
+            <name>Gold</name>
+        </items>
+        <items>
+            <name>Silver</name>
+        </items>
+        <items>
+            <name>Zinc</name>
+        </items>
+    </categories>
+    <categories>
+        <name>People</name>
+        <type>NUMERICAL</type>
+        <items>
+            <name>3</name>
+        </items>
+        <items>
+            <name>4</name>
+        </items>
+        <items>
+            <name>5</name>
+        </items>
+        <items>
+            <name>6</name>
+        </items>
+        <items>
+            <name>7</name>
+        </items>
+    </categories>
+</logicProblem>
