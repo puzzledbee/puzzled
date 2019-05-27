@@ -58,10 +58,6 @@ public class PuzzledController {
         }
     }
     
-
-    @FXML
-    private Label label;
-    
     @FXML
     private AnchorPane mainGrid;
     
@@ -84,37 +80,16 @@ public class PuzzledController {
     private String appVersion;
     private StringProperty appTitleProperty = new SimpleStringProperty();
     
-    @FXML
-    private void quit(ActionEvent event) {
-        //make sure logicProblem is not dirty!
-        Platform.exit();
-    }
     
-    @FXML
-    private void zoomInButtonAction(ActionEvent event) {
-        
-        //if (logicProblem.get().getScale() <= maxZoom) {
-        //    logicProblem.get().setScale(logicProblem.get().getScale()*zoomFactor);
-        //} else {
-            notify(WarningType.WARNING, "Maximum zoom level reached!");
-        //}
-        //fLogger.log(Level.INFO, "scale:"+logicProblem.get().getScale());
-        fLogger.log(Level.INFO, "zooming");
-    }
     
     public void notify(WarningType type, String text) {
-        //nPane.setGraphic(new ImageView(new Image("/icons/notification-pane/"+type.getImageName())));  
+        nPane.setGraphic(new ImageView(new Image("/icons/notification-pane/"+type.getImageName())));  
         nPane.setText(text);
         nPane.show();
     }
     
     
-    public void setupTitleBinding(StringProperty puzzledTitleProperty, String banner, String version) {
-        puzzledTitleProperty.bind(this.appTitleProperty);
-        appTitle = banner;
-        appVersion = version;
-        this.appTitleProperty.set(banner+" - "+version);
-    }
+
     
     /**
      * Initializes the controller class.
@@ -124,7 +99,6 @@ public class PuzzledController {
         fLogger.log(Level.INFO, "java version:" + System.getProperty("java.version"));
         fLogger.log(Level.INFO, "javafx version:" + System.getProperty("javafx.version"));
     }
-    
     
     public void setupNotifier() {
         nPane.setContent(bPane);
@@ -142,4 +116,36 @@ public class PuzzledController {
              }
         });
     }
+    
+    //invoked by main class Puzzled.java
+    public void setupTitleBinding(StringProperty puzzledTitleProperty, String banner, String version) {
+        puzzledTitleProperty.bind(this.appTitleProperty);
+        appTitle = banner;
+        appVersion = version;
+        this.appTitleProperty.set(banner+" - "+version);
+    }
+    
+    /** 
+     * FXML UI actions event handlers
+     * 
+     */
+    
+    @FXML
+    private void quit(ActionEvent event) {
+        //make sure logicProblem is not dirty, else trigger a "save dialog"!
+        Platform.exit();
+    }
+    
+    @FXML
+    private void zoomInButtonAction(ActionEvent event) {
+        
+        //if (logicProblem.get().getScale() <= maxZoom) {
+        //    logicProblem.get().setScale(logicProblem.get().getScale()*zoomFactor);
+        //} else {
+            notify(WarningType.WARNING, "Maximum zoom level reached!");
+        //}
+        //fLogger.log(Level.INFO, "scale:"+logicProblem.get().getScale());
+        fLogger.log(Level.INFO, "zooming");
+    }
+    
 }

@@ -34,7 +34,6 @@ public class Puzzled extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         
-       
         PuzzledController controller = (PuzzledController)loader.getController();
         controller.setupTitleBinding(primaryStage.titleProperty(), banner, version);
         
