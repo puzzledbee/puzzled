@@ -59,9 +59,13 @@ public class Puzzled extends Application {
         
         //controller.loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         
-        String css = PuzzledController.class.getResource("Puzzled.css").toExternalForm(); //seems necessary to re-specify CSS for the notifications popup
-        primaryStage.getScene().getStylesheets().add(css);
+        //String css = PuzzledController.class.getResource("Puzzled.css").toExternalForm(); //seems necessary to re-specify CSS for the notifications popup
+        //primaryStage.getScene().getStylesheets().add(css);
         //Notifications.create().owner(primaryStage).text("my message").hideAfter(Duration.seconds(2)).showInformation();        
+        
+        //set application icon
+        //the alternative method primaryStage.getIcons().add(new Image("file:icon.png")); does not work
+        primaryStage.getIcons().add(new Image(Puzzled.class.getResourceAsStream("/icons/puzzle_32.png")));
         
     }
     
