@@ -24,10 +24,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.NotificationPane?>
 
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@Puzzled.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="puzzled.PuzzledController">
-    <children>
-        <NotificationPane fx:id="nPane" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-        <BorderPane fx:id="bPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+<AnchorPane fx:id="root" stylesheets="@Puzzled.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="puzzled.PuzzledController">
+   <children>
+      <NotificationPane fx:id="nPane" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <BorderPane fx:id="bPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <VBox BorderPane.alignment="CENTER">
                <children>
@@ -39,37 +40,47 @@
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator></MenuItem>
-                              <MenuItem fx:id="openMenuItem" onAction="#openAction" mnemonicParsing="false" text="Open Logic Problem ...">
+                              <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openAction" text="Open Logic Problem ...">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem mnemonicParsing="false"  text="Load Sample Problem" visible="false">
+                              <MenuItem mnemonicParsing="false" onAction="#loadMe" text="Load Sample Problem" visible="false">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false"  text="Save Logic Problem">
+                              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveAction" text="Save Logic Problem">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" text="Save Logic Problem As..." />
-                              <MenuItem fx:id="printMenuItem" mnemonicParsing="false" text="Print">
-                                    <accelerator>
-                                       <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                                    </accelerator>
-                                </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                                    </accelerator>
-                                </MenuItem>
+                              <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsAction" text="Save Logic Problem As..." />
+                              <MenuItem fx:id="printMenuItem" mnemonicParsing="false" onAction="#print" text="Print">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                          <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator></MenuItem>
                         </items>
                       </Menu>
-                      <Menu mnemonicParsing="false" text="Options">
+                      <Menu mnemonicParsing="false" text="Edit">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="Undo last operation" />
+                              <MenuItem fx:id="resetMenuItem" mnemonicParsing="false" onAction="#resetButtonAction" text="Reset problem ...">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator></MenuItem>
+                              <SeparatorMenuItem mnemonicParsing="false" />
+                              <MenuItem fx:id="propertiesMenuItem" mnemonicParsing="false" text="Problem properties ..." />
+                        </items>
+                      </Menu>
+                        <Menu mnemonicParsing="false" text="Options">
                           <items>
-                              <CheckMenuItem fx:id="automaticProcessingMenuItem" mnemonicParsing="false" selected="true" text="Enable Automatic Processing">
+                              <CheckMenuItem fx:id="automaticProcessingMenuItem" mnemonicParsing="false" onAction="#handleAutomaticProcessingAction" selected="true" text="Enable Automatic Processing">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
@@ -82,14 +93,14 @@
                               <MenuItem mnemonicParsing="false" text="Preferences..." />
                           </items>
                         </Menu>
-                      <Menu mnemonicParsing="false" text="View">
+                        <Menu mnemonicParsing="false" text="View">
                            <items>
                               <MenuItem fx:id="zoomInMenuItem" mnemonicParsing="false" onAction="#zoomInButtonAction" text="Zoom in">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="EQUALS" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
-                              <MenuItem fx:id="zoomOutMenuItem" mnemonicParsing="false" text="Zoom out">
+                              <MenuItem fx:id="zoomOutMenuItem" mnemonicParsing="false" onAction="#zoomOutButtonAction" text="Zoom out">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="MINUS" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
@@ -106,10 +117,10 @@
                   <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="200.0">
                     <items>
                       <Button id="btn_new" fx:id="newButton" mnemonicParsing="false" text="New" />
-                        <Button id="btn_open" fx:id="openButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Open" />
-                        <Button id="btn_save" fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Save" />
+                        <Button id="btn_open" fx:id="openButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#openAction" text="Open" />
+                        <Button id="btn_save" fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#saveAction" text="Save" />
                         <Button id="btn_undo" fx:id="undoButton" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Undo" />
-                        <Button id="btn_reset" fx:id="resetButton" layoutX="127.0" layoutY="10.0" mnemonicParsing="false"  text="Reset" />
+                        <Button id="btn_reset" fx:id="resetButton" layoutX="127.0" layoutY="10.0" mnemonicParsing="false" onAction="#resetButtonAction" text="Reset" />
                     </items>
                   </ToolBar>
                </children>
@@ -132,12 +143,13 @@
                                                 <Group fx:id="mainGroup" />
                                              </content>
                                           </ScrollPane>
-                                          <Button fx:id="zoomOutButton" mnemonicParsing="false" snapToPixel="false" styleClass="cirlcebutton" text="-" textAlignment="CENTER" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="10.0" />
-                                          <Button fx:id="zoomInButton" onAction="#zoomInButtonAction" mnemonicParsing="false" snapToPixel="false" styleClass="cirlcebutton" text="+" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="10.0" />
+                                          <Button fx:id="zoomOutButton" mnemonicParsing="false" onAction="#zoomOutButtonAction" snapToPixel="false" styleClass="cirlcebutton" text="-" textAlignment="CENTER" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="10.0" />
+                                          <Button fx:id="zoomInButton" mnemonicParsing="false" onAction="#zoomInButtonAction" snapToPixel="false" styleClass="cirlcebutton" text="+" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="10.0" />
                                           <HBox fx:id="clueGlyphBox" alignment="CENTER_RIGHT" prefHeight="41.0" prefWidth="514.0" spacing="5.0" styleClass="glyphbox" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="20.0">
-                                             <opaqueInsets>
+                                             <padding>
                                                 <Insets left="5.0" right="5.0" />
-                                             </opaqueInsets></HBox>
+                                             </padding>
+                                          </HBox>
                                           <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="513.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
@@ -169,14 +181,19 @@
                      <children>
                         <Label alignment="CENTER_RIGHT" prefHeight="21.0" prefWidth="49.0" text="Clue:" textAlignment="RIGHT" />
                         <Label fx:id="clueCounter" alignment="CENTER_RIGHT" text="1-&gt;" textAlignment="RIGHT" textFill="#1b2ab5" textOverrun="CLIP">
-                        </Label>
-                        <TextField id="textField" fx:id="clueText" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
-                        <Button fx:id="addClueButton" mnemonicParsing="false" text="Add clue!" />
+                           <padding>
+                              <Insets left="7.0" right="3.0" />
+                           </padding></Label>
+                        <TextField id="textField" fx:id="clueText" onAction="#addClueButtonAction" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
+                        <Button fx:id="addClueButton" mnemonicParsing="false" onAction="#addClueButtonAction" text="Add clue!" />
                      </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
                   </FlowPane>
                </children>
             </VBox>
          </bottom>
       </BorderPane>
-    </children>
+   </children>
 </AnchorPane>
