@@ -5,7 +5,6 @@
  */
 package puzzled.UI;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -35,15 +34,11 @@ import puzzled.exceptions.RelationshipConflictException;
  * @author phiv
  */
 public class GridCell extends StackPane {
-
-    private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<>(this, "value" , ValueType.VALUE_UNKNOWN);
-    
-    
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
     
-    //keep this only until
-
+    private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<>(this, "value" , ValueType.VALUE_UNKNOWN);
+    
     private ContextMenu contextMenu = new ContextMenu();  
 //    private CirclePopupMenu contextMenu = new CirclePopupMenu(this,MouseButton.SECONDARY);;
     //private Pane xPane = new Pane();
@@ -92,7 +87,6 @@ public class GridCell extends StackPane {
         //circle.relocate(5, 5);
         
         circle.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_YES));
-        
         
         //line1.setMouseTransparent(true);
         line1.getStyleClass().add("x");
