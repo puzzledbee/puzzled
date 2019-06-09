@@ -1,4 +1,4 @@
-<p><strong>Logic Problem Shorthand</strong>. simple text file used to rapidly input problems into Puzzled, faster than manually generating an XML <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#.lpf">.lpf</a> file or using the GUI to input all persistent [LogicProblem]] data. It is convenient for command-line operations and testing. See also <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#.lpc">.lpc</a>.</p><p><strong>.lps specifications</strong></p><ul><li>title followed by category names and item names for each category, preceded by a tab character</li><li>optional <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Clue">clues</a> section follow. <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Clue">Clues</a> will be distinguished from <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Category">categories</a> simply because no tab-led <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Item">item</a> follow</li><li>the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Constraint">constraints</a> should be entered as clues</li><li>loaded <strong>.lps</strong> file become normal data structures which can then be saved as an XML-based <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#.lpf">.lpf</a></li></ul><pre><code>problem title text[; source]
+Logic Problem Shorthand. simple text file used to rapidly input problems into Puzzled, faster than manually generating an XML .lpf file or using the GUI to input all persistent [LogicProblem]] data. It is convenient for command-line operations and testing. See also .lpc..lps specificationstitle followed by category names and item names for each category, preceded by a tab characteroptional clues section follow. Clues will be distinguished from categories simply because no tab-led item followthe constraints should be entered as cluesloaded .lps file become normal data structures which can then be saved as an XML-based .lpfproblem title text[; source]
 category 1 name[; type]
     item 1 name
     item 2 name
@@ -34,4 +34,4 @@ clue 2 text[; type]
 clue 3 text[; type]
 [
 this is the problem text, with all the clues for the humans to read
-It can be on multiple lines]</code></pre>
+It can be on multiple lines]
