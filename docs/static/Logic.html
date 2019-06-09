@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Logic: Puzzled notes — Software design considerations for Puzzled</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists   tc-tagged-mainTOClist " data-tags="mainTOClist" data-tiddler-title="Logic"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+Logic
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href="phiv.html">
+phiv
+</a> 8th June 2019 at 7:26am
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:#800040;
+fill:#fff;
+color:#fff;">
+ mainTOClist
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p>This tiddler describes the various logic elements used by puzzled.</p><h1 class=""><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Constraint.html">Constraint</a></h1><ul><li>entered graphically by the user using the Graphical User Interface, can be captured as a simple text clue.</li></ul><h1 class="">From Clue</h1><ul><li>determined by the parser from the text entered</li></ul><h1 class="">Cross</h1><ul><li>for VALUE_NO relationships only</li><li>stems from the discovery/entering of a VALUE_YES relationship and is represented graphically by a cross</li></ul><h1 class="">Uniqueness</h1><ul><li>stems from (numberItems-1) VALUE_NO relationships in a category, which automatically identify the left-out item as the VALUE_YES</li></ul><h1 class="">Transposed</h1><ul><li>replicating known relationships on either side of a VALUE_YES to ensure graphical/geographical consistency</li></ul><h1 class="">Commonality</h1><ul><li>used when the only possible values share a commonality.</li><li>e.g. Paul lives in either the yellow or blue house, but both the yellow and blue house cannot be where the cat lives, therefore Paul does not have a cat.</li><li>when searching for Commonality relationships, examine when there are 2 to numberItems-2 possible values (thus not possible if numItems &lt;=3). </li></ul><h1 class=""><a class="tc-tiddlylink tc-tiddlylink-resolves" href="RestrictedValues.html">Restricted values</a></h1><ul><li>derived from <a class="tc-tiddlylink tc-tiddlylink-resolves" href="SpecialClue.html">special clues</a>, values that are impossible for an element because two numerical elements are used in an algebraic-like equation which causes incompatible values</li><li>includes <a class="tc-tiddlylink tc-tiddlylink-missing" href="delta.html">delta</a>s until sign is determined, then processed via the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="HintsTable.html">Hints Table</a>.</li></ul><h1 class="">Algebraic</h1><ul><li>relationship derived mathematically using the HintsTable</li><li>Three types of algebraic processes have been discovered: <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Type%25201.html">Type 1</a>, <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Type%25202.html">Type 2</a> and <a class="tc-tiddlylink tc-tiddlylink-missing" href="Type%25203.html">Type 3</a>.</li></ul><h1 class=""><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Enumeration.html">Enumeration</a></h1><ul><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="VALUE_NO.html">VALUE_NO</a> relationship discovered following the elimination of options as part of an enumeration.</li></ul></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>

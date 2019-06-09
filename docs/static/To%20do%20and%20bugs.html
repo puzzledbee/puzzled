@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>To do and bugs: Puzzled notes — Software design considerations for Puzzled</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists   tc-tagged-mainTOClist " data-tags="mainTOClist" data-tiddler-title="To do and bugs"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+To do and bugs
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href="phiv.html">
+phiv
+</a> 8th June 2019 at 4:35pm
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:#800040;
+fill:#fff;
+color:#fff;">
+ mainTOClist
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p>Next chunks:</p><ul><li>action list and rollback (undo enabled for constraints only)</li><li>ctrl+enter in clue bar</li><li>NLP processing</li></ul><p>Tiddlers tagged &quot;todo&quot;:</p><div><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Clue%2520Numbering.html">Clue Numbering</a></div><div><a class="tc-tiddlylink tc-tiddlylink-resolves" href="RollBack.html">RollBack</a></div><p>Issues:</p><ul><li>issue with transpose examining category pairs multiple times through the double for loop; fixed with the category pair TreeSet which includes each pair only once. Does that need to be applied to the other logic elements?</li><li>issue with loading a 2nd lpf file over a first one. The problem does not show until refreshing.</li><li>binding the value of the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="GridCell.html">GridCell</a> to that of its linked <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> does not appear to be sufficient. At least changing the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="GridCell.html">GridCell</a>'s value upon the user setting a <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Constraint.html">Constraint</a> achieves the &quot;synchronization&quot; of the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="GridCell.html">GridCell</a>&lt;-&gt;<a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> values that is pretty important. However, the fact that the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> was set as a constraint is lost.<ul><li>one could add a new bound property that is the logicType that is also set when the context menu is used for <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Constraint.html">constraints</a></li><li>one could instead call a setter method on the Relationship which passes value and <a class="tc-tiddlylink tc-tiddlylink-missing" href="Logic%2520Elements.html">LogicType</a><ul><li>the method <span><a class="tc-tiddlylink tc-tiddlylink-missing" href="public.html">public</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="void.html">void</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="setValue(ItemPair.html">setValue(ItemPair</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="pair%252C.html">pair,</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="ValueType.html">ValueType</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="value%252C.html">value,</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="LogicType.html">LogicType</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="arg_logicType%252C.html">arg_logicType,</a></span><span><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Dependable.html">Dependable</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="....html">...</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="arg_predecessors).html">arg_predecessors)</a></span> seems to already have this 'feature' ?!</li></ul></li></ul></li><li>the fact that <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> objects are not aware of what items they relate to, it makes it difficult to log information about user interaction<ul><li>item pair information could be passed to the object during construction, and the <span><a class="tc-tiddlylink tc-tiddlylink-missing" href="toString.html">toString</a></span> method could be used to output meaningful information<ul><li>the method <span><a class="tc-tiddlylink tc-tiddlylink-missing" href="public.html">public</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="void.html">void</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="setValue(ItemPair.html">setValue(ItemPair</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="pair%252C.html">pair,</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="ValueType.html">ValueType</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="value%252C.html">value,</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="LogicType.html">LogicType</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="arg_logicType%252C.html">arg_logicType,</a></span><span><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Dependable.html">Dependable</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="....html">...</a></span><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="arg_predecessors).html">arg_predecessors)</a></span> seems to get pair info during value being set ?!</li></ul></li><li>a utility function could be used to find the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> object in the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="RelationshipTable.html">RelationshipTable</a> and retrieve its pair information</li></ul></li></ul><p>Next::
+*some relationships seem to have way too many dependencies
+*work on clue tab and answer tab
+*become a layout king
+**learn what preferred size means in UI components
+*problem properties dialog
+*new problem dialogs
+*better dialogs for editing Category from context menu, to include the ability to change the category type (note: observe decorator colour change)
+*application properties file for <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Preferences.html">Preferences</a>
+*right-click on clue glyph to remove clue
+*javadoc, tons of javadoc</p><h3 class="">Later</h3><ul><li>legend overlay to indicate LogicType highlighting colours when Investigate</li><li>print dialog to decide where/if put problem text, answer grid, etc...</li><li>webview to browse the user manual</li><li>printing, improve page centering for various grid sizes</li><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="RollBack.html">RollBack</a> and <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Undo.html">Undo</a> handling</li><li>HintsTable implementation <ul><li>Algebraic 1 &amp; 2: only executed after hints are added to the table<ul><li>1. discovery from items in the same category</li><li>2. deduction from one item appearing in either side of a same unknown_x</li><li>3. algebra 3: dependent upon relationship to discover other ones</li></ul></li></ul></li><li>how to handle &gt; &lt; : as special clue only or in table (ref <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Type%25202.html">Type 2</a>)</li><li><a class="tc-tiddlylink tc-tiddlylink-missing" href="delta.html">delta</a> (no direction for offset): SpecialClue until sign is determined and then into HintsTable, or dormant in the HintsTable as an unsigned <a class="tc-tiddlylink tc-tiddlylink-resolves" href="offset.html">offset</a> used for RestrictedValues only?? (should a delta simply be considered as an <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Or.html">Or</a> rule?)</li><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Enumeration.html">Enumeration</a> handling, <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Or.html">Or</a> handling</li><li>do we need a mode where the slide out panel is part of the border pane instead of the overlay, if for example we want to keep it on screen and work on the entire grid? The current implementation does not allow that.</li></ul><h3 class="">Completed</h3><ul><li><strike>consider using CSS for context menu graphics</strike><ul><li>-&gt; tried with setting up the node's ID using .setID and a #entry in the .css file or using a class, without success</li><li>-&gt; tried a second time the usual tricks and setting the scene's .css file programmatically, to no avail. There may be a javafx bug there.</li><li>-&gt; even with the tricks at <a class="tc-tiddlylink-external" href="http://www.guigarage.com/2013/03/global-stylesheet-for-your-javafx-application/" rel="noopener noreferrer" target="_blank">http://www.guigarage.com/2013/03/global-stylesheet-for-your-javafx-application/</a>, no good</li></ul></li><li><strike>try the funky circular contextmenu for gridcells (<a class="tc-tiddlylink-external" href="http://jfxtras.org/doc/8.0/jfxtras-menu/index.html" rel="noopener noreferrer" target="_blank">http://jfxtras.org/doc/8.0/jfxtras-menu/index.html</a>) </strike> -&gt; very cool but does not respect disabled items</li><li><strike>dependencies for COMMONALITY need to be inverted and show the valid options and where the valid options are common</strike> -&gt; code inspection seems fine</li><li><strike>printing, figure out a way to print problem title &amp; source on page</strike></li><li><strike>wire-up GridLabel context menu to show the same dialog as when double-click is invoked</strike></li><li><strike>implement <strong>Save as...</strong> feature</strike></li><li><strike>visual indicator for special category (decorator), along with tooltip</strike></li><li><strike>visual indicator for special clues, like the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Category.html">Category</a> decorator</strike></li><li><strike>and provide a printer selection dialog next</strike></li></ul></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>
