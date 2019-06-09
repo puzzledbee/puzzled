@@ -1,3 +1,0 @@
-Dependable object which represents a user-entered clue.
-Clues are retained in a ClueTable, and sometimes may generate an entry in a HintsTable.Clues have a list of Relationship they impact so that if a RollBack is applied (deleted) (or if the clue is changed?), all relationships that were inferred need to be removed recursively and re-evaluated (or is it better to search Relationships that depend)A clue index is shown on the application window (Glyph). When investigating, arrows from GridCells depending on clues should point to the clue index.
-This row of clue indexes will need to be both the grid view and the HintsTable view (hints also depend upon clues)

@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>RestrictedValues: Puzzled notes — Software design considerations for Puzzled</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists    " data-tags="" data-tiddler-title="RestrictedValues"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+RestrictedValues
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href="phiv.html">
+phiv
+</a> 2nd June 2019 at 8:35pm
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p>Restricted values are values that are impossible for a certain item in a certain category because of the text clues that have been provided.  It includes first and foremost the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Extremes.html">Extremes</a> when items are compared quantitatively in numerical-like categories, but may also include other values depending of the relationship between items.</p><ul><li>The HintsTable is the primary tool to identify restricted values and must be reassessed frequently to 'take out' impossible values that have crept up by VALUE_NO or VALUE_YES relationships in the grid.</li><li>It's like a special bond created between two value bubbles in the grid.  The hints table reassessment ensures the bond is respected when there are changes in either set (bubble) of elements.</li><li>Additionally, some restricted values appear based on the oddities in the value sets:<ul><li>e.g. months be Apr Jun Jul Aug, the fact that May is missing could exclude potential values from an unknown if A is one month earlier than B, A can't be Apr and B can't be Jun. The extremes also prevent A from being Aug and B from being Apr.</li><li>e.g. A's pulleys are equal to B's levers, pulley items being 1,3,4,5,6 and lever items being 1,2,3,4,5.  Neither can be 2 or 6.</li></ul></li><li>Mathematical equations such as less than, double, half also result in restricted values.</li></ul></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>

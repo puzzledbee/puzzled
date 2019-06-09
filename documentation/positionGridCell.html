@@ -1,7 +1,0 @@
-Determine the position of top right corner of the GridCell when given the two Item objects in a TreeSet structure.let a be the Category index of the first TreeSet Item member
-Let b be the Category index of the last TreeSet Item memberLet x be the column of the grid where the GridCell needs to be placed, with 0 representing the first Category (top of the left hand labels)
-Let y be the row of the grid where the GridCell needs to be placed, with 0 representing the second Category (left-most Category on the top labels)if lowest catIndex is 0 (first Category), the relationships will be in the top row of the grid
-if lowest catIndex is 1 (second Category), the relationships will be in the left most column of the grid
-x=(a==1)?0:(b==1)?0:numCat-b;
-y=(a==0)?0:(a==1)?b-1:a-1;xPos=cellwidth+labelwidth+x*cellwidth*logicProblem.getNumItems()+(a.getCatIndex()==1?b.getItemIndex():a.getItemIndex())*cellwidth;
-yPos=cellwidth+labelheight+y*cellwidth*logicProblem.getNumItems()+(a.getCatIndex()==1?a.getItemIndex():b.getItemIndex())*cellwidth

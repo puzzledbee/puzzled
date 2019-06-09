@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>RelationshipTable: Puzzled notes — Software design considerations for Puzzled</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists   tc-tagged-datastructure " data-tags="datastructure" data-tiddler-title="RelationshipTable"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+RelationshipTable
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href="phiv.html">
+phiv
+</a> 2nd June 2019 at 10:09pm
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:#333353;
+color:#333353;">
+ datastructure
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p>Storage data structure of all <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> objects.</p><p>It is preferable to not store the RelationshipTable as part of the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="LogicProblem.html">LogicProblem</a> object and simply re-generate it from the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Clue.html">Clues</a> and <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Constraint.html">Constraint</a>, but instead be fields of the application <a class="tc-tiddlylink tc-tiddlylink-missing" href="Puzzled.html">Puzzled</a> of the FXML controller, along with <strong>dirtyness</strong>. There are no advantages to adding relationships in a chronological order in the data structure, with a view to simplify undo because e.g. there is no temporal relationship between two constraints. Instead the full table can be initialized when the problem is created or loaded.</p><p>The most efficient data structure for the <strong>RelationshipTable</strong> seems to be a fixed HashMap where an <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Item.html">Item</a> HashSet of 2 elements is used as key (sets are not concerned about element ordering, contrary to pairs) and a <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> object is used as value. A regular 2D array is very inefficient because of the triangular nature of the grid (see below). <strong><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="HashMap%253CTreeSet%253CItem%253E%252CRelationship%253E.html">HashMap&lt;TreeSet&lt;Item&gt;,Relationship&gt;</a></span></strong> seems to be the best data structure (the <span><a class="tc-tiddlylink tc-tiddlylink-missing" href="TreeSet.html">TreeSet</a></span> class is an ordered set. Since the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="positionGridCell.html">positionGridCell</a><span><a class="tc-tiddlylink tc-tiddlylink-missing" href="(TreeSet%253CItem%253E).html">(TreeSet&lt;Item&gt;)</a></span> algorithm makes computation using the lower and higher of the two item (ordered determined by the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Category.html">Category</a> each item belong -&gt; hence the <span><a class="tc-tiddlylink tc-tiddlylink-missing" href="TreeSet.html">TreeSet</a></span> <span><a class="tc-tiddlylink tc-tiddlylink-missing" href="Comparator.html">Comparator</a></span> will use the same technique), it is best to have a two-member ordered set feeding it. It also helps for the <strong>RelationshipTable</strong> because no matter how the items are parsed from clues, they will result in the same <span><a class="tc-tiddlylink tc-tiddlylink-missing" href="TreeSet.html">TreeSet</a></span> and hence the same mapped <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a>.</p><p>Some conversion of the relationship key to the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="GridCell.html">GridCell</a> location will be needed..</p><p>When a problem is loaded, the application needs to create the entire <strong>RelationshipTable</strong>. The <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> object references (pointers) are passed around when adding to the double-linked lists. The <strong>RelationshipTable</strong> needs to be able to retrieve any <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> object reference by specifying the &quot;coordinates&quot; of the values it represents.
+Relationships that are anchored (anywhere upstream) to a clue or a constraint are immutable and will site with a gray background. Constraints entered by the user will show their <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationship</a> in red.</p><p>For a number <em>N</em> of categories of <em>n</em> items, the layout of the grid complies with the formula for triangular patterns such that:</p><table><tbody><tr class="evenRow"><th>Number of Categories N</th><th>Total grid width &amp; height<br>(N-1)n</th><th>Number of category squares<br>N(N-1)/2</th><th>Total number of relationships<br>n<sup>2</sup>N(N-1)/2</th></tr><tr class="oddRow"><td align="center">2</td><td align="center">n</td><td align="center">1</td><td align="center">n<sup>2</sup></td></tr><tr class="evenRow"><td align="center">3</td><td align="center">2n</td><td align="center">3</td><td align="center">3n<sup>2</sup></td></tr><tr class="oddRow"><td align="center">4</td><td align="center">3n</td><td align="center">6</td><td align="center">6n<sup>2</sup></td></tr><tr class="evenRow"><td align="center">5</td><td align="center">4n</td><td align="center">10</td><td align="center">10n<sup>2</sup></td></tr><tr class="oddRow"><td align="center">6</td><td align="center">5n</td><td align="center">15</td><td align="center">15n<sup>2</sup></td></tr></tbody></table></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>

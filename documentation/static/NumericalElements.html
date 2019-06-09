@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>NumericalElements: Puzzled notes — Software design considerations for Puzzled</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists   tc-tagged-Clue " data-tags="Clue" data-tiddler-title="NumericalElements"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+NumericalElements
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href="phiv.html">
+phiv
+</a> 2nd June 2019 at 8:29pm
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:#333353;
+color:#333353;">
+ Clue
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p>Special case of <a class="tc-tiddlylink tc-tiddlylink-resolves" href="SpecialCategory.html">SpecialCategory</a> in which there is a mathematical relationship between <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Item.html">items</a> or the numerical representation of textual <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Item.html">items</a> (e.g. days of the week):</p><ul><li>software needs to know if the value of the item is important for the deductions, or simply the position of the item in the category (or should it always treat numerically if the clues use the items as such?)</li><li>an option is to consider all numerical values as meaningful, but the user would need to know not to enter these items textually, which is counter intuitive for rankings such as first, second, third, fourth, fifth (would have to be entered 1,2,3,4,5)</li><li>any numerical item is subject to a set of mathematical expressions such as +,- but also the less common *,/ :</li></ul><p>eg. the weight of John's parcel is twice as heavy as the weight of Lucie's parcel.
+* pay special attention to problem 5 (Dress Design) of the Pocket Puzzles Logic Puzzle 1 booklet which uses positional information (could it be handled as a normal category with less than / greater than??)
+* the months of the year and the days of the week need to be considered as numerical values as it leads to eliminations of values</p></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>

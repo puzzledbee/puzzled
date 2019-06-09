@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>LogicProblem: Puzzled notes — Software design considerations for Puzzled</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists   tc-tagged-datastructure " data-tags="datastructure" data-tiddler-title="LogicProblem"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+LogicProblem
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href="phiv.html">
+phiv
+</a> 2nd June 2019 at 1:41pm
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:#333353;
+color:#333353;">
+ datastructure
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p>Main class describing the problem data. It <strike>is serializable</strike>  can be saved to / loaded from an XML <a class="tc-tiddlylink tc-tiddlylink-resolves" href=".lpf.html">.lpf</a> file.
+Must contain as fields:</p><ul><li>Problem title, source, notes</li><li>List of <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Category.html">categories</a><ul><li>Lists of <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Item.html">items</a> (within the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Category.html">Category</a> objects)</li></ul></li><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Clue.html">Clues</a></li><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Constraint.html">Constraints</a></li></ul><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="Relationship.html">Relationships</a> and <a class="tc-tiddlylink tc-tiddlylink-resolves" href="HintsTable.html">HintsTable</a> are not saved with the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="LogicProblem.html">LogicProblem</a>, but are instead regenerated from the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Constraint.html">constraints</a> and <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Clue.html">clues</a>.</p></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>

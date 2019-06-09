@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.19" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Grid: Puzzled notes — Software design considerations for Puzzled</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists   tc-tagged-UI tc-tagged-Object " data-tags="UI Object" data-tiddler-title="Grid"><div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span>
+</span>
+
+<span>
+
+<span class="tc-tiddler-title-icon" style="fill:;">
+
+</span>
+
+
+
+<h2 class="tc-title">
+Grid
+</h2>
+
+</span>
+
+</div>
+
+<div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div>
+</div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal">
+<div class="tc-subtitle">
+<a class="tc-tiddlylink tc-tiddlylink-missing" href="phiv.html">
+phiv
+</a> 2nd June 2019 at 11:06pm
+</div>
+</div>
+<div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:#333353;
+color:#333353;">
+ Object
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:#333353;
+color:#333353;">
+ UI
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p><strong>Grid</strong> is a visual container of the category and item labels as well as the data structure of <a class="tc-tiddlylink tc-tiddlylink-resolves" href="GridCell.html">GridCell</a>.
+It needs not to be part of the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="LogicProblem.html">LogicProblem</a> class, but can be generated upon loading/creating by the <a class="tc-tiddlylink tc-tiddlylink-missing" href="Puzzled.html">application</a>.</p><p>(see <a class="tc-tiddlylink tc-tiddlylink-resolves" href="UI%2520Container%2520Hierarchy.html">UI Container Hierarchy</a>)</p><p><strong>Grid</strong> node hierarchy:</p><ul><li><code>AnchorPane</code>, in grid tab<ul><li><code>StackPane</code> (<em>mainStack</em>)<ul><li>layer 1, <code>AnchorPane</code> (<em>mainGrid</em>)<ul><li><code>Button</code> zoomIn, anchored top left</li><li><code>Button</code> zoomOut, anchored top left</li><li><code>ScrollPane</code>, anchored top left, on top (<em>mainScroll</em>)<ul><li><code>Group</code> (<code>BorderPane</code>'s center region) (used to enable zoom in / zoom out) (<em>mainGroup</em>)<ul><li><strong>Grid</strong> extends <code>StackPane</code> (subject to ScaleX and ScaleY....) (<code>logicProblemGrid</code>)<ul><li>layer 1, <code>AnchorPane</code> (gridPane), for the grid</li><li>layer 2, <code>AnchorPane</code> (labelPane), for labels (visibleProperty bound to <code>CheckMenuItem</code>)</li><li>layer 3, <code>AnchorPane</code> (relationshipPane), for relationships (GridCells)  (visibleProperty bound to CheckMenuItem)</li></ul></li></ul></li></ul></li><li><code>HBox</code> for the clue <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Glyph.html">glyphs</a>, anchored bottom right</li><li><code>HBox</code> for the hint <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Glyph.html">glyphs</a>, anchored bottom right</li></ul></li><li>layer 2, <code>AnchorPane</code>, for the dependencies (needs to be above the <strong>Grid</strong> <code>StackPane</code> in the <code>ScrollPane</code>, to show arrows to the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="Glyph.html">glyphs</a>)</li></ul></li></ul></li></ul><h3 class="">To draw the grid:</h3><pre><code>gridmaxwidth=(numCategories-1)*numItems*cellwidth
+gridmaxheigth=(numCategories-1)*numItems*cellheight
+
+//horizontal, top to bottom
+from labels -&gt; labels+gridmaxwidth, blue
+//category names
+from labels -&gt; labels+gridmaxwidth, blue
+//item names (vertical)
+from start -&gt; labels+gridmaxwidth, blue
+//bulk of grid
+j=1 to numCategories-1
+   i=1 to numItems-1
+      from start -&gt; labels+(numCategories-j)*numItems, black
+   from start -&gt; labels+(numCategories-j)*numItems, blue
+        
+//vertical, left to right
+from labels -&gt; labels+gridmaxheight, blue
+//category names (vertical)
+from labels -&gt; labels+gridmaxheight, blue
+//item names
+from start -&gt; labels+gridmaxheight, blue
+//bulk of grid
+j=1 to numCategories-1
+   i = 1 to numItems-1
+      from start -&gt; labels+(numCategories-j)*numItems, black
+   from start -&gt; labels+(numCategories-j)*numItems, blue</code></pre></div>
+
+
+
+</div>
+
+</p>
+</section>
+</body>
+</html>

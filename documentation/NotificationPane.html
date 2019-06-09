@@ -1,8 +1,0 @@
-The controlxFX NotifiationPane is meant to wrap another node by passing it as an argument in the constructor. Whilst you can add the NotificationPane in SceneBuilder (after adding the controlsFX jar file, see http://stackoverflow.com/questions/29601190/include-controls-fx-in-scene-builder), it cannot contain other nodes. After a few trials, it seems the best way to go for a NotificationPane in FXML is to add it "beside" another container, both under a root AnchorPane container. During the initialize() method of the controller class, set the content of the NotificationPane to its sibling container using notificationPane.setContent(parent). Make sure to set both siblings (the parent and the NotificationPane to fit their common parent, size-wize)Styling of NotificationPane with CSS is also tricky. After peeking at the source code, the best way is to mimic the hierarchy: 
-.notification-pane .notification-bar > .pane {
-    -fx-background-color:slateblue;
-}
-
-.notification-pane .notification-bar > .pane > .label {
-    -fx-text-fill: white;
-}
