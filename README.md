@@ -1,1 +1,1 @@
-[Project documentation hosted via GitHub Pages](docs/index.html)
+[Project documentation hosted via GitHub Pages](https://puzzledbee.github.io/puzzled/index.html "puzzled home")
