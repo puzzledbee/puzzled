@@ -1,0 +1,27 @@
+<p><strong>Grid</strong> is a visual container of the category and item labels as well as the data structure of <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#GridCell">GridCell</a>.
+It needs not to be part of the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#LogicProblem">LogicProblem</a> class, but can be generated upon loading/creating by the <a class="tc-tiddlylink tc-tiddlylink-missing" href="#Puzzled">application</a>.</p><p>(see <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#UI%20Container%20Hierarchy">UI Container Hierarchy</a>)</p><p><strong>Grid</strong> node hierarchy:</p><ul><li><code>AnchorPane</code>, in grid tab<ul><li><code>StackPane</code> (<em>mainStack</em>)<ul><li>layer 1, <code>AnchorPane</code> (<em>mainGrid</em>)<ul><li><code>Button</code> zoomIn, anchored top left</li><li><code>Button</code> zoomOut, anchored top left</li><li><code>ScrollPane</code>, anchored top left, on top (<em>mainScroll</em>)<ul><li><code>Group</code> (<code>BorderPane</code>'s center region) (used to enable zoom in / zoom out) (<em>mainGroup</em>)<ul><li><strong>Grid</strong> extends <code>StackPane</code> (subject to ScaleX and ScaleY....) (<code>logicProblemGrid</code>)<ul><li>layer 1, <code>AnchorPane</code> (gridPane), for the grid</li><li>layer 2, <code>AnchorPane</code> (labelPane), for labels (visibleProperty bound to <code>CheckMenuItem</code>)</li><li>layer 3, <code>AnchorPane</code> (relationshipPane), for relationships (GridCells)  (visibleProperty bound to CheckMenuItem)</li></ul></li></ul></li></ul></li><li><code>HBox</code> for the clue <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Glyph">glyphs</a>, anchored bottom right</li><li><code>HBox</code> for the hint <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Glyph">glyphs</a>, anchored bottom right</li></ul></li><li>layer 2, <code>AnchorPane</code>, for the dependencies (needs to be above the <strong>Grid</strong> <code>StackPane</code> in the <code>ScrollPane</code>, to show arrows to the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Glyph">glyphs</a>)</li></ul></li></ul></li></ul><h3 class="">To draw the grid:</h3><pre><code>gridmaxwidth=(numCategories-1)*numItems*cellwidth
+gridmaxheigth=(numCategories-1)*numItems*cellheight
+
+//horizontal, top to bottom
+from labels -&gt; labels+gridmaxwidth, blue
+//category names
+from labels -&gt; labels+gridmaxwidth, blue
+//item names (vertical)
+from start -&gt; labels+gridmaxwidth, blue
+//bulk of grid
+j=1 to numCategories-1
+   i=1 to numItems-1
+      from start -&gt; labels+(numCategories-j)*numItems, black
+   from start -&gt; labels+(numCategories-j)*numItems, blue
+        
+//vertical, left to right
+from labels -&gt; labels+gridmaxheight, blue
+//category names (vertical)
+from labels -&gt; labels+gridmaxheight, blue
+//item names
+from start -&gt; labels+gridmaxheight, blue
+//bulk of grid
+j=1 to numCategories-1
+   i = 1 to numItems-1
+      from start -&gt; labels+(numCategories-j)*numItems, black
+   from start -&gt; labels+(numCategories-j)*numItems, blue</code></pre>

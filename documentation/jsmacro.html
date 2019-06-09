@@ -1,0 +1,29 @@
+<pre><code>(function(){
+
+/*jslint node: true, browser: true */
+/*global $tw: false */
+&quot;use strict&quot;;
+
+/*
+Information about this macro
+*/
+
+exports.name = &quot;now2&quot;;
+
+exports.params = [
+	{name: &quot;mytype&quot;},
+	{name: &quot;param1&quot;},
+	{name: &quot;param2&quot;},
+        {name: &quot;param3&quot;}
+];
+
+/*
+Run the macro
+*/
+exports.run = function(mytype, param1, param2,param3) {
+	if (mytype==&quot;localfile&quot;) {
+          return &quot;[[&quot;+param2+&quot;|http://&quot;+param1+&quot;]]&quot;;
+         }       else return &quot;test&quot;;
+};
+
+})();</code></pre>

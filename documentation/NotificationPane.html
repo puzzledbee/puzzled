@@ -1,0 +1,9 @@
+<p>The controlxFX <strong>NotifiationPane</strong> is meant to wrap another node by passing it as an argument in the constructor. Whilst you can add the <strong>NotificationPane</strong> in SceneBuilder (after adding the controlsFX jar file, see <a class="tc-tiddlylink-external" href="http://stackoverflow.com/questions/29601190/include-controls-fx-in-scene-builder" rel="noopener noreferrer" target="_blank">http://stackoverflow.com/questions/29601190/include-controls-fx-in-scene-builder</a>), it cannot contain other nodes. After a few trials, it seems the best way to go for a <strong>NotificationPane</strong> in FXML is to add it &quot;beside&quot; another container, both under a root <code>AnchorPane </code>container. During the <code>initialize()</code> method of the controller class, set the content of the <strong>NotificationPane</strong> to its sibling container using <code>notificationPane.setContent(parent)</code>. Make sure to set both siblings (the parent and the <strong>NotificationPane</strong> to fit their common parent, size-wize)</p><p>Styling of <strong>NotificationPane</strong> with CSS is also tricky. After peeking at the <a class="tc-tiddlylink-external" href="https://bitbucket.org/controlsfx/controlsfx/src/1b5b2c1cde6a9dbdb1f68402badb438f257bf6bb/controlsfx/src/main/java/org/controlsfx/control/NotificationPane.java?at=default&amp;fileviewer=file-view-default" rel="noopener noreferrer" target="_blank">source code</a>, the best way is to mimic the hierarchy: </p><pre><code>
+.notification-pane .notification-bar &gt; .pane {
+    -fx-background-color:slateblue;
+}
+
+.notification-pane .notification-bar &gt; .pane &gt; .label {
+    -fx-text-fill: white;
+}
+</code></pre>
