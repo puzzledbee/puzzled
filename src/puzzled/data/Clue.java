@@ -27,17 +27,18 @@ public class Clue implements Dependable {
     private HashSet<Dependable> successors = new HashSet<Dependable>();
     private HashSet<Dependable> predecessors = new HashSet<Dependable>();
     private BooleanProperty investigateProperty = new SimpleBooleanProperty(false);
-    
-    
+
     public enum ClueType {
         NORMAL,
         SPECIAL, //needs re-assessment, see notebook for SpecialClue    
         CONSTRAINT
     }
-    
 
     private SimpleStringProperty clueText = new SimpleStringProperty();
     private ClueType clueType = ClueType.NORMAL;
+     //whether the clue is enabled or disabled
+    private BooleanProperty activeProperty = new SimpleBooleanProperty(true); 
+    
     
     //necessary for iterator?
     public Clue(){

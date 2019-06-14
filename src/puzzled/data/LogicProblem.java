@@ -19,10 +19,13 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.util.Pair;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import org.javatuples.Triplet;
 import puzzled.processor.Parser;
 
 /**
@@ -35,15 +38,13 @@ import puzzled.processor.Parser;
 //something is amiss
 public class LogicProblem {
 
-//    @XmlElement
+//    @XmlElement //why are we not saving the title in the XML again?
     private StringProperty titleProperty = new SimpleStringProperty();
     
-    private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(false);
-    private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty(false);
-    
     private StringProperty problemTextProperty = new SimpleStringProperty();
-    
     private String problemSource;
+    
+    
     @XmlElement
     private String notes;
     
@@ -53,19 +54,29 @@ public class LogicProblem {
 //    private int numItems; //is this necessary or can it not be recovered, what is the point???
     @XmlElement
     private List<Category> categories;
+
+    private NumberedClueList numberedClueList = new NumberedClueList();
+    //private List<Clue> clueList = new ArrayList<Clue>();
+
+    @XmlElement
+    private ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);
     
+    private HashMap<ItemPair,Relationship> relationshipTable;
+    
+    //visual scale
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     
     
-    private List<Clue> clueList = new ArrayList<Clue>();
-    @XmlElement
-    private ObservableList<Clue> clues = FXCollections.observableList(clueList);
+    private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(false);
+    private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty(false);
+    
+    
     
     //necessary for unmarshalling
     public LogicProblem(){
     }
     
-    private HashMap<ItemPair,Relationship> relationshipTable;
+    
     
     
     public LogicProblem(String ... problemInfo){
@@ -105,7 +116,6 @@ public class LogicProblem {
         this.dirtyFileProperty.set(dirtyness);
     }
      
-     
     @XmlTransient
     public boolean isFileDirty(){
         return this.dirtyFileProperty.getValue();
@@ -130,6 +140,10 @@ public class LogicProblem {
 
     public void setTitle(String newTitle) {
         titleProperty.set(newTitle);
+    }
+    
+    public NumberedClueList getNumberedClueList(){
+        return numberedClueList;
     }
     
     @XmlTransient
@@ -192,7 +206,6 @@ public class LogicProblem {
             
         }
         
-        
 //        testSet.add(this.getCategories().get(4).getItems().get(1));
 //        testSet.add(this.getCategories().get(3).getItems().get(2));
 //        positionGridCell(testSet);
@@ -207,18 +220,18 @@ public class LogicProblem {
         this.problemTextProperty.set(text);
     }
 
-    
-    public ObservableList<Clue> getClues() {
+    public ObservableList<Pair<ClueNumber, Clue>> getClues() {
         return clues;
     }
-    public FilteredList<Clue> getFilteredClues() {
-        return new FilteredList<Clue>(clues, e -> e.getType() != Clue.ClueType.CONSTRAINT);
+    
+    public FilteredList<Pair<ClueNumber, Clue>> getFilteredClues() {
+        return new FilteredList<>(clues, row -> row.getValue().getType() != Clue.ClueType.CONSTRAINT);
     }
     
     public String getNotes() {
         return notes;
     }
-    
+     
     public void clearInvestigate() {
         System.out.println("clearing previous styles");
         for (ItemPair key : this.relationshipTable.keySet()) this.relationshipTable.get(key).investigateProperty().set(false);
@@ -227,7 +240,7 @@ public class LogicProblem {
     public int getNumItems(){
         return categories.get(0).getNumItems();
     }
-    
+
     //somehow does not get registered as an XmlElement
     public int getNumCategories(){
         return categories.size();
@@ -253,15 +266,7 @@ public class LogicProblem {
     public void addCategory(Category newCategory) {
         categories.add(newCategory);
     }
-    
-    public void addClue(Clue newClue){
-        clues.add(newClue);
-        Parser.parse(this);
-    }
-    
-    public void removeClue(Clue oldClue){
-        clues.remove(oldClue);
-    }
+
 
     public void setScale(double newScale){
         scaleProperty.set(newScale);

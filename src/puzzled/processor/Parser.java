@@ -5,6 +5,7 @@
  */
 package puzzled.processor;
 
+import puzzled.data.Clue;
 import puzzled.data.LogicProblem;
 
 /**
@@ -13,8 +14,10 @@ import puzzled.data.LogicProblem;
  */
 public class Parser {
     
-    public static void parse(LogicProblem logicProblem){
-        System.out.println("parsing clue" + logicProblem.getClues().get(logicProblem.getClues().size()-1));
+    public static void parse(LogicProblem logicProblem, String clueText){
+        System.out.println("parsing clue" + clueText);
+        //NLP here
+        logicProblem.getNumberedClueList().addMajorClue(new Clue(clueText));
         logicProblem.setLogicDirty(true);
     }
     

@@ -90,6 +90,7 @@ import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
 import puzzled.exceptions.RelationshipConflictException;
 import puzzled.exceptions.SuperfluousRelationshipException;
+import puzzled.processor.Parser;
 import puzzled.processor.Processor;
 
 /**
@@ -153,7 +154,7 @@ public class PuzzledController implements Initializable {
     private Group mainGroup;
     
     @FXML
-    private Label clueCounter;
+    private Label nextClueNumber;
     @FXML
     private MenuItem openMenuItem;    
     @FXML
@@ -380,7 +381,7 @@ public class PuzzledController implements Initializable {
     @FXML
     private void addClueButtonAction(ActionEvent event) {
         Clue newClue = new Clue(clueText.getText());
-        logicProblem.get().getClues().add(newClue); //this invokes clue parsing
+        logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this invokes clue parsing
         clueText.clear();
         clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
 
@@ -585,8 +586,9 @@ public class PuzzledController implements Initializable {
                                 } else {
                                     System.out.println("adding clue "+lines.get(i)+" ("+i+")");
                                     String[] clueInfo = lines.get(i++).split(";");
-                                    Clue newClue = new Clue(clueInfo);
-                                    newProblem.addClue(newClue); //this will parse the clue
+                                    //Clue newClue = new Clue(clueInfo);
+                                    Parser.parse(newProblem,clueInfo[0]);
+                                    //newProblem.getNumberedClueList().addMajorClue(newClue); 
                                 }
                             }
                         } //else there are no clues present
@@ -611,7 +613,7 @@ public class PuzzledController implements Initializable {
                     for (String line : lines) {
                         String[] clueInfo = line.split(";");
                         Clue newClue = new Clue(clueInfo);
-                        logicProblem.get().addClue(newClue); //this will parse the clue
+                        logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this will parse the clue
                         logicProblem.get().setFileDirty(true);
                         if (newClue.getType() != Clue.ClueType.CONSTRAINT) {
                             clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
@@ -676,7 +678,7 @@ public class PuzzledController implements Initializable {
             //logicProblem.get().getClues().stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).count()
             //                    .stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).collect(collectingAndThen(toList(), l -> FXCollections.observableArrayList(l)))
             
-            clueCounter.textProperty().bind(Bindings.size(logicProblem.get().getFilteredClues()).add(1).asString().concat("->"));
+            //nextClueNumber.textProperty().bind(logicProblem.get().getNextClueNumber().concat("->"));
             
             this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblem.get().dirtyFileProperty().get()?
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.getValue()+") *"):
@@ -685,7 +687,7 @@ public class PuzzledController implements Initializable {
 
             //clues have already been added to the problem and parsed when loading the file
             //this is only to draw the glyph
-            for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
+            //for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
 //                Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
 //                Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
 //                label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
@@ -788,7 +790,7 @@ public class PuzzledController implements Initializable {
                 + ((relationship.getValue()==Relationship.ValueType.VALUE_YES)?" is ":" is not ") 
                 + pair.last().getName());
         System.out.println("clue added "+ clueString);
-        logicProblem.get().getClues().add(new Clue(clueString,Clue.ClueType.CONSTRAINT));
+        logicProblem.get().getNumberedClueList().addMajorClue(new Clue(clueString,Clue.ClueType.CONSTRAINT));
         
     }
     
@@ -825,16 +827,16 @@ public class PuzzledController implements Initializable {
         
         //remove constraints from clue list
         //better add to a list and then removing
-        ArrayList<Clue> constraints = new ArrayList<Clue>();
-        logicProblem.get().getClues().stream().filter(e -> e.getType() == Clue.ClueType.CONSTRAINT).forEach(e -> constraints.add(e));
+        //ArrayList<Clue> constraints = new ArrayList<Clue>();
+        //logicProblem.get().getNumberedClueList().stream().filter(e -> e.getType() == Clue.ClueType.CONSTRAINT).forEach(e -> constraints.add(e));
         
-        constraints.forEach(e -> logicProblem.get().getClues().remove(e));
+        //constraints.forEach(e -> logicProblem.get().getClues().remove(e));
         //add constraints to clue list
-        logicProblem.get().getRelationshipTable().entrySet().stream().filter( e -> 
-                    e.getValue().getValue() != Relationship.ValueType.VALUE_UNKNOWN && e.getValue().getLogic() == Relationship.LogicType.CONSTRAINT)
-            .forEach(s -> 
-                addConstraintClue(s.getKey(),s.getValue())
-            );
+        //logicProblem.get().getRelationshipTable().entrySet().stream().filter( e -> 
+        //            e.getValue().getValue() != Relationship.ValueType.VALUE_UNKNOWN && e.getValue().getLogic() == Relationship.LogicType.CONSTRAINT)
+        //    .forEach(s -> 
+        //        addConstraintClue(s.getKey(),s.getValue())
+        //    );
             
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
