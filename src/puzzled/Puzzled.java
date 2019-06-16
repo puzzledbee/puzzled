@@ -36,7 +36,8 @@ public class Puzzled extends Application {
     
     
     //private NotificationPane nPane;
-    
+   
+    //is this stub constructor necessary?
     public Puzzled() {
         
         //logicProblem = new LogicProblem();
@@ -97,6 +98,9 @@ public class Puzzled extends Application {
     /**
      * @param args the command line arguments
      */
+    //https://horstmann.com/corejava/corejava_11ed-bonuschapter13-javafx.pdf
+    //states the main method is no longer necessary; but app does not launch 
+    //in NetBeans otherwise
     public static void main(String[] args) {
         launch(args);
     }

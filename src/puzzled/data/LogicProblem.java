@@ -44,7 +44,10 @@ public class LogicProblem {
     private String problemSource;
     
     @XmlElement
-    private String notes;
+    private String notes; //notes related to the problem
+    
+    @XmlElement
+    private ArrayList<Constraint> constraintList = new ArrayList<Constraint>();
     
 //    @XmlElement
 //    private int numCategories; //is this necessary or can it not be recovered, what is the point???
@@ -55,8 +58,7 @@ public class LogicProblem {
 
     @XmlElement
     private NumberedClueList numberedClueList = new NumberedClueList();
-    //private List<Clue> clueList = new ArrayList<Clue>();
-    private ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);;
+    private ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);
     
     private HashMap<ItemPair,Relationship> relationshipTable;
     
