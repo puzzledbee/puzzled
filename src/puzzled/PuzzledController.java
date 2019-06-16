@@ -62,6 +62,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
@@ -384,6 +385,7 @@ public class PuzzledController implements Initializable {
         }
     }
         
+    
     @FXML
     private void addClueButtonClick(MouseEvent event) {
     //private void addClueButtonAction(ActionEvent event) {
@@ -392,12 +394,26 @@ public class PuzzledController implements Initializable {
         Parser.parse(logicProblem.get(), clueText.getText(), event.isControlDown(), event.isAltDown());
         //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this invokes clue parsing
         clueText.clear();
-        
+
         //how is the glyph generation going to work if we no longer create the clue here?
         //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
         logicProblem.get().setFileDirty(true);
         //notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
     }
+    
+    
+    @FXML
+    public void clueTextKeyListener(KeyEvent event){
+        if(event.getCode() == KeyCode.ENTER) {
+            Parser.parse(logicProblem.get(), clueText.getText(), event.isControlDown(), event.isAltDown());
+            //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this invokes clue parsing
+            clueText.clear();
+            //how is the glyph generation going to work if we no longer create the clue here?
+            //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
+            logicProblem.get().setFileDirty(true);
+
+        }
+     }
     
     @FXML
     private void quit(ActionEvent event) {
@@ -803,13 +819,12 @@ public class PuzzledController implements Initializable {
 //                System.out.println("maxY: "+bound.getMaxY());
     }
     
-    private void addConstraintClue(ItemPair pair, Relationship relationship) {
+    private void addConstraint(ItemPair pair, Relationship relationship) {
         String clueString = new String(pair.first().getName() 
                 + ((relationship.getValue()==Relationship.ValueType.VALUE_YES)?" is ":" is not ") 
                 + pair.last().getName());
-        System.out.println("clue added "+ clueString);
+        System.out.println("constraint added "+ clueString);
         logicProblem.get().getNumberedClueList().addMajorClue(new Clue(clueString,Clue.ClueType.CONSTRAINT));
-        
     }
     
     @FXML

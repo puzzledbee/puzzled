@@ -183,7 +183,7 @@
                            <padding>
                               <Insets left="7.0" right="3.0" />
                            </padding></Label>
-                        <TextField id="textField" fx:id="clueText" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
+                        <TextField id="textField" fx:id="clueText" onKeyPressed="#clueTextKeyListener" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
                         <Button fx:id="addClueButton" mnemonicParsing="false" onMouseClicked="#addClueButtonClick" text="Add clue!" />
                      </children>
                      <padding>

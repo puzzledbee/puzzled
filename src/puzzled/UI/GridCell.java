@@ -125,21 +125,30 @@ public class GridCell extends StackPane {
         });
         //needs to add this to constraint table
         
-        MenuItem resetMenuItem = new MenuItem("Clear relationship");
-        resetMenuItem.setGraphic(new ImageView("/icons/context-menus/clear.png"));
+        MenuItem clearMenuItem = new MenuItem("Clear relationship");
+        clearMenuItem.setGraphic(new ImageView("/icons/context-menus/clear.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        resetMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN), this.logicTypeProperty.isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
+        clearMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN), this.logicTypeProperty.isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
         
-        resetMenuItem.setOnAction(e -> {
+        clearMenuItem.setOnAction(e -> {
             this.reset();
             linkedRelationship.clearInvestigate();
         });
         
-        MenuItem investigateMenuItem = new MenuItem("Investigate");
-        investigateMenuItem.setGraphic(new ImageView("/icons/context-menus/investigate.png"));
+        MenuItem annotateMenuItem = new MenuItem("Annotate");
+        annotateMenuItem.setGraphic(new ImageView("/icons/context-menus/annotate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        investigateMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN),this.investigateProperty));
-        investigateMenuItem.setOnAction(e -> {
+        annotateMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN),this.investigateProperty));
+        annotateMenuItem.setOnAction(e -> {
+           System.out.println("need to bring up a dialog box");
+           });
+        
+        
+        MenuItem explainMenuItem = new MenuItem("Explain");
+        explainMenuItem.setGraphic(new ImageView("/icons/context-menus/investigate.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        explainMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN),this.investigateProperty));
+        explainMenuItem.setOnAction(e -> {
            System.out.println("about to draw a special line with funky style: "+highlight.get());
            linkedRelationship.clearInvestigate();
            this.investigateProperty.set(true);
@@ -169,7 +178,7 @@ public class GridCell extends StackPane {
         
         
         
-        MenuItem clearInvestigateMenuItem = new MenuItem("Clear investigation");
+        MenuItem clearInvestigateMenuItem = new MenuItem("Clear explanation");
         clearInvestigateMenuItem.setGraphic(new ImageView("/icons/context-menus/noinvestigate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
         clearInvestigateMenuItem.disableProperty().bind(this.investigateProperty.not());
@@ -179,7 +188,7 @@ public class GridCell extends StackPane {
 //           this.investigateProperty.set(true);
         });
         
-        contextMenu.getItems().addAll(setFalseMenuItem,setTrueMenuItem, resetMenuItem, investigateMenuItem, clearInvestigateMenuItem);
+        contextMenu.getItems().addAll(setFalseMenuItem,setTrueMenuItem, clearMenuItem, annotateMenuItem, explainMenuItem, clearInvestigateMenuItem);
         
         myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));  
 //        myRectangle.setOnMouseClicked(e -> contextMenu.show(e));
@@ -191,15 +200,12 @@ public class GridCell extends StackPane {
         tooltip.textProperty().bind(this.linkedRelationship.relationshipTextProperty());
         Tooltip.install(myRectangle, tooltip);
         
-    
-        
         linkedRelationship.centerXProperty().bind(Bindings.createDoubleBinding(
             ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getX(),
             circle.centerXProperty(),this.boundsInParentProperty(),this.scaleXProperty()));
         linkedRelationship.centerYProperty().bind(Bindings.createDoubleBinding(
             ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getY(),
             circle.centerYProperty(),this.boundsInParentProperty(),this.scaleXProperty()));      
-    
     }
 
     

@@ -20,9 +20,9 @@ import puzzled.processor.Parser;
  * @author https://github.com/bepuzzled
  */
 public class NumberedClueList extends ArrayList<Pair<ClueNumber,Clue>> {
-    //not sure I need this next line if we use properties
-    //private ClueNumber nextClueNumberProperty.get() = new ClueNumber();
-    private ObjectProperty<ClueNumber> nextClueNumberProperty = new SimpleObjectProperty<>();
+    
+    private ClueNumber clueNumber = new ClueNumber();
+    private ObjectProperty<ClueNumber> nextClueNumberProperty = new SimpleObjectProperty(clueNumber);
     
    
     public ClueNumber addMajorClue(Clue newClue){
