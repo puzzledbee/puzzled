@@ -179,12 +179,12 @@
                   <FlowPane alignment="CENTER" hgap="5.0" prefHeight="45.0" prefWidth="600.0">
                      <children>
                         <Label alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="83.0" text="Clue:" textAlignment="RIGHT" />
-                        <Label fx:id="nextClueNumber" alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="58.0" text="1 -&gt;" textAlignment="RIGHT" textFill="#1b2ab5" textOverrun="CLIP">
+                        <Label fx:id="nextClueNumberLabel" alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="58.0" text="1 -&gt;" textAlignment="RIGHT" textFill="#1b2ab5" textOverrun="CLIP">
                            <padding>
                               <Insets left="7.0" right="3.0" />
                            </padding></Label>
-                        <TextField id="textField" fx:id="clueText" onAction="#addClueButtonAction" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
-                        <Button fx:id="addClueButton" mnemonicParsing="false" onAction="#addClueButtonAction" text="Add clue!" />
+                        <TextField id="textField" fx:id="clueText" prefHeight="31.0" prefWidth="816.0" promptText="enter a new clue here" />
+                        <Button fx:id="addClueButton" mnemonicParsing="false" onMouseClicked="#addClueButtonClick" text="Add clue!" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

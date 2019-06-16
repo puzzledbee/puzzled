@@ -30,6 +30,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -60,6 +62,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -84,6 +87,7 @@ import puzzled.UI.Grid;
 import puzzled.UI.SlideOutPane;
 import puzzled.data.Category;
 import puzzled.data.Clue;
+import puzzled.data.ClueNumber;
 import puzzled.data.Item;
 import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
@@ -154,7 +158,8 @@ public class PuzzledController implements Initializable {
     private Group mainGroup;
     
     @FXML
-    private Label nextClueNumber;
+    private Label nextClueNumberLabel;
+    
     @FXML
     private MenuItem openMenuItem;    
     @FXML
@@ -223,8 +228,9 @@ public class PuzzledController implements Initializable {
     
     ObjectProperty<LogicProblem> logicProblem = new SimpleObjectProperty<LogicProblem>();
     DoubleProperty scaleProperty = new SimpleDoubleProperty();
+    private ObservableList<Pair<ClueNumber, Clue>> clues;
     
-    private HashMap<Pair<Item,Item>,Relationship> relationships;
+    //private HashMap<Pair<Item,Item>,Relationship> relationships;
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty();
     private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty();
     
@@ -379,14 +385,18 @@ public class PuzzledController implements Initializable {
     }
         
     @FXML
-    private void addClueButtonAction(ActionEvent event) {
-        Clue newClue = new Clue(clueText.getText());
-        logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this invokes clue parsing
+    private void addClueButtonClick(MouseEvent event) {
+    //private void addClueButtonAction(ActionEvent event) {
+        //Clue newClue = new Clue(clueText.getText());
+        //Parse first, with modifier, which will add the clue to the list
+        Parser.parse(logicProblem.get(), clueText.getText(), event.isControlDown(), event.isAltDown());
+        //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this invokes clue parsing
         clueText.clear();
-        clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
-
+        
+        //how is the glyph generation going to work if we no longer create the clue here?
+        //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
         logicProblem.get().setFileDirty(true);
-        notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
+        //notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
     }
     
     @FXML
@@ -429,6 +439,9 @@ public class PuzzledController implements Initializable {
         zoomOutMenuItem.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
         zoomInButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
         zoomOutButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
+        
+        
+
         
 //        this.logicProblem.addListener( (e, oldvalue, newvalue) -> {
 ////            System.out.println("unbinding and rebinding");
@@ -641,7 +654,7 @@ public class PuzzledController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         
         if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
-            logicProblem.get().getClues().clear();
+            logicProblem.get().getNumberedClueList().clear();
             this.clueGlyphBox.getChildren().clear();
             
             this.initializeProblem();
@@ -658,6 +671,8 @@ public class PuzzledController implements Initializable {
             mainGroup.getChildren().add(logicProblemGrid);
             
             clueGlyphBox.getChildren().clear();
+            
+            clues = FXCollections.observableList(logicProblem.get().getNumberedClueList());
             
             //bind labels layer visibility to checkMenuItem
             logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
@@ -684,7 +699,10 @@ public class PuzzledController implements Initializable {
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.getValue()+") *"):
                     appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.getValue()+")"),this.dirtyFileProperty, this.filenameProperty));
 //          
-
+            nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(() -> 
+            logicProblem.get().getNumberedClueList().getNextClueNumberProperty().get().getMajor() +"."+
+            logicProblem.get().getNumberedClueList().getNextClueNumberProperty().get().getMinor()+"."+
+            logicProblem.get().getNumberedClueList().getNextClueNumberProperty().get().getSub()+" -> "));
             //clues have already been added to the problem and parsed when loading the file
             //this is only to draw the glyph
             //for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
@@ -696,7 +714,7 @@ public class PuzzledController implements Initializable {
     }
     
     private Label generateClueGlyph(Clue clue){
-        Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
+        Label label = new Label(logicProblem.get().getNumberedClueList().getClueNumberAsString(clue));
         label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
         label.getStyleClass().add("clue_"+clue.getType());
         return label;

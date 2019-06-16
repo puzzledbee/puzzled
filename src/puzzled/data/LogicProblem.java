@@ -20,7 +20,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.util.Pair;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -44,7 +43,6 @@ public class LogicProblem {
     private StringProperty problemTextProperty = new SimpleStringProperty();
     private String problemSource;
     
-    
     @XmlElement
     private String notes;
     
@@ -55,17 +53,15 @@ public class LogicProblem {
     @XmlElement
     private List<Category> categories;
 
+    @XmlElement
     private NumberedClueList numberedClueList = new NumberedClueList();
     //private List<Clue> clueList = new ArrayList<Clue>();
-
-    @XmlElement
-    private ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);
+    private ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);;
     
     private HashMap<ItemPair,Relationship> relationshipTable;
     
     //visual scale
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
-    
     
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(false);
     private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty(false);
@@ -219,14 +215,10 @@ public class LogicProblem {
     public void setText(String text) {
         this.problemTextProperty.set(text);
     }
-
-    public ObservableList<Pair<ClueNumber, Clue>> getClues() {
-        return clues;
-    }
-    
-    public FilteredList<Pair<ClueNumber, Clue>> getFilteredClues() {
-        return new FilteredList<>(clues, row -> row.getValue().getType() != Clue.ClueType.CONSTRAINT);
-    }
+  
+    //public FilteredList<Pair<ClueNumber, Clue>> getFilteredClues() {
+    //    return new FilteredList<>(clues, row -> row.getValue().getType() != Clue.ClueType.CONSTRAINT);
+    //}
     
     public String getNotes() {
         return notes;
