@@ -45,18 +45,18 @@ public class Puzzled extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Puzzled.fxml"));
-        Scene scene = new Scene(root);
+        //Parent root = FXMLLoader.load(getClass().getResource("Puzzled.fxml"));
+        //Scene scene = new Scene(root);
         
-        //FXMLLoader loader = new FXMLLoader(getClass().getResource("Puzzled.fxml"));
-        //Scene scene = new Scene(loader.load());
-        //PuzzledController controller = (PuzzledController)loader.getController();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Puzzled.fxml"));
+        Scene scene = new Scene(loader.load());
+        PuzzledController mainController = (PuzzledController)loader.getController();
+        mainController.setMainApp(this);
         //controller.setupTitleBinding(primaryStage.titleProperty(), banner, version);
         
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setMaximized(true);
-        
         
         //controller.loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");
         

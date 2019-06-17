@@ -161,7 +161,7 @@
                 </Tab>
                   <Tab text="Clues">
                      <content>
-                         <fx:include id="clueTab" source="ClueTab.fxml" />
+                         <fx:include id="clueTab" fx:id="clueTab" source="ClueTab.fxml" />
                      </content>
                   </Tab>
                 <Tab text="Answers" />

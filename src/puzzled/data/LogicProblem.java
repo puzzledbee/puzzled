@@ -58,7 +58,8 @@ public class LogicProblem {
 
     @XmlElement
     private NumberedClueList numberedClueList = new NumberedClueList();
-    private ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);
+    //this is in the PuzzledController now, passed to the clueTabController
+    //public ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);
     
     private HashMap<ItemPair,Relationship> relationshipTable;
     

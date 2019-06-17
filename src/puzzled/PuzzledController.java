@@ -108,6 +108,8 @@ public class PuzzledController implements Initializable {
     private static double maxZoom = 2.3;
     private static double minZoom = 0.4;
     private static int notificationTimer = 3000;
+    
+    private Puzzled mainApplication;
    
     public enum WarningType {
         SUCCESS ("success.png"), 
@@ -216,6 +218,14 @@ public class PuzzledController implements Initializable {
     @FXML
     private HiddenSidesPane pane;
 
+    //connects with nested controller?
+    @FXML
+    private Parent clueTab;
+    
+    
+    @FXML
+    private ClueTabController clueTabController; // $embeddedElement+Controller
+    
 //    @FXML
     private SlideOutPane soPane;
 
@@ -434,6 +444,7 @@ public class PuzzledController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         setupNotifier(); //configures the notification pane slide down
         mainScroll.setPannable(true);
+        
           
         //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");  
         
@@ -473,7 +484,7 @@ public class PuzzledController implements Initializable {
 //            }
 //        });
         
-        
+        clueTabController.setParentController(this);
         mainGrid.sceneProperty().addListener((observable, oldvalue, newvalue) -> {
             if (newvalue!=null) {
                 setupDragNDrop(mainGrid.getScene());
@@ -689,6 +700,7 @@ public class PuzzledController implements Initializable {
             clueGlyphBox.getChildren().clear();
             
             clues = FXCollections.observableList(logicProblem.get().getNumberedClueList());
+            clueTabController.setData(clues);
             
             //bind labels layer visibility to checkMenuItem
             logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
@@ -755,6 +767,9 @@ public class PuzzledController implements Initializable {
         }
     }
     
+    public void setMainApp(Puzzled parent) {
+        this.mainApplication = parent;
+    }
     
     public void process() {
 //        System.out.println("process invoked "+automaticProcessingMenuItem.isSelected());
