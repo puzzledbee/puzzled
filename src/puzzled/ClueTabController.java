@@ -7,23 +7,12 @@ package puzzled;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.util.Callback;
-import javafx.util.Pair;
 import puzzled.data.Clue;
-import puzzled.data.ClueNumber;
-import puzzled.data.NumberedClueList;
 
 /**
  *
@@ -52,8 +41,8 @@ public class ClueTabController implements Initializable {
 
         //clueTableView.getItems().setAll(data);
 
-        clueNumberColumn.setCellValueFactory(cellData -> cellData.getValue().getClueNumberProperty().get().getStringProperty());
-        clueTextColumn.setCellValueFactory(cellData -> cellData.getValue().getClueTextProperty());
+        clueNumberColumn.setCellValueFactory(cellData -> cellData.getValue().clueNumberProperty().get().clueNumberStringProperty());
+        clueTextColumn.setCellValueFactory(cellData -> cellData.getValue().clueTextProperty());
         
         // table column definitions in FXML file
 //        clueNumberColumn.setCellValueFactory(new PairKeyFactory());

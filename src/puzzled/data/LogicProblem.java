@@ -16,16 +16,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.util.Pair;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import org.javatuples.Triplet;
-import puzzled.processor.Parser;
 
 /**
  *
@@ -95,12 +89,12 @@ public class LogicProblem {
     }
     
     
-    public BooleanProperty getDirtyLogicProperty(){
+    public BooleanProperty dirtyLogicProperty(){
         return this.dirtyLogicProperty;
     }
     
     @XmlTransient
-    public boolean isLogicDirty(){
+    public boolean getDirtyLogic(){
         return this.dirtyLogicProperty.getValue();
     }
     
@@ -120,7 +114,7 @@ public class LogicProblem {
     }
      
     @XmlTransient
-    public boolean isFileDirty(){
+    public boolean getDirtyFile(){
         return this.dirtyFileProperty.getValue();
     }
     
@@ -133,11 +127,11 @@ public class LogicProblem {
         return titleProperty.getValue();
     }
     
-    public StringProperty getTitleProperty() {
+    public StringProperty titleProperty() {
         return titleProperty;
     }
    
-    public StringProperty getProblemTextProperty() {
+    public StringProperty problemTextProperty() {
         return problemTextProperty;
     }
 
@@ -158,12 +152,12 @@ public class LogicProblem {
      *
      * @return
      */
-    @XmlElement //unnecessary
+    @XmlElement //unnecessary?
     public String getSource() {
         return problemSource;
     }
     
-    @XmlElement //unnecessary
+    @XmlElement //unnecessary?
     public String getText() {
         return problemTextProperty.get();
     }

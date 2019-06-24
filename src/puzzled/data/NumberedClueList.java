@@ -24,7 +24,9 @@ public class NumberedClueList extends ArrayList<Clue> {
         //parse clue text here?
         this.add(newClue);
         //reconfigure
+        System.out.println("nextClueNumber 1) : " +getNextClueNumber().clueNumberStringProperty().get());
         nextClueNumberProperty.set(nextClueNumber);
+        System.out.println("nextClueNumber 2) : " +getNextClueNumber().clueNumberStringProperty().get());
         //return newClue;
     }
 
@@ -37,7 +39,16 @@ public class NumberedClueList extends ArrayList<Clue> {
 //        }
 //    }
     
-    public ObjectProperty<ClueNumber> getNextClueNumberProperty(){
+    public ObjectProperty<ClueNumber> nextClueNumberProperty(){
         return nextClueNumberProperty;
     }
+    
+    public ClueNumber getNextClueNumber() {
+        return nextClueNumberProperty.get();
+    }
+    
+    public void setNextClueNumber(ClueNumber arg_nextClueNumber) {
+        nextClueNumberProperty.set(arg_nextClueNumber);
+    }
+    
 }

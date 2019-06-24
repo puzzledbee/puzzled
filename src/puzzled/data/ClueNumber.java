@@ -6,6 +6,8 @@
 package puzzled.data;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -14,20 +16,23 @@ import javafx.beans.property.StringProperty;
  * @author https://github.com/bepuzzled
  */
 public class ClueNumber {
-    private int intMajor;
-    private int intMinor;
-    private int intSub;
+    //the following need to be properties for the String binding to work
+    private IntegerProperty majorProperty = new SimpleIntegerProperty();
+    private IntegerProperty minorProperty = new SimpleIntegerProperty();
+    private IntegerProperty subProperty = new SimpleIntegerProperty();
     
     //necessary for the TableView
-    private StringProperty stringProperty = new SimpleStringProperty();
+    private StringProperty clueNumberStringProperty = new SimpleStringProperty();
     
     public ClueNumber(int major, int minor, int sub) {
-        intMajor = major;
-        intMinor = minor;
-        intSub = sub;
+        majorProperty.set(major);
+        minorProperty.set(minor);
+        subProperty.set(sub);
         
         //bind
-        stringProperty.bind(Bindings.createStringBinding(() -> intMajor +"."+intMinor+"."+ intSub));
+        this.clueNumberStringProperty.bind(Bindings.createStringBinding(
+                () -> majorProperty.get() +"."+minorProperty.get()+"."+ subProperty.get(),
+                majorProperty,minorProperty,subProperty)); //observable dependencies
 
     }
     
@@ -36,35 +41,38 @@ public class ClueNumber {
     }
     
     public int getMajor(){
-        return intMajor;
+        return this.majorProperty.get();
     }
     
-    public ClueNumber getNextMajor() {
-        return new ClueNumber(intMajor + 1,1,1);
+    public ClueNumber getNextMajorClueNumber() {
+        return new ClueNumber(majorProperty.get() + 1,1,1);
     }
     
         
     public int getMinor(){
-        return intMinor;
+        return this.minorProperty.get();
     }
     
-    public ClueNumber getNextMinor() {
-        return new ClueNumber(intMajor,intMinor+1,1);
+    public ClueNumber getNextMinorClueNumber() {
+        return new ClueNumber(majorProperty.get(),minorProperty.get()+1,1);
     }
     
     public int getSub(){
-        return intSub;
+        return this.subProperty.get();
     }
     
-    public ClueNumber getNextSub() {
-        return new ClueNumber(intMajor,intMinor,intSub+1);
+    public ClueNumber getNextSubClueNumber() {
+        return new ClueNumber(majorProperty.get(),minorProperty.get(),subProperty.get()+1);
     }
     
-
-    public StringProperty getStringProperty() {
-        return this.stringProperty;
+    public StringProperty clueNumberStringProperty() {
+        return this.clueNumberStringProperty;
     }
     
+    
+    public String toString() {
+        return this.clueNumberStringProperty.get();
+    }
 //    public String getClueNumberString () {
 //        return Integer.toString(intMajor) + "." + Integer.toString(intMinor) + "." + Integer.toString(intSub);
 //    }

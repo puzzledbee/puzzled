@@ -5,7 +5,6 @@
  */
 package puzzled.processor;
 
-import java.awt.event.ActionEvent;
 import puzzled.data.Clue;
 import puzzled.data.ClueNumber;
 import puzzled.data.LogicProblem;
@@ -17,10 +16,9 @@ import puzzled.data.LogicProblem;
 public class Parser {
     
     public static void parse(LogicProblem logicProblem, String clueText, boolean isCtrlDown, boolean isAltDown){
-        System.out.println("parsing clue " + clueText);
+        System.out.println("Parser parsing clue " + clueText);
 
-       
-        ClueNumber nextClueNumber = logicProblem.getNumberedClueList().getNextClueNumberProperty().get();
+        ClueNumber nextClueNumber = logicProblem.getNumberedClueList().getNextClueNumber();
         //however, the last fragment needs to be added with the modifiers in mind so that the 
         //next clue number matches the intent of the user
         //in the case of a file input, this step will result in the next clue
@@ -32,11 +30,11 @@ public class Parser {
 
         //modifier logic here
         if (isCtrlDown) {
-            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextMinor());
+            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextMinorClueNumber());
         } else if (isAltDown) {
-            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextSub());
+            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextSubClueNumber());
         } else {
-            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextMajor());
+            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextMajorClueNumber());
         }
         logicProblem.setDirtyLogic(true);
     }

@@ -5,7 +5,6 @@
  */
 package puzzled.data;
 
-import java.util.HashSet;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -65,16 +64,16 @@ public class Clue extends Dependable {
     }
     
     
-    @XmlElement
-    public String getText(){
-        return clueTextProperty.getValue();
+    @XmlElement //?
+    public String getClueText(){
+        return this.clueTextProperty.get();
     }
     
-    public void setText(String arg_text) {
+    public void setClueText(String arg_text) {
         clueTextProperty.set(arg_text);
     }
     
-    public void setType(ClueType arg_type) {
+    public void setClueType(ClueType arg_type) {
         clueType = arg_type;
     }
     
@@ -85,12 +84,13 @@ public class Clue extends Dependable {
     }
     
     //necessary for the TableView celldata column assignment
-    public ObjectProperty<ClueNumber> getClueNumberProperty() {
+    public ObjectProperty<ClueNumber> clueNumberProperty() {
         return clueNumberProperty;
     }
     
+   
     //necessary for the TableView
-    public StringProperty getClueTextProperty() {
+    public StringProperty clueTextProperty() {
         return clueTextProperty;
     }
     
@@ -102,7 +102,7 @@ public class Clue extends Dependable {
     
     
     @XmlElement
-    public ClueType getType(){
+    public ClueType getClueType(){
         return clueType;
     }
     

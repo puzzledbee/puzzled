@@ -693,6 +693,7 @@ public class PuzzledController implements Initializable {
             
             clueGlyphBox.getChildren().clear();
             
+            //setup data source for the Clue Table ?!
             clues = FXCollections.observableList(logicProblem.get().getNumberedClueList());
             clueTabController.setData(clues);
             
@@ -701,12 +702,12 @@ public class PuzzledController implements Initializable {
             //bind relationships layer visibility to checkMenuItem        
             logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
             
-            this.dirtyLogicProperty.bind(logicProblem.get().getDirtyLogicProperty());
+            this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());
 //            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
 //            soPane.textProperty().bind(logicProblem.get().problemTextProperty());
-            soPane.textProperty().bindBidirectional(logicProblem.get().getProblemTextProperty());
+            soPane.textProperty().bindBidirectional(logicProblem.get().problemTextProperty());
             this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
                 System.out.println("change detected to dirtyLogicProperty");
                 this.process();
@@ -718,11 +719,15 @@ public class PuzzledController implements Initializable {
             //nextClueNumber.textProperty().bind(logicProblem.get().getNextClueNumber().concat("->"));
             
             this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblem.get().dirtyFileProperty().get()?
-                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitleProperty().get()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+") *"):
-                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitleProperty().get()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+")"),this.dirtyFileProperty, this.filenameProperty));
+                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitle()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+") *"):
+                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitle()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+")"),this.dirtyFileProperty, this.filenameProperty));
 //          
             //binds to the next ClueNumber string property, but adds ->
-            nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(() -> logicProblem.get().getNumberedClueList().getNextClueNumberProperty().get().getStringProperty().get()+" ->"));
+            nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(
+                    () -> logicProblem.get().getNumberedClueList().getNextClueNumber().toString()+" ->",
+                    logicProblem.get().getNumberedClueList().nextClueNumberProperty()));
+            
+
             //clues have already been added to the problem and parsed when loading the file
             //this is only to draw the glyph
             //for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
@@ -734,9 +739,9 @@ public class PuzzledController implements Initializable {
     }
     
     private Label generateClueGlyph(Clue clue){
-        Label label = new Label(clue.getClueNumberProperty().get().getStringProperty().get());
-        label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
-        label.getStyleClass().add("clue_"+clue.getType());
+        Label label = new Label(clue.clueNumberProperty().get().clueNumberStringProperty().get());
+        label.setTooltip(new Tooltip(clue.getClueText()+" ("+clue.getClueType()+")"));
+        label.getStyleClass().add("clue_"+clue.getClueType());
         return label;
     }
     
@@ -770,7 +775,7 @@ public class PuzzledController implements Initializable {
             //concurrent processingFlag loops
             processingFlag = true;
 //            System.out.println("entering processingFlag loop");
-            while (logicProblem.get().isLogicDirty()){
+            while (logicProblem.get().getDirtyLogic()){
 //                System.out.println("executing processingFlag loop");
                 logicProblem.get().setDirtyLogic(false);
                 
