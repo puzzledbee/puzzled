@@ -37,6 +37,9 @@ import puzzled.processor.Parser;
 //something is amiss
 public class LogicProblem {
 
+    
+    //data members members
+    
 //    @XmlElement //why are we not saving the title in the XML again?
     private StringProperty titleProperty = new SimpleStringProperty();
     
@@ -46,23 +49,24 @@ public class LogicProblem {
     @XmlElement
     private String notes; //notes related to the problem
     
-    @XmlElement
-    private ArrayList<Constraint> constraintList = new ArrayList<Constraint>();
-    
 //    @XmlElement
 //    private int numCategories; //is this necessary or can it not be recovered, what is the point???
 //    @XmlElement
 //    private int numItems; //is this necessary or can it not be recovered, what is the point???
     @XmlElement
     private List<Category> categories;
-
+    
     @XmlElement
-    private NumberedClueList numberedClueList = new NumberedClueList();
+    private NumberedClueList numberedClueList = new NumberedClueList(); //extends ArrayList
     //this is in the PuzzledController now, passed to the clueTabController
     //public ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);
     
-    private HashMap<ItemPair,Relationship> relationshipTable;
+    @XmlElement
+    private List<Constraint> constraintList = new ArrayList<Constraint>();
     
+    private HashMap<ItemPair,Relationship> relationshipTable;
+        
+    // utility members
     //visual scale
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
     
@@ -74,8 +78,6 @@ public class LogicProblem {
     //necessary for unmarshalling
     public LogicProblem(){
     }
-    
-    
     
     
     public LogicProblem(String ... problemInfo){
@@ -92,25 +94,27 @@ public class LogicProblem {
         //categories.add("test");
     }
     
-    public BooleanProperty dirtyLogicProperty(){
+    
+    public BooleanProperty getDirtyLogicProperty(){
         return this.dirtyLogicProperty;
     }
     
     @XmlTransient
     public boolean isLogicDirty(){
         return this.dirtyLogicProperty.getValue();
-
     }
-    public void setLogicDirty(boolean dirtyness){
+    
+    public void setDirtyLogic(boolean dirtyness){
         System.out.println("logic problem logic set to dirty "+dirtyness);
         this.dirtyLogicProperty.set(dirtyness);
     }
     
-     public BooleanProperty dirtyFileProperty(){
+    
+    
+    public BooleanProperty dirtyFileProperty(){
         return this.dirtyFileProperty;
     }
-    
-    public void setFileDirty(boolean dirtyness) {
+    public void setDirtyFile(boolean dirtyness) {
         System.out.println("\n\nlogic problem file set to dirty "+dirtyness);
         this.dirtyFileProperty.set(dirtyness);
     }
@@ -129,11 +133,11 @@ public class LogicProblem {
         return titleProperty.getValue();
     }
     
-    public StringProperty titleProperty() {
+    public StringProperty getTitleProperty() {
         return titleProperty;
     }
    
-    public StringProperty problemTextProperty() {
+    public StringProperty getProblemTextProperty() {
         return problemTextProperty;
     }
 
@@ -164,9 +168,9 @@ public class LogicProblem {
         return problemTextProperty.get();
     }
     
-    public void generateRelationships(){
+    public void initializeRelationshipTable(){
         
-        System.out.println("generating relationshipTable");
+        System.out.println("initializing relationshipTable");
         relationshipTable = new HashMap<ItemPair,Relationship>();
         
         ItemPair pair;
@@ -226,10 +230,10 @@ public class LogicProblem {
     public String getNotes() {
         return notes;
     }
-     
+    
     public void clearInvestigate() {
         System.out.println("clearing previous styles");
-        for (ItemPair key : this.relationshipTable.keySet()) this.relationshipTable.get(key).investigateProperty().set(false);
+        for (ItemPair key : this.relationshipTable.keySet()) this.relationshipTable.get(key).getExplainProperty().set(false);
     }
     //somehow does not get registered as an XmlElement
     public int getNumItems(){
@@ -287,5 +291,21 @@ public class LogicProblem {
              }
          }
         return output;
+    }
+    
+    public List<Constraint> getConstraintList() {
+        return constraintList;
+    }
+    
+    
+    public Constraint addConstraint(Relationship relationship) {
+        //String clueString = new String(pair.first().getName() 
+        //        + ((relationship.getValue()==Relationship.ValueType.VALUE_YES)?" is ":" is not ") 
+        //        + pair.last().getName());
+        
+        System.out.println("constraint added "+ relationship);
+        Constraint constraint = new Constraint(relationship);
+        constraintList.add(constraint);
+        return constraint;
     }
 }

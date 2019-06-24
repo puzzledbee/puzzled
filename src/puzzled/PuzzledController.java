@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -77,7 +76,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import javafx.util.Pair;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -88,11 +86,8 @@ import puzzled.UI.Grid;
 import puzzled.UI.SlideOutPane;
 import puzzled.data.Category;
 import puzzled.data.Clue;
-import puzzled.data.ClueNumber;
 import puzzled.data.Item;
-import puzzled.data.ItemPair;
 import puzzled.data.LogicProblem;
-import puzzled.data.Relationship;
 import puzzled.exceptions.RelationshipConflictException;
 import puzzled.exceptions.SuperfluousRelationshipException;
 import puzzled.processor.Parser;
@@ -165,6 +160,7 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private MenuItem openMenuItem;    
+    
     @FXML
     private MenuItem saveMenuItem;
     
@@ -239,7 +235,7 @@ public class PuzzledController implements Initializable {
     
     ObjectProperty<LogicProblem> logicProblem = new SimpleObjectProperty<LogicProblem>();
     DoubleProperty scaleProperty = new SimpleDoubleProperty();
-    private ObservableList<Pair<ClueNumber, Clue>> clues;
+    private ObservableList<Clue> clues;
     
     //private HashMap<Pair<Item,Item>,Relationship> relationships;
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty();
@@ -250,8 +246,8 @@ public class PuzzledController implements Initializable {
     
     Grid logicProblemGrid;
     private boolean processingFlag = false;
-    private String appTitle;
-    private String appVersion;
+    //private String appTitle;
+    //private String appVersion;
 
     private StringProperty appTitleProperty = new SimpleStringProperty();
     private StringProperty filenameProperty = new SimpleStringProperty(null); //used to store loaded file name
@@ -269,11 +265,9 @@ public class PuzzledController implements Initializable {
     }
     
     
-    public void setupTitleBinding(StringProperty puzzledTitleProperty, String banner, String version) {
+    public void setupTitleBinding(StringProperty puzzledTitleProperty) {
         puzzledTitleProperty.bind(this.appTitleProperty);
-        appTitle = banner;
-        appVersion = version;
-        this.appTitleProperty.set(banner+" - "+version);
+        //this.appTitleProperty.set(banner+" - "+version);
     }
     
     @FXML
@@ -407,7 +401,7 @@ public class PuzzledController implements Initializable {
 
         //how is the glyph generation going to work if we no longer create the clue here?
         //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
-        logicProblem.get().setFileDirty(true);
+        logicProblem.get().setDirtyFile(true);
         //notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
     }
     
@@ -420,7 +414,7 @@ public class PuzzledController implements Initializable {
             clueText.clear();
             //how is the glyph generation going to work if we no longer create the clue here?
             //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
-            logicProblem.get().setFileDirty(true);
+            logicProblem.get().setDirtyFile(true);
 
         }
      }
@@ -445,7 +439,6 @@ public class PuzzledController implements Initializable {
         setupNotifier(); //configures the notification pane slide down
         mainScroll.setPannable(true);
         
-          
         //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");  
         
         clueText.disableProperty().bind(logicProblem.isNull());
@@ -468,7 +461,8 @@ public class PuzzledController implements Initializable {
         zoomOutButton.disableProperty().bind(Bindings.or(logicProblem.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
         
         
-
+        appTitleProperty.bind(Bindings.createStringBinding(() -> Puzzled.banner +" v."+Puzzled.version));
+         
         
 //        this.logicProblem.addListener( (e, oldvalue, newvalue) -> {
 ////            System.out.println("unbinding and rebinding");
@@ -652,12 +646,12 @@ public class PuzzledController implements Initializable {
                     List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
                     for (String line : lines) {
                         String[] clueInfo = line.split(";");
-                        Clue newClue = new Clue(clueInfo);
-                        logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this will parse the clue
-                        logicProblem.get().setFileDirty(true);
-                        if (newClue.getType() != Clue.ClueType.CONSTRAINT) {
-                            clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
-                        }
+                        //Clue newClue = new Clue(clueInfo);
+                        Parser.parse(logicProblem.get(), clueInfo[0]);
+                        //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this will parse the clue
+                        logicProblem.get().setDirtyFile(true);
+                        //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
+                        
                     }
                 } catch (IOException e) {
                     notify(WarningType.WARNING, "Unable to load problem clues file "+file.getName()+ "!");
@@ -692,7 +686,7 @@ public class PuzzledController implements Initializable {
     
     private void initializeProblem(){
         
-            logicProblem.get().generateRelationships();
+            logicProblem.get().initializeRelationshipTable();
             logicProblemGrid = new Grid(this,logicProblem.get());
             mainGroup.getChildren().clear();
             mainGroup.getChildren().add(logicProblemGrid);
@@ -707,12 +701,12 @@ public class PuzzledController implements Initializable {
             //bind relationships layer visibility to checkMenuItem        
             logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
             
-            this.dirtyLogicProperty.bind(logicProblem.get().dirtyLogicProperty());
+            this.dirtyLogicProperty.bind(logicProblem.get().getDirtyLogicProperty());
             this.dirtyFileProperty.bind(logicProblem.get().dirtyFileProperty());
             this.scaleProperty.bind(logicProblem.get().scaleProperty());
 //            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
 //            soPane.textProperty().bind(logicProblem.get().problemTextProperty());
-            soPane.textProperty().bindBidirectional(logicProblem.get().problemTextProperty());
+            soPane.textProperty().bindBidirectional(logicProblem.get().getProblemTextProperty());
             this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
                 System.out.println("change detected to dirtyLogicProperty");
                 this.process();
@@ -724,13 +718,11 @@ public class PuzzledController implements Initializable {
             //nextClueNumber.textProperty().bind(logicProblem.get().getNextClueNumber().concat("->"));
             
             this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblem.get().dirtyFileProperty().get()?
-                    appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.getValue()+") *"):
-                    appTitle +" v."+appVersion+" -  "+logicProblem.get().titleProperty().getValue()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.getValue()+")"),this.dirtyFileProperty, this.filenameProperty));
+                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitleProperty().get()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+") *"):
+                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitleProperty().get()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+")"),this.dirtyFileProperty, this.filenameProperty));
 //          
-            nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(() -> 
-            logicProblem.get().getNumberedClueList().getNextClueNumberProperty().get().getMajor() +"."+
-            logicProblem.get().getNumberedClueList().getNextClueNumberProperty().get().getMinor()+"."+
-            logicProblem.get().getNumberedClueList().getNextClueNumberProperty().get().getSub()+" -> "));
+            //binds to the next ClueNumber string property, but adds ->
+            nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(() -> logicProblem.get().getNumberedClueList().getNextClueNumberProperty().get().getStringProperty().get()+" ->"));
             //clues have already been added to the problem and parsed when loading the file
             //this is only to draw the glyph
             //for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
@@ -742,7 +734,7 @@ public class PuzzledController implements Initializable {
     }
     
     private Label generateClueGlyph(Clue clue){
-        Label label = new Label(logicProblem.get().getNumberedClueList().getClueNumberAsString(clue));
+        Label label = new Label(clue.getClueNumberProperty().get().getStringProperty().get());
         label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
         label.getStyleClass().add("clue_"+clue.getType());
         return label;
@@ -780,7 +772,7 @@ public class PuzzledController implements Initializable {
 //            System.out.println("entering processingFlag loop");
             while (logicProblem.get().isLogicDirty()){
 //                System.out.println("executing processingFlag loop");
-                logicProblem.get().setLogicDirty(false);
+                logicProblem.get().setDirtyLogic(false);
                 
                 //re-process SPECIAL clues (with streams and filters maybe?)
                 try {
@@ -834,13 +826,6 @@ public class PuzzledController implements Initializable {
 //                System.out.println("maxY: "+bound.getMaxY());
     }
     
-    private void addConstraint(ItemPair pair, Relationship relationship) {
-        String clueString = new String(pair.first().getName() 
-                + ((relationship.getValue()==Relationship.ValueType.VALUE_YES)?" is ":" is not ") 
-                + pair.last().getName());
-        System.out.println("constraint added "+ clueString);
-        logicProblem.get().getNumberedClueList().addMajorClue(new Clue(clueString,Clue.ClueType.CONSTRAINT));
-    }
     
     @FXML
     public void saveAction(ActionEvent event) {

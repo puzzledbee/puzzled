@@ -5,6 +5,7 @@
  */
 package puzzled.data;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -17,10 +18,17 @@ public class ClueNumber {
     private int intMinor;
     private int intSub;
     
+    //necessary for the TableView
+    private StringProperty stringProperty = new SimpleStringProperty();
+    
     public ClueNumber(int major, int minor, int sub) {
         intMajor = major;
         intMinor = minor;
         intSub = sub;
+        
+        //bind
+        stringProperty.bind(Bindings.createStringBinding(() -> intMajor +"."+intMinor+"."+ intSub));
+
     }
     
     public ClueNumber() {
@@ -53,7 +61,11 @@ public class ClueNumber {
     }
     
 
-    public String getClueNumberString () {
-        return Integer.toString(intMajor) + "." + Integer.toString(intMinor) + "." + Integer.toString(intSub);
+    public StringProperty getStringProperty() {
+        return this.stringProperty;
     }
+    
+//    public String getClueNumberString () {
+//        return Integer.toString(intMajor) + "." + Integer.toString(intMinor) + "." + Integer.toString(intSub);
+//    }
 }

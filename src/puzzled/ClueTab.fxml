@@ -5,13 +5,12 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@Puzzled.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="puzzled.ClueTabController">
    <children>
       <TableView fx:id="clueTableView" layoutX="14.0" layoutY="7.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columns>
           <TableColumn fx:id="clueNumberColumn" prefWidth="100.0" text="Clue Number" />
-          <TableColumn fx:id="clueTextColum" prefWidth="200.0" text="Clue Text" />
+          <TableColumn fx:id="clueTextColumn" prefWidth="200.0" text="Clue Text" />
             <TableColumn prefWidth="95.2000732421875" text="Actions" />
         </columns>
       </TableView>

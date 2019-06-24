@@ -175,7 +175,7 @@
                   <FlowPane alignment="CENTER" hgap="5.0" prefHeight="45.0" prefWidth="600.0">
                      <children>
                         <Label alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="83.0" text="Clue:" textAlignment="RIGHT" />
-                        <Label fx:id="nextClueNumberLabel" alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="58.0" text="1 -&gt;" textAlignment="RIGHT" textFill="#1b2ab5" textOverrun="CLIP">
+                        <Label fx:id="nextClueNumberLabel" alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="58.0" text="1.1.1 -&gt;" textAlignment="RIGHT" textFill="#1b2ab5" textOverrun="CLIP">
                            <padding>
                               <Insets left="7.0" right="3.0" />
                            </padding></Label>

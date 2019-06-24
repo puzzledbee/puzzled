@@ -5,11 +5,6 @@
  */
 package puzzled;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import java.io.File;
 import java.net.URL;
 import java.util.logging.Level;
@@ -19,15 +14,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 
 /**
  *
  * @author phiv
  */
 public class Puzzled extends Application {
-    private static final String banner = "Puzzled! - Logic problem solver";
+    public static final String banner = "Puzzled! - Logic problem solver";
     public static final String version = "2.0.3";
     
     private static final Logger fLogger =
@@ -52,7 +45,7 @@ public class Puzzled extends Application {
         Scene scene = new Scene(loader.load());
         PuzzledController mainController = (PuzzledController)loader.getController();
         mainController.setMainApp(this);
-        //controller.setupTitleBinding(primaryStage.titleProperty(), banner, version);
+        mainController.setupTitleBinding(primaryStage.titleProperty());
         
         primaryStage.setScene(scene);
         primaryStage.show();

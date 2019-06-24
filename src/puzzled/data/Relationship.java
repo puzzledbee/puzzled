@@ -5,13 +5,10 @@
  */
 package puzzled.data;
 
-import java.util.HashSet;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,7 +25,7 @@ import puzzled.exceptions.SuperfluousRelationshipException;
  *
  * @author phiv
  */
-public class Relationship implements Dependable {
+public class Relationship extends Dependable {
     
     
     public static enum ValueType {
@@ -42,16 +39,11 @@ public class Relationship implements Dependable {
     private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<ValueType>(this, "value" , ValueType.VALUE_UNKNOWN);
     private ObjectProperty<LogicType> logicTypeProperty = new SimpleObjectProperty<LogicType>(this, "value" , LogicType.CONSTRAINT);
     
-    
-    private BooleanProperty investigateProperty = new SimpleBooleanProperty(false);
     private DoubleProperty centerX = new SimpleDoubleProperty();
     private DoubleProperty centerY = new SimpleDoubleProperty();
     
 //    private StringProperty highlight = new SimpleStringProperty();
 
-    private HashSet<Dependable> predecessors = new HashSet<Dependable>();
-    private HashSet<Dependable> successors = new HashSet<Dependable>();
-    
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
     
@@ -63,21 +55,21 @@ public class Relationship implements Dependable {
     private StringProperty relationshipTextProperty = new SimpleStringProperty();
     
     public Relationship(LogicProblem arg_parent, ItemPair arg_pair) {
-//        System.out.println("creating relationship #" + index);
+//        System.out.println("creating relationship: " + arg_pair);
         logicProblem = arg_parent;
         pair = arg_pair;
         
         valueProperty.addListener( (e,oldValue,newValue) -> {
 //            fLogger.info("Relationship valueProperty chansged to: " + newValue);
-            logicProblem.setLogicDirty(true);
+            logicProblem.setDirtyLogic(true);
                 });
         
-        investigateProperty.addListener((e,oldValue,newValue) -> {
+        getExplainProperty().addListener((e,oldValue,newValue) -> {
             if (newValue == true) {
-                System.out.println("investigate property becoming true for "+this.toString());
-                for (Dependable predecessor : predecessors) {
+                System.out.println("explain property becoming true for "+this.toString());
+                for (Dependable predecessor : this.getPredecessors()) {
                     System.out.println("setting predecessor "+predecessor.toString());
-                    predecessor.investigateProperty().set(true);
+                    predecessor.getExplainProperty().set(true);
                 }
             }
         });
@@ -88,7 +80,7 @@ public class Relationship implements Dependable {
                     text.append("The relationship between " + this.pair.toString() +
                         " is " + (this.valueProperty.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.valueProperty.getValue()+" ("+this.logicTypeProperty.getValue()+")"));
                     text.append("\n");
-                    this.predecessors.forEach(predecessor -> text.append(predecessor.toString()));
+                    this.getPredecessors().forEach(predecessor -> text.append(predecessor.toString()));
                     
                     return text.toString();
                         },
@@ -121,10 +113,7 @@ public class Relationship implements Dependable {
     public DoubleProperty centerYProperty(){
         return this.centerY;
     }
-    
-    public BooleanProperty investigateProperty() {
-        return this.investigateProperty;
-    }
+   
     
     public ValueType getValue(){
         return valueProperty.get();
@@ -150,8 +139,8 @@ public class Relationship implements Dependable {
             for (Dependable predecessor : arg_predecessors) {
                 System.out.print("there is a predecessor added to " + this.toString() + " : " + predecessor.toString());
                 
-                predecessors.add(predecessor);
-                System.out.println("total number of predecessors: " + predecessors.size());
+                this.addPredecessor(predecessor);
+                System.out.println("total number of predecessors: " + this.getPredecessors().size());
                 predecessor.addSuccessor(this);
             }
         } else if (valueProperty.getValue()==value) {
@@ -162,13 +151,6 @@ public class Relationship implements Dependable {
         }
     }
     
-    public void addSuccessor(Dependable successor) {
-        successors.add(successor);
-    }
-    public HashSet<Dependable> getSuccessors(){
-        return successors;
-    }
-    
     public void drawPredecessors(StackPane mainStack){
         System.out.println("about to draw many special lines pointing to: "+ getCenterPosition().getX()
                 +", "+ getCenterPosition().getY());
@@ -177,7 +159,7 @@ public class Relationship implements Dependable {
         
         dependencyPane.getChildren().clear();
         
-        for (Dependable predecessor : predecessors) {
+        for (Dependable predecessor : this.getPredecessors()) {
             System.out.println("\tpredecessor "+predecessor.getCenterPosition().getX()
                 +", "+ predecessor.getCenterPosition().getY());
             
@@ -189,6 +171,10 @@ public class Relationship implements Dependable {
         }
     }
     
+    public LogicProblem getParent() {
+        return logicProblem;
+    }
+    
 
     @Override
     public String toString(){
@@ -198,7 +184,6 @@ public class Relationship implements Dependable {
     @Override
     public Point2D getCenterPosition(){
         return new Point2D(this.centerX.get(),this.centerY.get());
-        
     }
     
     public StringProperty relationshipTextProperty() {

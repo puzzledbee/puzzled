@@ -14,26 +14,10 @@ import javafx.geometry.Point2D;
  *
  * @author phiv
  */
-public class Hint implements Dependable {
+public class Hint extends Dependable {
+       
     
-    private HashSet<Dependable> predecessors = new HashSet<Dependable>();
-    private HashSet<Dependable> successors = new HashSet<Dependable>();
-    private BooleanProperty investigateProperty = new SimpleBooleanProperty(false);
-    
-    @Override
     public Point2D getCenterPosition(){
         return null;
-    }
-    
-    public void addSuccessor(Dependable successor){
-        successors.add(successor);
-    }
-    
-    public HashSet<Dependable> getSuccessors(){
-        return successors;
-    }
-    
-    public BooleanProperty investigateProperty() {
-        return this.investigateProperty;
     }
 }

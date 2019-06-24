@@ -7,25 +7,41 @@ package puzzled.data;
 
 import java.util.HashSet;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Point2D;
 
 /**
  *
  * @author phiv
  */
-public interface Dependable {
-//    private HashSet<Dependable> predecessors = new HashSet<Dependable>();
-//    private HashSet<Dependable> sucessors = new HashSet<Dependable>();
+public abstract class Dependable {
+    private HashSet<Dependable> predecessors = new HashSet<Dependable>();
+    private HashSet<Dependable> successors = new HashSet<Dependable>();
+    private BooleanProperty explainProperty = new SimpleBooleanProperty(); 
+    
+    abstract public Point2D getCenterPosition();
+
+
+    public HashSet<Dependable> getPredecessors() {
+        return predecessors;
+    }
+    
+    public HashSet<Dependable> getSuccessors() {
+        return successors;
+    }
+    
+    public void addPredecessor(Dependable predecessor){
+        predecessors.add(predecessor);
+    }
+    
+    public void addSuccessor(Dependable successor) {
+        successors.add(successor);
+    }
+        
+    public BooleanProperty getExplainProperty() {
+        return explainProperty;
+    }
     
     
-    public Point2D getCenterPosition();
     
-    public void addSuccessor(Dependable successor);
-    
-    public HashSet<Dependable> getSuccessors();
-    public BooleanProperty investigateProperty();
-    
-    //public void addPredecessor(Dependable dependency);
-    
-    //public void getPredecessor);
 }

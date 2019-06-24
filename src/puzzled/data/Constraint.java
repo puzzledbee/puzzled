@@ -5,11 +5,13 @@
  */
 package puzzled.data;
 
+import javafx.geometry.Point2D;
+
 /**
  *
  * @author https://github.com/bepuzzled
  */
-public class Constraint {
+public class Constraint extends Dependable {
     private Relationship relationship;
     private String notes;
     
@@ -23,6 +25,10 @@ public class Constraint {
     
     public String getNotes() {
         return notes;
+    }
+    
+    public Point2D getCenterPosition(){
+        return null;
     }
     
 }
