@@ -29,7 +29,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -88,8 +89,6 @@ import puzzled.data.Category;
 import puzzled.data.Clue;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
-import puzzled.exceptions.RelationshipConflictException;
-import puzzled.exceptions.SuperfluousRelationshipException;
 import puzzled.processor.Parser;
 import puzzled.processor.Processor;
 
@@ -209,11 +208,13 @@ public class PuzzledController implements Initializable {
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty();
     private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty();
     
+    private LogicChangeListener logicChangeListener = new LogicChangeListener();
+    
     private static final Logger fLogger =
     Logger.getLogger(Puzzled.class.getPackage().getName());
     
     Grid logicProblemGrid;
-    private boolean processingFlag = false; //is this necessary?
+//    private boolean processingFlag = false; //is this necessary?
     //private String appTitle;
     //private String appVersion;
 
@@ -223,7 +224,7 @@ public class PuzzledController implements Initializable {
     @FXML
     private void handleAutomaticProcessingAction(ActionEvent event) {
         // Button was clicked, do something...
-        process();
+        //
     }
     
     @FXML
@@ -409,6 +410,10 @@ public class PuzzledController implements Initializable {
         mainScroll.setPannable(true);
         
         //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");  
+        
+        
+        this.dirtyLogicProperty.addListener(logicChangeListener);
+        
         
         clueText.disableProperty().bind(logicProblem.isNull());
         addClueButton.disableProperty().bind(logicProblem.isNull().or(clueText.textProperty().isEmpty()));
@@ -651,7 +656,6 @@ public class PuzzledController implements Initializable {
             notify(WarningType.SUCCESS, "Logic problem reset successfully!");
         }
     }
-
     
     private void initializeProblem(){
         
@@ -677,10 +681,7 @@ public class PuzzledController implements Initializable {
 //            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
 //            soPane.textProperty().bind(logicProblem.get().problemTextProperty());
             soPane.textProperty().bindBidirectional(logicProblem.get().problemTextProperty());
-            this.dirtyLogicProperty.addListener((e,oldValue,newValue) -> {
-                System.out.println("change detected to dirtyLogicProperty");
-                this.process();
-            });
+
             
             //logicProblem.get().getClues().stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).count()
             //                    .stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).collect(collectingAndThen(toList(), l -> FXCollections.observableArrayList(l)))
@@ -735,69 +736,6 @@ public class PuzzledController implements Initializable {
     
     public void setMainApp(Puzzled parent) {
         this.mainApplication = parent;
-    }
-    
-    public void process() {
-//        System.out.println("process invoked "+automaticProcessingMenuItem.isSelected());
-        
-        if (automaticProcessingMenuItem.isSelected() && !processingFlag) {//prevents the changeHandler from triggering multiple
-            //concurrent processingFlag loops
-            processingFlag = true;
-//            System.out.println("entering processingFlag loop");
-            while (logicProblem.get().isLogicDirty()){
-//                System.out.println("executing processingFlag loop");
-                logicProblem.get().setDirtyLogic(false);
-                
-                //re-process SPECIAL clues (with streams and filters maybe?)
-                try {
-                    Processor.cross(logicProblem.get());
-                    Processor.uniqueness(logicProblem.get());
-                    Processor.transpose(logicProblem.get());
-                if (logicProblem.get().getNumItems() >3) Processor.commonality(logicProblem.get());
-                } catch (SuperfluousRelationshipException | RelationshipConflictException e) {
-                    notify(WarningType.WARNING, e.toString());
-                }
-            }
-            processingFlag = false;
-        }
-            
-//        logicProblem.get().getRelationshipTable().get(
-//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(4),
-//                            logicProblem.get().getCategories().get(1).getItems().get(2))
-//                ).setValue(Relationship.ValueType.VALUE_NO);
-//
-//        logicProblem.get().getRelationshipTable().get(
-//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(1),
-//                            logicProblem.get().getCategories().get(1).getItems().get(2))
-//                ).setValue(Relationship.ValueType.VALUE_NO);
-//        
-//        logicProblem.get().getRelationshipTable().get(
-//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(0),
-//                            logicProblem.get().getCategories().get(1).getItems().get(2))
-//                ).setValue(Relationship.ValueType.VALUE_NO);
-//
-//        logicProblem.get().getRelationshipTable().get(
-//                new ItemPair(logicProblem.get().getCategories().get(0).getItems().get(3),
-//                            logicProblem.get().getCategories().get(1).getItems().get(2))
-//                ).setValue(Relationship.ValueType.VALUE_NO);
-
-        
-        
-//        logicProblem.get().getRelationshipTable().get(
-//                new ItemPair(logicProblem.get().getCategories().get(3).getItems().get(2),
-//                            logicProblem.get().getCategories().get(1).getItems().get(2))
-//                ).setValue(Relationship.ValueType.VALUE_YES);
-//                System.out.println("item1: "+logicProblem.get().getCategories().get(0).getItems().get(0).getName()+", item2: "+
-//                        logicProblem.get().getCategories().get(1).getItems().get(2).getName());
-//
-//                Bounds bound = logicProblem.get().getRelationshipTable().get(
-//                        new ItemPair(logicProblem.get().getCategories().get(2).getItems().get(0),
-//                                    logicProblem.get().getCategories().get(3).getItems().get(2))
-//                        ).boundProperty().get();
-//                System.out.println("minX: "+bound.getMinX());
-//                System.out.println("minY: "+bound.getMinY());
-//                System.out.println("maxX: "+bound.getMaxX());
-//                System.out.println("maxY: "+bound.getMaxY());
     }
     
     
@@ -883,4 +821,16 @@ public class PuzzledController implements Initializable {
 
     }
     
+    private class LogicChangeListener<Boolean> implements ChangeListener<Boolean> {
+       
+       @Override 
+       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+           System.out.println("change detected to dirtyLogicProperty"); 
+           dirtyLogicProperty.removeListener(logicChangeListener);
+           Processor.process(logicProblem.get(),PuzzledController.this, dirtyLogicProperty);
+           dirtyLogicProperty.addListener(logicChangeListener);
+       }
+   }   
+    
 }
+
