@@ -16,6 +16,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -53,7 +55,7 @@ public class LogicProblem {
     @XmlElement
     private NumberedClueList numberedClueList = new NumberedClueList(); //extends ArrayList
     //this is in the PuzzledController now, passed to the clueTabController
-    //public ObservableList<Pair<ClueNumber, Clue>> clues = FXCollections.observableList(numberedClueList);
+    //private ObservableList<Clue> clues = FXCollections.observableList(numberedClueList);
     
     @XmlElement
     private List<Constraint> constraintList = new ArrayList<Constraint>();
@@ -94,7 +96,7 @@ public class LogicProblem {
     }
     
     @XmlTransient
-    public boolean getDirtyLogic(){
+    public boolean isLogicDirty(){
         return this.dirtyLogicProperty.getValue();
     }
     
@@ -114,7 +116,7 @@ public class LogicProblem {
     }
      
     @XmlTransient
-    public boolean getDirtyFile(){
+    public boolean isFileDirty(){
         return this.dirtyFileProperty.getValue();
     }
     

@@ -69,7 +69,7 @@ public class ClueNumber {
         return this.clueNumberStringProperty;
     }
     
-    
+    @Override
     public String toString() {
         return this.clueNumberStringProperty.get();
     }

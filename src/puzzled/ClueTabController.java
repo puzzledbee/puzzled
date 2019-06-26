@@ -12,7 +12,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import puzzled.data.Clue;
+import puzzled.data.ClueNumber;
 
 /**
  *
@@ -22,14 +24,11 @@ public class ClueTabController implements Initializable {
     
     private PuzzledController parentController;
     
-    @FXML
-    TableView<Clue> clueTableView;
+    @FXML TableView<Clue> clueTableView;
     
-    @FXML
-    TableColumn<Clue,String> clueNumberColumn;
+    @FXML TableColumn<Clue,String> clueNumberColumn;
     
-    @FXML
-    TableColumn<Clue,String> clueTextColumn;
+    @FXML TableColumn<Clue,String> clueTextColumn;
     
     public void setParentController(PuzzledController parent) {
         this.parentController = parent;
@@ -39,12 +38,14 @@ public class ClueTabController implements Initializable {
     public void initialize(URL url, ResourceBundle rb){
         // controller available in initialize method
 
-        //clueTableView.getItems().setAll(data);
-
-        clueNumberColumn.setCellValueFactory(cellData -> cellData.getValue().clueNumberProperty().get().clueNumberStringProperty());
+        // table column definitions in FXML file
+        //this next one does not work because clueNumberStringProperty() is a method of ClueNumber, not Clue
+//        clueNumberColumn.setCellValueFactory(new PropertyValueFactory<Clue,String>("clueNumberString"));
+//        clueTextColumn.setCellValueFactory(new PropertyValueFactory<Clue,String>("clueText"));
+        clueNumberColumn.setCellValueFactory(cellData -> cellData.getValue().getClueNumber().clueNumberStringProperty());
         clueTextColumn.setCellValueFactory(cellData -> cellData.getValue().clueTextProperty());
         
-        // table column definitions in FXML file
+        
 //        clueNumberColumn.setCellValueFactory(new PairKeyFactory());
 //        clueTextColum.setCellValueFactory(new PairValueFactory());
 
@@ -69,7 +70,11 @@ public class ClueTabController implements Initializable {
     
     //can't set that during initialize
     public void setData(ObservableList<Clue> clues) {
-        clueTableView.getItems().setAll(clues);
+        clueTableView.setItems(clues);
+    }
+    
+    public void refreshTable() {
+        clueTableView.refresh();
     }
     
     

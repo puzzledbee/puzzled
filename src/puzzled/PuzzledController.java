@@ -122,105 +122,72 @@ public class PuzzledController implements Initializable {
         }
     }
 
-    @FXML
-    private Parent root;
+    @FXML private Parent root;
     
-    @FXML
-    private BorderPane bPane;
+    @FXML private BorderPane bPane;
     
-    @FXML
-    private TabPane tPane;
+    @FXML private TabPane tPane;
     
-    @FXML
-    private HBox clueGlyphBox;
+    @FXML private HBox clueGlyphBox;
     
-    @FXML
-    private NotificationPane nPane;
+    @FXML private NotificationPane nPane;
     
-    @FXML
-    private Button addClueButton;
+    @FXML private Button addClueButton;
     
-    @FXML
-    private TextField clueText;
+    @FXML private TextField clueText;
 
-    @FXML
-    private AnchorPane mainGrid;
+    @FXML private AnchorPane mainGrid;
 
-    @FXML
-    private StackPane mainStack;
+    @FXML private StackPane mainStack;
     
-    @FXML
-    private ScrollPane mainScroll;
+    @FXML private ScrollPane mainScroll;
 
-    @FXML
-    private Group mainGroup;
+    @FXML private Group mainGroup;
     
-    @FXML
-    private Label nextClueNumberLabel;
+    @FXML private Label nextClueNumberLabel;
     
-    @FXML
-    private MenuItem openMenuItem;    
+    @FXML private MenuItem openMenuItem;    
     
-    @FXML
-    private MenuItem saveMenuItem;
+    @FXML private MenuItem saveMenuItem;
     
-    @FXML
-    private CheckMenuItem automaticProcessingMenuItem;
+    @FXML private CheckMenuItem automaticProcessingMenuItem;
     
-    @FXML
-    private MenuItem saveAsMenuItem;
+    @FXML private MenuItem saveAsMenuItem;
     
-    @FXML
-    private MenuItem printMenuItem;
+    @FXML private MenuItem printMenuItem;
     
-    @FXML
-    private MenuItem zoomInMenuItem;
+    @FXML private MenuItem zoomInMenuItem;
     
-    @FXML
-    private MenuItem zoomOutMenuItem;
+    @FXML private MenuItem zoomOutMenuItem;
     
-    @FXML
-    private ToolBar toolbar;
+    @FXML private ToolBar toolbar;
     
-    @FXML
-    private CheckMenuItem hideToolbarMenuItem;
+    @FXML private CheckMenuItem hideToolbarMenuItem;
     
-    @FXML
-    private Button saveButton;
+    @FXML private Button saveButton;
 
-    @FXML
-    private Button resetButton;
+    @FXML private Button resetButton;
 
-    @FXML
-    private Button undoButton;
+    @FXML private Button undoButton;
     
-    @FXML
-    private Button zoomOutButton;
+    @FXML private Button zoomOutButton;
     
-    @FXML
-    private Button zoomInButton;
+    @FXML private Button zoomInButton;
     
-    @FXML
-    private MenuItem propertiesMenuItem;
+    @FXML private MenuItem propertiesMenuItem;
     
-    @FXML
-    private CheckMenuItem hideLabelsMenuItem;
-    @FXML
-    private CheckMenuItem hideRelationshipsMenuItem;
+    @FXML private CheckMenuItem hideLabelsMenuItem;
     
-    @FXML
-    private CheckMenuItem hideClueEngineMenuItem;
+    @FXML private CheckMenuItem hideRelationshipsMenuItem;
     
-    @FXML
-    private HiddenSidesPane pane;
+    @FXML private CheckMenuItem hideClueEngineMenuItem;
+    
+    @FXML private HiddenSidesPane pane;
 
     //connects with nested controller?
-    @FXML
-    private Parent clueTab;
+    @FXML private Parent clueTab;
     
-    
-    @FXML
-    private ClueTabController clueTabController; // $embeddedElement+Controller
+    @FXML private ClueTabController clueTabController; // $embeddedElement+Controller
     
 //    @FXML
     private SlideOutPane soPane;
@@ -230,8 +197,9 @@ public class PuzzledController implements Initializable {
 //        pane.setPinnedSide((pane.getPinnedSide() != null)?null:Side.RIGHT);
 //    }
     
-    @FXML
-    private VBox clueEngineVBox;
+    @FXML private VBox clueEngineVBox;
+  
+    
     
     ObjectProperty<LogicProblem> logicProblem = new SimpleObjectProperty<LogicProblem>();
     DoubleProperty scaleProperty = new SimpleDoubleProperty();
@@ -245,7 +213,7 @@ public class PuzzledController implements Initializable {
     Logger.getLogger(Puzzled.class.getPackage().getName());
     
     Grid logicProblemGrid;
-    private boolean processingFlag = false;
+    private boolean processingFlag = false; //is this necessary?
     //private String appTitle;
     //private String appVersion;
 
@@ -398,6 +366,7 @@ public class PuzzledController implements Initializable {
         Parser.parse(logicProblem.get(), clueText.getText(), event.isControlDown(), event.isAltDown());
         //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this invokes clue parsing
         clueText.clear();
+//        clueTabController.refreshTable();
 
         //how is the glyph generation going to work if we no longer create the clue here?
         //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
@@ -414,7 +383,7 @@ public class PuzzledController implements Initializable {
             clueText.clear();
             //how is the glyph generation going to work if we no longer create the clue here?
             //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
-            logicProblem.get().setDirtyFile(true);
+//            logicProblem.get().setDirtyFile(true);
 
         }
      }
@@ -442,7 +411,7 @@ public class PuzzledController implements Initializable {
         //loadProblem("d:/lab/netbeans-projects/puzzled/resources/samples/problem47.lpf");  
         
         clueText.disableProperty().bind(logicProblem.isNull());
-        addClueButton.disableProperty().bind(logicProblem.isNull());
+        addClueButton.disableProperty().bind(logicProblem.isNull().or(clueText.textProperty().isEmpty()));
         automaticProcessingMenuItem.disableProperty().bind(logicProblem.isNull());
         saveMenuItem.disableProperty().bind(Bindings.or(Bindings.and(this.logicProblem.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
         saveAsMenuItem.disableProperty().bind(Bindings.and(logicProblem.isNull(),this.dirtyFileProperty.not()));
@@ -694,8 +663,8 @@ public class PuzzledController implements Initializable {
             clueGlyphBox.getChildren().clear();
             
             //setup data source for the Clue Table ?!
-            clues = FXCollections.observableList(logicProblem.get().getNumberedClueList());
-            clueTabController.setData(clues);
+//            clues = FXCollections.observableList(logicProblem.get().getNumberedClueList());
+            clueTabController.setData(logicProblem.get().getNumberedClueList().getObservableClueList());
             
             //bind labels layer visibility to checkMenuItem
             logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
@@ -724,8 +693,8 @@ public class PuzzledController implements Initializable {
 //          
             //binds to the next ClueNumber string property, but adds ->
             nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(
-                    () -> logicProblem.get().getNumberedClueList().getNextClueNumber().toString()+" ->",
-                    logicProblem.get().getNumberedClueList().nextClueNumberProperty()));
+                    () -> logicProblem.get().getNumberedClueList().
+                            getNextClueNumber().toString()+" ->",logicProblem.get().getNumberedClueList().nextClueNumberProperty()));
             
 
             //clues have already been added to the problem and parsed when loading the file
@@ -775,7 +744,7 @@ public class PuzzledController implements Initializable {
             //concurrent processingFlag loops
             processingFlag = true;
 //            System.out.println("entering processingFlag loop");
-            while (logicProblem.get().getDirtyLogic()){
+            while (logicProblem.get().isLogicDirty()){
 //                System.out.println("executing processingFlag loop");
                 logicProblem.get().setDirtyLogic(false);
                 
