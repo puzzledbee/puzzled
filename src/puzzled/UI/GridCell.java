@@ -5,7 +5,9 @@
  */
 package puzzled.UI;
 
+import java.util.Optional;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -14,16 +16,26 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.transformation.FilteredList;
+import javafx.geometry.Insets;
 import javafx.geometry.Side;
+import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.StageStyle;
 import puzzled.Puzzled;
 import puzzled.data.Constraint;
 import puzzled.data.Relationship;
@@ -50,16 +62,19 @@ public class GridCell extends StackPane {
     //private StringProperty relationshipText = new SimpleStringProperty();
     private BooleanProperty explainProperty = new SimpleBooleanProperty(false);
     private ObjectProperty<Relationship.LogicType> logicTypeProperty = new SimpleObjectProperty<Relationship.LogicType>();
-    private ObjectProperty<Constraint> constraintProperty = new SimpleObjectProperty<Constraint>();
+//    private ObjectProperty<Constraint> constraintProperty = new SimpleObjectProperty<Constraint>();
     
 
     public GridCell(int cellwidth, Relationship relationship, BooleanProperty arg_fileDirtyProperty) {
         linkedRelationship = relationship;
         fileDirtyProperty = arg_fileDirtyProperty;
+        
+        //is it necessary to have a "local" bound copy of these properties, or 
+        //can we bind UI elements smiply to the linkedRelationship like highlight below....
         valueProperty.bindBidirectional(linkedRelationship.valueProperty());
         explainProperty.bindBidirectional(linkedRelationship.getExplainProperty());
         logicTypeProperty.bind(linkedRelationship.logicTypeProperty());
-        highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.logicTypeProperty().getValue().toString(),linkedRelationship.logicTypeProperty()));
+        highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.logicTypeProperty().get().toString(),linkedRelationship.logicTypeProperty()));
         
         explainProperty.addListener((e,oldValue,newValue) -> {
             if (newValue==true) {
@@ -128,14 +143,17 @@ public class GridCell extends StackPane {
         });
         
         
-        
         MenuItem annotateMenuItem = new MenuItem("Annotate");
         annotateMenuItem.setGraphic(new ImageView("/icons/context-menus/annotate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        annotateMenuItem.disableProperty().bind(this.constraintProperty.isNull()); //grey out item unless it has been set as a constraint
+        annotateMenuItem.disableProperty().bind(
+                linkedRelationship.valueProperty().isEqualTo(Relationship.ValueType.VALUE_UNKNOWN).or(
+                        linkedRelationship.logicTypeProperty().isNotEqualTo(Relationship.LogicType.CONSTRAINT))); //grey out item unless it has been set as a constraint
         annotateMenuItem.setOnAction(e -> {
-           System.out.println("need to bring up a dialog box");
-           constraintProperty.get().annotate("need to bring up a dialog box");
+//           System.out.println("linked relationship's logicType:" + linkedRelationship.logicTypeProperty().get());
+            
+           this.showAnnotationDialog();
+//           linkedRelationship.getPredecessorConstraint().ifPresent(constraint -> constraint.setAnnotation("test me now"));
            });
         
         
@@ -227,10 +245,17 @@ public class GridCell extends StackPane {
         //this.valueProperty.set(ValueType.VALUE_NO);
         fLogger.info("setting FALSE");
         try {
-            linkedRelationship.setValue(ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT);
-            fLogger.info("setting FALSE");
+            //create a new Constraint object
+            Constraint constraint = new Constraint(linkedRelationship.getItemPair(),Relationship.ValueType.VALUE_NO);
+            System.out.println("Constraint object created:\n:");
+            System.out.println(constraint);
             //needs to add this relationship to constraint table
-            constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));
+            linkedRelationship.getParentLogicProblem().addConstraint(constraint);
+            //set the relationship and set the Constraint as its predecessor
+            linkedRelationship.setValue(ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT,constraint);
+            fLogger.info("setting FALSE");
+           
+            //constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));
             
         } catch (Exception e) {
             fLogger.info("exception setting FALSE");
@@ -242,10 +267,16 @@ public class GridCell extends StackPane {
         //this.valueProperty.set(ValueType.VALUE_YES);
         fLogger.info("setting TRUE");
         try {
-            linkedRelationship.setValue(ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT);
-            fLogger.info("setting TRUE");
+            
+            //create a new Constraint object
+            Constraint constraint = new Constraint(linkedRelationship.getItemPair(),Relationship.ValueType.VALUE_YES);
             //needs to add this relationship to constraint table
-            constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));
+            linkedRelationship.getParentLogicProblem().addConstraint(constraint);
+            //set the relationship and set the Constraint as its predecessor
+            linkedRelationship.setValue(ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT,constraint);
+            fLogger.info("setting TRUE");
+            
+            //constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));
         } catch (Exception e) {
             fLogger.info("exception setting TRUE");
         }
@@ -258,4 +289,79 @@ public class GridCell extends StackPane {
         fLogger.info("setting UNKNOWN");
         fileDirtyProperty.set(true);
     }
+    
+//    class AnnotateDialog extends TextInputDialog {
+//        see custom dialog https://code.makery.ch/blog/javafx-dialogs-official/
+//        public AnnotateDialog(String inputText) {
+//              this.initStyle(StageStyle.UTILITY);
+//              this.setTitle("Change label name");
+//              this.setHeaderText(null);
+//              this.setContentText("Please enter the new name:");
+//              this.getEditor().setText(inputText);
+//        }
+//    }
+    private void showAnnotationDialog() {
+        // Create the custom dialog.
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Annotation");
+        dialog.setHeaderText("Please enter annotation text for the constraint");
+
+        dialog.setGraphic(new ImageView("icons/context-menus/annotate.png"));
+
+        // Set the button types.
+//        ButtonType okButton = new ButtonType("Ok", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        BorderPane bPane = new BorderPane();
+//        bPane.setHgap(10);
+//        bPane.setVgap(10);
+        bPane.setPadding(new Insets(10, 30, 10, 30));
+
+        String annotationString = linkedRelationship.getPredecessorConstraint().
+                        map(Constraint::getAnnotation).orElse(new String(""));
+        TextArea annotationText = new TextArea(annotationString);
+        
+        annotationText.setPromptText("Enter some text to describing why this constraint was set....");
+//        PasswordField password = new PasswordField();
+//        password.setPromptText("Password");
+
+//        grid.add(new Label("Annotation text:"), 0, 0);
+        bPane.setCenter(annotationText);
+//        grid.add(new Label("Password:"), 0, 1);
+//        grid.add(password, 1, 1);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node okButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
+        Node cancelButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+        okButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        annotationText.textProperty().addListener((observable, oldValue, newValue) -> {
+            okButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(bPane);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> cancelButton.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                return annotationText.getText();
+            }
+            return null;
+        });
+
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(weirdness -> {
+            linkedRelationship.getPredecessorConstraint().ifPresent(constraint -> constraint.setAnnotation(weirdness));
+            System.out.println("text=" + weirdness);
+        });
+        
+//        return result;
+    }
+    
 }

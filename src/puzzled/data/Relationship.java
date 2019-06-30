@@ -27,7 +27,6 @@ import puzzled.exceptions.SuperfluousRelationshipException;
  */
 public class Relationship extends Dependable {
     
-    
     public static enum ValueType {
         VALUE_YES, VALUE_NO, VALUE_UNKNOWN 
     }
@@ -38,9 +37,9 @@ public class Relationship extends Dependable {
     
     private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<ValueType>(this, "value" , ValueType.VALUE_UNKNOWN);
     private ObjectProperty<LogicType> logicTypeProperty = new SimpleObjectProperty<LogicType>(this, "value" , LogicType.CONSTRAINT);
-    
-    private DoubleProperty centerX = new SimpleDoubleProperty();
-    private DoubleProperty centerY = new SimpleDoubleProperty();
+    //private StringProperty annotationProperty = new SimpleStringProperty(""); //set to empty string for tooltip
+    private DoubleProperty centerXProperty = new SimpleDoubleProperty();
+    private DoubleProperty centerYPropery = new SimpleDoubleProperty();
     
 //    private StringProperty highlight = new SimpleStringProperty();
 
@@ -48,7 +47,7 @@ public class Relationship extends Dependable {
         Logger.getLogger(Puzzled.class.getPackage().getName());
     
     private LogicProblem logicProblem;
-    private ItemPair pair;
+    private ItemPair itemPair;
 
 //    private LogicType logicType = LogicType.CONSTRAINT;
     
@@ -57,7 +56,7 @@ public class Relationship extends Dependable {
     public Relationship(LogicProblem arg_parent, ItemPair arg_pair) {
 //        System.out.println("creating relationship: " + arg_pair);
         logicProblem = arg_parent;
-        pair = arg_pair;
+        itemPair = arg_pair;
         
         valueProperty.addListener( (e,oldValue,newValue) -> {
 //            fLogger.info("Relationship valueProperty chansged to: " + newValue);
@@ -74,17 +73,23 @@ public class Relationship extends Dependable {
             }
         });
         
-        this.relationshipTextProperty.bind(Bindings.createStringBinding(
-                () -> { 
+        
+        //create and bind tooltip text; tooltip is installed and bound in the GridCell class
+        this.relationshipTextProperty.bind(Bindings.createStringBinding(() -> { 
                     StringBuilder text = new StringBuilder();
-                    text.append("The relationship between " + this.pair.toString() +
-                        " is " + (this.valueProperty.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.valueProperty.getValue()+" ("+this.logicTypeProperty.getValue()+")"));
-                    text.append("\n");
-                    this.getPredecessors().forEach(predecessor -> text.append(predecessor.toString()));
+                    text.append("The relationship between " + this.itemPair.toString() +
+                            " is " + (this.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.getValue()+" ("+this.getLogicType()+")"));
                     
+                    if (this.getLogicType() == LogicType.CONSTRAINT) {
+                        text.append("\n\n" + this.getPredecessorConstraint());
+                    } else if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() != LogicType.CONSTRAINT) { 
+                        text.append("\n\nderived from:\n");
+                        this.getPredecessors().forEach(predecessor -> text.append(predecessor.toString()));
+                    }
                     return text.toString();
                         },
                 this.valueProperty,
+                //this.getPredecessorConstraint().annotationProperty(), -> this makes no sense unless it is a Constraint
                 this.logicTypeProperty));
         //this.relationshipTextProperty.bind(Bindings.createStringBinding(() -> "This is a relationship of type " + logicTypeProperty.toString() + " between " + pair.toString(), logicTypeProperty));
         
@@ -107,11 +112,11 @@ public class Relationship extends Dependable {
     
     
     public DoubleProperty centerXProperty(){
-        return this.centerX;
+        return this.centerXProperty;
     }
     
     public DoubleProperty centerYProperty(){
-        return this.centerY;
+        return this.centerYPropery;
     }
    
     
@@ -119,13 +124,28 @@ public class Relationship extends Dependable {
         return valueProperty.get();
     }
     
-    public LogicType getLogic() {
+    public LogicType getLogicType() {
         return logicTypeProperty.get();
     }
     
     public ObjectProperty<LogicType> logicTypeProperty() {
         return this.logicTypeProperty;
     }
+    
+    public ItemPair getItemPair() {
+        return this.itemPair;
+    }
+    
+    //this is now within the upstream Constraint object
+//    public StringProperty annotationProperty() {
+//        return this.annotationProperty;
+//    }
+//    
+//    public String getAnnotation() {
+//        return this.annotationProperty().get();
+//    }
+//    
+    
     
     public void setValue(ValueType value){
         valueProperty.set(value);
@@ -136,18 +156,19 @@ public class Relationship extends Dependable {
         if (valueProperty.getValue()==ValueType.VALUE_UNKNOWN) {
             valueProperty.set(value);
             logicTypeProperty.set(arg_logicType);
+
+            //adjusting the upstream dependable objects (predecessors)
+            System.out.println("adding a total of  " + arg_predecessors.length + " predecessors");
             for (Dependable predecessor : arg_predecessors) {
-                System.out.print("there is a predecessor added to " + this.toString() + " : " + predecessor.toString());
-                
+//                System.out.print("there is a predecessor added to " + this.toString() + " : " + predecessor.toString());
                 this.addPredecessor(predecessor);
-                System.out.println("total number of predecessors: " + this.getPredecessors().size());
                 predecessor.addSuccessor(this);
             }
         } else if (valueProperty.getValue()==value) {
             //already set by different logic type
            // if (logicTypeProperty.get() != arg_logicType) throw new SuperfluousRelationshipException(pair,logicTypeProperty.get(),arg_logicType); //investigate up tree
         } else {
-            throw new RelationshipConflictException(this.pair,valueProperty.getValue(),value);
+            throw new RelationshipConflictException(this.itemPair,valueProperty.getValue(),value);
         }
     }
     
@@ -171,7 +192,7 @@ public class Relationship extends Dependable {
         }
     }
     
-    public LogicProblem getParent() {
+    public LogicProblem getParentLogicProblem() {
         return logicProblem;
     }
     
@@ -183,7 +204,7 @@ public class Relationship extends Dependable {
     
     @Override
     public Point2D getCenterPosition(){
-        return new Point2D(this.centerX.get(),this.centerY.get());
+        return new Point2D(this.centerXProperty.get(),this.centerYPropery.get());
     }
     
     public StringProperty relationshipTextProperty() {

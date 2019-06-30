@@ -294,14 +294,13 @@ public class LogicProblem {
     }
     
     
-    public Constraint addConstraint(Relationship relationship) {
+    public void addConstraint(Constraint constraint) {
         //String clueString = new String(pair.first().getName() 
         //        + ((relationship.getValue()==Relationship.ValueType.VALUE_YES)?" is ":" is not ") 
         //        + pair.last().getName());
         
-        System.out.println("constraint added "+ relationship);
-        Constraint constraint = new Constraint(relationship);
+        System.out.println("constraint added\n"+ constraint);
         constraintList.add(constraint);
-        return constraint;
+        //return constraint;
     }
 }

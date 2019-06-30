@@ -5,6 +5,8 @@
  */
 package puzzled.data;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Point2D;
 
 /**
@@ -12,23 +14,39 @@ import javafx.geometry.Point2D;
  * @author https://github.com/bepuzzled
  */
 public class Constraint extends Dependable {
-    private Relationship relationship;
-    private String notes;
+    private ItemPair itemPair;
     
-    public Constraint(Relationship newRelationship) {
-        relationship = newRelationship;
+    //although only two of the three values are possible, using the same
+    //enum types makes assignment of the value between Constraint 
+    //and the Relationships easier
+    private Relationship.ValueType valueType;
+    private StringProperty annotation = new SimpleStringProperty("");
+    
+    public Constraint(ItemPair pair, Relationship.ValueType value) {
+        this.itemPair = pair;
+        this.valueType = value;
     }
     
-    public void annotate(String annotation) {
-        notes = annotation;
+    public void setAnnotation(String arg_annotation) {
+        annotation.set(arg_annotation);
     }
     
-    public String getNotes() {
-        return notes;
+    public StringProperty annotationProperty() {
+        return this.annotationProperty();
+    }
+
+    public String getAnnotation() {
+        return this.annotation.get();
     }
     
     public Point2D getCenterPosition(){
         return null;
+    }
+    
+    @Override
+    public String toString(){
+        
+        return "Constraint " + itemPair + " -> " + annotation.get();
     }
     
 }

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
-
 import javafx.util.Duration;
 import puzzled.data.Category;
 import puzzled.data.Dependable;
@@ -54,7 +53,7 @@ public class Processor {
  
     
     public static void cross(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
-        System.out.println("cross invoked");
+//        System.out.println("cross invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
 
         HashSet<TreeSet<Category>> categoryPairs = logicProblem.getCategoryPairs();
@@ -98,7 +97,7 @@ public class Processor {
     }
     
     public static void transpose(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
-        System.out.println("transpose invoked");
+//        System.out.println("transpose invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
 //      it is best to work with the category pair as a set without duplication, instead of processing each category pair twice
@@ -144,7 +143,7 @@ public class Processor {
     
     
     public static void uniqueness(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
-        System.out.println("uniqueness invoked");
+//        System.out.println("uniqueness invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
         HashSet<TreeSet<Category>> categoryPairs = logicProblem.getCategoryPairs();
@@ -189,10 +188,8 @@ public class Processor {
 //                            Notifications.create()
 //                                .title("New relationship discovered!")
 //                                .text("Uniqueness!")
-//                                
 //                                .hideAfter(new Duration(2000))
 //                                .show();
-                            
                         }
                     }
 
@@ -234,7 +231,7 @@ public class Processor {
     }
     
     public static void commonality(LogicProblem logicProblem) throws RelationshipConflictException, SuperfluousRelationshipException {
-        System.out.println("commonality invoked");
+//        System.out.println("commonality invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
 //        int i = 1;
@@ -287,6 +284,4 @@ public class Processor {
             }
         }
     }
-
-
 }

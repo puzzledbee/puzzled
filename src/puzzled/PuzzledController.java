@@ -399,9 +399,7 @@ public class PuzzledController implements Initializable {
         nPane.setGraphic(new ImageView(new Image("/icons/notification-pane/"+type.getImageName())));  
         nPane.setText(text);
         nPane.show();
-  
-    }
-    
+      }
     
 
     @Override
@@ -484,7 +482,7 @@ public class PuzzledController implements Initializable {
         return fLogger;
     }
     
-    public ObjectProperty<LogicProblem> getLogicProblemProperty(){
+    public ObjectProperty<LogicProblem> logicProblemProperty(){
         return logicProblem;
     }
     
@@ -833,4 +831,3 @@ public class PuzzledController implements Initializable {
    }   
     
 }
-

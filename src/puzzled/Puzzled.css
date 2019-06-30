@@ -45,7 +45,6 @@
     -fx-background-color: brown;
 }
 
-
 .tool-bar .button {
     -fx-text-fill: #673AB7;
 }
@@ -100,11 +99,9 @@
     -fx-max-width: 34px;
     -fx-max-height: 34px;
     -fx-font-weight: bold;
-    
 }
 
 .glyphbox .label {
-    
     -fx-background-radius: 3em;
     -fx-border-radius: 3em;
     -fx-min-width: 34px;
@@ -129,12 +126,9 @@
     -fx-border-color: red;
 }
 
-.clue_CONSTRAINT {}
-
 .tooltip {
     -fx-background-color: blueviolet;
 }
-
 
 .notification-pane .notification-bar > .pane {
     -fx-background-color:slateblue;
