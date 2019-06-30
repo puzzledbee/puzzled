@@ -27,6 +27,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -35,6 +36,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import puzzled.Puzzled;
 import puzzled.data.Constraint;
@@ -311,6 +313,9 @@ public class GridCell extends StackPane {
         // Set the button types.
 //        ButtonType okButton = new ButtonType("Ok", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        
+        Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        dialogStage.getIcons().add(new Image(Puzzled.class.getResourceAsStream("/icons/puzzle_32.png")));
 
         // Create the username and password labels and fields.
         BorderPane bPane = new BorderPane();
