@@ -19,7 +19,11 @@
 }
 
 .decorator {
-    -fx-shape: "M0,0 L1,1 L1,0 Z"; 
+    -fx-shape: "M0,0 L1,1 L1,0 Z";
+}
+
+#decorator-ANNOTATION {
+    -fx-background-color: grey;
 }
 
 #decorator-NORMAL {

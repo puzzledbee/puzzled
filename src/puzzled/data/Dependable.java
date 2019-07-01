@@ -53,7 +53,7 @@ public abstract class Dependable {
         successors.add(successor);
     }
         
-    public BooleanProperty getExplainProperty() {
+    public BooleanProperty explainProperty() {
         return explainProperty;
     }
     

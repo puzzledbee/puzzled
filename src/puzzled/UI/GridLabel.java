@@ -122,7 +122,8 @@ public class GridLabel extends AnchorPane {
             //and simplifies the CategoryType enum
             decorator.getStyleClass().add("decorator"); //generic shape information
             decorator.idProperty().bind(Bindings.createStringBinding(() -> 
-                "decorator-" + ((Category)dataElement).getType()));         
+                "decorator-" + ((Category)dataElement).getType()));   
+            //MISSING property dependency here....
 
             this.getChildren().add(decorator);
             AnchorPane.setTopAnchor(decorator, 0.0);

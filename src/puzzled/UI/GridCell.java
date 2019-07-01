@@ -29,6 +29,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -39,6 +40,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import puzzled.Puzzled;
+import puzzled.data.Category;
 import puzzled.data.Constraint;
 import puzzled.data.Relationship;
 import puzzled.data.Relationship.ValueType;
@@ -52,33 +54,23 @@ public class GridCell extends StackPane {
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
     
-    private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<>(this, "value" , ValueType.VALUE_UNKNOWN);
-    
-    private ContextMenu contextMenu = new ContextMenu();  
-//    private CirclePopupMenu contextMenu = new CirclePopupMenu(this,MouseButton.SECONDARY);;
-    //private Pane xPane = new Pane();
-    
     private Relationship linkedRelationship;
+    
+    private Tooltip tooltip = new Tooltip();
     private BooleanProperty fileDirtyProperty;
     private StringProperty highlight = new SimpleStringProperty();
-    //private StringProperty relationshipText = new SimpleStringProperty();
-    private BooleanProperty explainProperty = new SimpleBooleanProperty(false);
-    private ObjectProperty<Relationship.LogicType> logicTypeProperty = new SimpleObjectProperty<Relationship.LogicType>();
-//    private ObjectProperty<Constraint> constraintProperty = new SimpleObjectProperty<Constraint>();
     
 
     public GridCell(int cellwidth, Relationship relationship, BooleanProperty arg_fileDirtyProperty) {
-        linkedRelationship = relationship;
-        fileDirtyProperty = arg_fileDirtyProperty;
+        Rectangle cellRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
         
-        //is it necessary to have a "local" bound copy of these properties, or 
-        //can we bind UI elements smiply to the linkedRelationship like highlight below....
-        valueProperty.bindBidirectional(linkedRelationship.valueProperty());
-        explainProperty.bindBidirectional(linkedRelationship.getExplainProperty());
-        logicTypeProperty.bind(linkedRelationship.logicTypeProperty());
-        highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.logicTypeProperty().get().toString(),linkedRelationship.logicTypeProperty()));
+        this.linkedRelationship = relationship;
+        this.fileDirtyProperty = arg_fileDirtyProperty;
         
-        explainProperty.addListener((e,oldValue,newValue) -> {
+        
+        this.highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.getLogicType().toString(),linkedRelationship.logicTypeProperty()));
+        
+        linkedRelationship.explainProperty().addListener((e,oldValue,newValue) -> {
             if (newValue==true) {
                 this.getStyleClass().add("highlight-PREDECESSOR");
             } else {
@@ -88,25 +80,19 @@ public class GridCell extends StackPane {
         });
         
         
-        Rectangle myRectangle = new Rectangle(cellwidth, cellwidth, Color.TRANSPARENT);
-
+        //graphical representation of the cell
+        //rectangle overlay for mouse events, all others elements are transparent to the mouse
+        //VALUE_YES
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
- 
+        //VALUE_NO
         Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
         Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );
-        
-        
-        valueProperty.addListener( (e,oldValue,newValue) -> {
-//            fLogger.info("GridCell valueProperty chaged to:" + newValue)
-                });
-        
-//        myRectangle.setStroke(Color.TRANSPARENT);
         
         circle.setMouseTransparent(true);
         circle.getStyleClass().add("o");
         //circle.relocate(5, 5);
         
-        circle.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_YES));
+        circle.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_YES));
         
         //line1.setMouseTransparent(true);
         line1.getStyleClass().add("x");
@@ -114,136 +100,26 @@ public class GridCell extends StackPane {
         line2.getStyleClass().add("x");
         line2.setMouseTransparent(true);
         //xPane.getChildren().addAll(line1,line2);
-        line1.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_NO));
-        line2.visibleProperty().bind(valueProperty.isEqualTo(ValueType.VALUE_NO));
-        
-        MenuItem setFalseMenuItem = new MenuItem("Set as FALSE");
-        //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        line1.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_NO));
+        line2.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_NO));
 
-        setFalseMenuItem.setGraphic(new ImageView("/icons/context-menus/x.png"));
-        setFalseMenuItem.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
-        setFalseMenuItem.setOnAction(e -> {
-            try {
-                this.setFalse();
-            } catch (RelationshipConflictException ex) {
-//                Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-
-        MenuItem setTrueMenuItem = new MenuItem("Set as TRUE");
-                
-        setTrueMenuItem.setGraphic(new ImageView("/icons/context-menus/o.png"));
-        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        setTrueMenuItem.disableProperty().bind(valueProperty.isNotEqualTo(ValueType.VALUE_UNKNOWN));
-//        item2.setDisable(true);
-        setTrueMenuItem.setOnAction(e -> {
-            try {
-                this.setTrue();
-            } catch (RelationshipConflictException ex) {
-                //Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
+        ContextMenu contextMenu = this.buildContextMenu();
+        cellRectangle.setOnMouseClicked(e -> contextMenu.show(cellRectangle, Side.RIGHT, 0, 0)); 
         
-        
-        MenuItem annotateMenuItem = new MenuItem("Annotate");
-        annotateMenuItem.setGraphic(new ImageView("/icons/context-menus/annotate.png"));
-        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        annotateMenuItem.disableProperty().bind(
-                linkedRelationship.valueProperty().isEqualTo(Relationship.ValueType.VALUE_UNKNOWN).or(
-                        linkedRelationship.logicTypeProperty().isNotEqualTo(Relationship.LogicType.CONSTRAINT))); //grey out item unless it has been set as a constraint
-        annotateMenuItem.setOnAction(e -> {
-//           System.out.println("linked relationship's logicType:" + linkedRelationship.logicTypeProperty().get());
-            
-           this.showAnnotationDialog();
-//           linkedRelationship.getPredecessorConstraint().ifPresent(constraint -> constraint.setAnnotation("test me now"));
-           });
-        
-        
-        MenuItem clearMenuItem = new MenuItem("Clear relationship");
-        clearMenuItem.setGraphic(new ImageView("/icons/context-menus/clear.png"));
-        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        clearMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN), this.logicTypeProperty.isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
-        
-        clearMenuItem.setOnAction(e -> {
-            this.reset();
-            linkedRelationship.clearInvestigate();
-        });
-        
-        
-        MenuItem explainMenuItem = new MenuItem("Explain");
-        explainMenuItem.setGraphic(new ImageView("/icons/context-menus/investigate.png"));
-        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        explainMenuItem.disableProperty().bind(Bindings.or(valueProperty.isEqualTo(ValueType.VALUE_UNKNOWN),this.explainProperty));
-        explainMenuItem.setOnAction(e -> {
-           System.out.println("about to draw a special line with funky style: "+highlight.get());
-           linkedRelationship.clearInvestigate();
-           this.explainProperty.set(true);
-           this.getStyleClass().remove("highlight-PREDECESSOR"); //undoing previous
-           this.getStyleClass().add("highlight-"+highlight.get()); //should override the one set by the property listener
-//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinX());
-//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxX());
-//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinY());
-//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxY());
-           
-           
-//           Grid logicProblemGrid = (Grid) this.parentProperty().get().parentProperty().get();
-//           
-//           System.out.println(logicProblemGrid.getScaleX());
-////           System.out.println(this.localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()));
-//           StackPane mainStack = (StackPane) this //stackPane gridCell
-//                .parentProperty().get() //anchorPane (layer 3)
-//                    .parentProperty().get() //Grid extends StackPane
-//                            .parentProperty().get() //group
-//                                    .parentProperty().get() //scrollpane skin
-//                                        .parentProperty().get() //scrollpane viewport
-//                                                .parentProperty().get() //scrollpane mainScroll
-//                                                    .parentProperty().get() //mainGrid
-//                                                        .parentProperty().get(); //mainStack
-//           linkedRelationship.drawPredecessors(mainStack);
-        });
-        
-        
-        
-        MenuItem clearInvestigateMenuItem = new MenuItem("Clear explanation");
-        clearInvestigateMenuItem.setGraphic(new ImageView("/icons/context-menus/noinvestigate.png"));
-        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        clearInvestigateMenuItem.disableProperty().bind(this.explainProperty.not());
-        clearInvestigateMenuItem.setOnAction(e -> {
-//           System.out.println("about to draw a special line with funky style: "+highlight.get());
-           linkedRelationship.clearInvestigate();
-//           this.explainProperty.set(true);
-        });
-        
-        contextMenu.getItems().addAll(setFalseMenuItem,setTrueMenuItem, clearMenuItem, annotateMenuItem, explainMenuItem, clearInvestigateMenuItem);
-        
-        myRectangle.setOnMouseClicked(e -> contextMenu.show(myRectangle, Side.RIGHT, 0, 0));  
-//        myRectangle.setOnMouseClicked(e -> contextMenu.show(e));
         this.getStyleClass().add("gridCell");
-//        this.setMouseTransparent(false);
-        this.getChildren().addAll(myRectangle,circle,line1,line2);
-        
-        Tooltip tooltip = new Tooltip();
-        tooltip.textProperty().bind(this.linkedRelationship.relationshipTextProperty());
-        Tooltip.install(myRectangle, tooltip);
+        this.getChildren().addAll(cellRectangle,circle,line1,line2, createDecorator(cellwidth));
+        setTooltipBinding(cellRectangle);
         
         linkedRelationship.centerXProperty().bind(Bindings.createDoubleBinding(
             ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getX(),
             circle.centerXProperty(),this.boundsInParentProperty(),this.scaleXProperty()));
         linkedRelationship.centerYProperty().bind(Bindings.createDoubleBinding(
             ()->localToScene(circle.centerXProperty().get(),circle.centerYProperty().get()).getY(),
-            circle.centerYProperty(),this.boundsInParentProperty(),this.scaleXProperty()));      
+            circle.centerYProperty(),this.boundsInParentProperty(),this.scaleXProperty()));     
     }
 
     
-    public ObjectProperty<ValueType> valueProperty() {
-        return this.valueProperty;
-    }
-    
-    public ValueType getValue(){
-        return this.valueProperty.get();
-    }
-    
-    public void setFalse() throws RelationshipConflictException {
+    public void setFalseConstraint() throws RelationshipConflictException {
         //this.valueProperty.set(ValueType.VALUE_NO);
         fLogger.info("setting FALSE");
         try {
@@ -258,14 +134,14 @@ public class GridCell extends StackPane {
             fLogger.info("setting FALSE");
            
             //constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));
-            
+//            setTooltipBinding(); //text binding changes after setting up a constraint
         } catch (Exception e) {
             fLogger.info("exception setting FALSE");
         }
     }
      
     
-    public void setTrue() throws RelationshipConflictException {
+    public void setTrueConstraint() throws RelationshipConflictException {
         //this.valueProperty.set(ValueType.VALUE_YES);
         fLogger.info("setting TRUE");
         try {
@@ -278,35 +154,31 @@ public class GridCell extends StackPane {
             linkedRelationship.setValue(ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT,constraint);
             fLogger.info("setting TRUE");
             
+//            setTooltipBinding(); //text binding changes after setting up a constraint
             //constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));
         } catch (Exception e) {
             fLogger.info("exception setting TRUE");
         }
-        
         fileDirtyProperty.set(true);
+    }
+    
+    private void setTooltipBinding(Rectangle cellRectangle) {
+        tooltip.textProperty().bind(this.linkedRelationship.relationshipTextProperty());
+        Tooltip.install(cellRectangle, tooltip);
     }
  
     public void reset() {
-        this.valueProperty.set(ValueType.VALUE_UNKNOWN);
+        linkedRelationship.valueProperty().set(ValueType.VALUE_UNKNOWN);
         fLogger.info("setting UNKNOWN");
         fileDirtyProperty.set(true);
     }
     
-//    class AnnotateDialog extends TextInputDialog {
-//        see custom dialog https://code.makery.ch/blog/javafx-dialogs-official/
-//        public AnnotateDialog(String inputText) {
-//              this.initStyle(StageStyle.UTILITY);
-//              this.setTitle("Change label name");
-//              this.setHeaderText(null);
-//              this.setContentText("Please enter the new name:");
-//              this.getEditor().setText(inputText);
-//        }
-//    }
+
     private void showAnnotationDialog() {
         // Create the custom dialog.
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Annotation");
-        dialog.setHeaderText("Please enter annotation text for the constraint");
+        dialog.setHeaderText("Please enter the annotation text for this relationship");
 
         dialog.setGraphic(new ImageView("icons/context-menus/annotate.png"));
 
@@ -323,11 +195,10 @@ public class GridCell extends StackPane {
 //        bPane.setVgap(10);
         bPane.setPadding(new Insets(10, 30, 10, 30));
 
-        String annotationString = linkedRelationship.getPredecessorConstraint().
-                        map(Constraint::getAnnotation).orElse(new String(""));
+        String annotationString = linkedRelationship.getAnnotation();
         TextArea annotationText = new TextArea(annotationString);
         
-        annotationText.setPromptText("Enter some text to describing why this constraint was set....");
+        annotationText.setPromptText("Enter some text that can help you solve the puzzle....");
 //        PasswordField password = new PasswordField();
 //        password.setPromptText("Password");
 
@@ -362,11 +233,122 @@ public class GridCell extends StackPane {
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(weirdness -> {
-            linkedRelationship.getPredecessorConstraint().ifPresent(constraint -> constraint.setAnnotation(weirdness));
-            System.out.println("text=" + weirdness);
+            linkedRelationship.setAnnotation(weirdness);
+//            System.out.println("text=" + weirdness);
         });
-        
-//        return result;
     }
     
+    private AnchorPane createDecorator(int cellwidth) {
+        AnchorPane decoratorPane = new AnchorPane();
+        decoratorPane.setMouseTransparent(true);
+        
+        Label decoratorLabel = new Label();
+        decoratorLabel.setMaxSize(cellwidth/4,cellwidth/4);
+        decoratorLabel.setMinSize(cellwidth/4,cellwidth/4);
+        
+//        System.out.println("gridcell setup--->" + linkedRelationship+ "\n");
+        
+        decoratorLabel.getStyleClass().add("decorator"); //generic shape information
+//        decoratorLabel.idProperty().set("decorator-ANNOTATION");
+        decoratorLabel.idProperty().bind(
+                Bindings.when(linkedRelationship.annotationProperty().isEqualTo(""))
+                        .then("decorator-NORMAL")
+                        .otherwise("decorator-ANNOTATION"));
+        
+        decoratorPane.setTopAnchor(decoratorLabel, 1.0);
+        decoratorPane.setRightAnchor(decoratorLabel, 1.0);
+        decoratorPane.getChildren().add(decoratorLabel);
+
+        return decoratorPane;
+    }
+    
+    private ContextMenu buildContextMenu(){
+        
+        ContextMenu contextMenu = new ContextMenu();
+                
+        //building up menus
+        MenuItem setFalseMenuItem = new MenuItem("Set as FALSE");
+        //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+        setFalseMenuItem.setGraphic(new ImageView("/icons/context-menus/x.png"));
+        setFalseMenuItem.disableProperty().bind(linkedRelationship.valueProperty().isNotEqualTo(ValueType.VALUE_UNKNOWN));
+        setFalseMenuItem.setOnAction(e -> {
+            try {
+                this.setFalseConstraint();
+            } catch (RelationshipConflictException ex) {
+//                Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        MenuItem setTrueMenuItem = new MenuItem("Set as TRUE");
+                
+        setTrueMenuItem.setGraphic(new ImageView("/icons/context-menus/o.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        setTrueMenuItem.disableProperty().bind(linkedRelationship.valueProperty().isNotEqualTo(ValueType.VALUE_UNKNOWN));
+//        item2.setDisable(true);
+        setTrueMenuItem.setOnAction(e -> {
+            try {
+                this.setTrueConstraint();
+            } catch (RelationshipConflictException ex) {
+                //Logger.getLogger(GridCell.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        
+        MenuItem annotateMenuItem = new MenuItem("Annotate");
+        annotateMenuItem.setGraphic(new ImageView("/icons/context-menus/annotate.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+//        annotateMenuItem.disableProperty().bind(
+//                linkedRelationship.valueProperty().isEqualTo(Relationship.ValueType.VALUE_UNKNOWN).or(
+//                        linkedRelationship.logicTypeProperty().isNotEqualTo(Relationship.LogicType.CONSTRAINT))); //grey out item unless it has been set as a constraint
+        annotateMenuItem.setOnAction(e -> {
+//           System.out.println("linked relationship's logicType:" + linkedRelationship.logicTypeProperty().get());
+           this.showAnnotationDialog();
+//           setTooltipBinding(); //text binding changes after changing the annotation text
+//           linkedRelationship.getPredecessorConstraint().ifPresent(constraint -> constraint.setAnnotation("test me now"));
+           });
+        
+        
+        MenuItem clearMenuItem = new MenuItem("Clear relationship");
+        clearMenuItem.setGraphic(new ImageView("/icons/context-menus/clear.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        clearMenuItem.disableProperty().bind(Bindings.or(
+                linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_UNKNOWN), 
+                linkedRelationship.logicTypeProperty().isNotEqualTo(Relationship.LogicType.CONSTRAINT)));
+        clearMenuItem.setOnAction(e -> {
+            this.reset();
+            linkedRelationship.clearInvestigate();
+        });
+        
+        
+        MenuItem explainMenuItem = new MenuItem("Explain");
+        explainMenuItem.setGraphic(new ImageView("/icons/context-menus/investigate.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        explainMenuItem.disableProperty().bind(Bindings.or(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_UNKNOWN),
+                linkedRelationship.explainProperty()));
+        explainMenuItem.setOnAction(e -> {
+           System.out.println("about to draw a special line with funky style: "+highlight.get());
+           linkedRelationship.clearInvestigate();
+           linkedRelationship.explainProperty().set(true);
+           this.getStyleClass().remove("highlight-PREDECESSOR"); //undoing previous
+           this.getStyleClass().add("highlight-"+highlight.get()); //should override the one set by the property listener
+//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinX());
+//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxX());
+//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMinY());
+//           System.out.println(this.localToParent(this.boundsInParentProperty().get()).getMaxY());
+        });
+        
+        MenuItem clearInvestigateMenuItem = new MenuItem("Clear explanation");
+        clearInvestigateMenuItem.setGraphic(new ImageView("/icons/context-menus/noinvestigate.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        clearInvestigateMenuItem.disableProperty().bind(linkedRelationship.explainProperty().not());
+        clearInvestigateMenuItem.setOnAction(e -> {
+//           System.out.println("about to draw a special line with funky style: "+highlight.get());
+           linkedRelationship.clearInvestigate();
+//           this.explainProperty.set(true);
+        });
+        
+        contextMenu.getItems().addAll(setFalseMenuItem,setTrueMenuItem, clearMenuItem, annotateMenuItem, explainMenuItem, clearInvestigateMenuItem);
+        return contextMenu;
+    }
 }

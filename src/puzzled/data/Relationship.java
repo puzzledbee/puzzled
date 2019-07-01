@@ -5,6 +5,7 @@
  */
 package puzzled.data;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -37,9 +38,11 @@ public class Relationship extends Dependable {
     
     private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<ValueType>(this, "value" , ValueType.VALUE_UNKNOWN);
     private ObjectProperty<LogicType> logicTypeProperty = new SimpleObjectProperty<LogicType>(this, "value" , LogicType.CONSTRAINT);
-    //private StringProperty annotationProperty = new SimpleStringProperty(""); //set to empty string for tooltip
-    private DoubleProperty centerXProperty = new SimpleDoubleProperty();
+    
+    private DoubleProperty centerXProperty = new SimpleDoubleProperty(); //--> should we move this into GridCell or Dependable?
     private DoubleProperty centerYPropery = new SimpleDoubleProperty();
+    
+    private StringProperty annotationProperty = new SimpleStringProperty("");
     
 //    private StringProperty highlight = new SimpleStringProperty();
 
@@ -53,6 +56,7 @@ public class Relationship extends Dependable {
     
     private StringProperty relationshipTextProperty = new SimpleStringProperty();
     
+    //constructor
     public Relationship(LogicProblem arg_parent, ItemPair arg_pair) {
 //        System.out.println("creating relationship: " + arg_pair);
         logicProblem = arg_parent;
@@ -63,46 +67,20 @@ public class Relationship extends Dependable {
             logicProblem.setDirtyLogic(true);
                 });
         
-        getExplainProperty().addListener((e,oldValue,newValue) -> {
+        explainProperty().addListener((e,oldValue,newValue) -> {
             if (newValue == true) {
                 System.out.println("explain property becoming true for "+this.toString());
                 for (Dependable predecessor : this.getPredecessors()) {
                     System.out.println("setting predecessor "+predecessor.toString());
-                    predecessor.getExplainProperty().set(true);
+                    predecessor.explainProperty().set(true);
                 }
             }
         });
-        
-        
-        //create and bind tooltip text; tooltip is installed and bound in the GridCell class
-        this.relationshipTextProperty.bind(Bindings.createStringBinding(() -> { 
-                    StringBuilder text = new StringBuilder();
-                    text.append("The relationship between " + this.itemPair.toString() +
-                            " is " + (this.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.getValue()+" ("+this.getLogicType()+")"));
-                    
-                    if (this.getLogicType() == LogicType.CONSTRAINT) {
-                        text.append("\n\n" + this.getPredecessorConstraint());
-                    } else if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() != LogicType.CONSTRAINT) { 
-                        text.append("\n\nderived from:\n");
-                        this.getPredecessors().forEach(predecessor -> text.append(predecessor.toString()));
-                    }
-                    return text.toString();
-                        },
-                this.valueProperty,
-                //this.getPredecessorConstraint().annotationProperty(), -> this makes no sense unless it is a Constraint
-                this.logicTypeProperty));
-        //this.relationshipTextProperty.bind(Bindings.createStringBinding(() -> "This is a relationship of type " + logicTypeProperty.toString() + " between " + pair.toString(), logicTypeProperty));
-        
+        setTooltipTextBinding();
     }
-
     
-    //public Relationship(ValueType myType) {
-    //    valueProperty.set(myType);
-    //    valueProperty.addListener( (e,oldValue,newValue) -> fLogger.info("Relationship valueProperty changed to: " + newValue));
-    //}
-    
-    public ObjectProperty<ValueType> valueProperty(){
-        return valueProperty;
+    public LogicProblem getParentLogicProblem() {
+        return logicProblem;
     }
     
     
@@ -120,12 +98,13 @@ public class Relationship extends Dependable {
     }
    
     
-    public ValueType getValue(){
-        return valueProperty.get();
-    }
     
     public LogicType getLogicType() {
         return logicTypeProperty.get();
+    }
+    
+    public void setLogicType(Relationship.LogicType logic) {
+        this.logicTypeProperty.set(logic);
     }
     
     public ObjectProperty<LogicType> logicTypeProperty() {
@@ -135,27 +114,26 @@ public class Relationship extends Dependable {
     public ItemPair getItemPair() {
         return this.itemPair;
     }
+
     
-    //this is now within the upstream Constraint object
-//    public StringProperty annotationProperty() {
-//        return this.annotationProperty;
-//    }
-//    
-//    public String getAnnotation() {
-//        return this.annotationProperty().get();
-//    }
-//    
+    public ValueType getValue(){
+        return valueProperty.get();
+    }
     
+    public ObjectProperty<ValueType> valueProperty(){
+        return valueProperty;
+    }
     
     public void setValue(ValueType value){
         valueProperty.set(value);
     }
-    
+        
     public void setValue(ValueType value, LogicType arg_logicType, Dependable ... arg_predecessors) throws SuperfluousRelationshipException, RelationshipConflictException {
         //is this relationship previously unassigned? then there are no issues, it can just take the new value
-        if (valueProperty.getValue()==ValueType.VALUE_UNKNOWN) {
-            valueProperty.set(value);
-            logicTypeProperty.set(arg_logicType);
+        if (this.getValue()==ValueType.VALUE_UNKNOWN) {
+            this.setValue(value);
+            this.setLogicType(arg_logicType);
+            this.setTooltipTextBinding();
 
             //adjusting the upstream dependable objects (predecessors)
             System.out.println("adding a total of  " + arg_predecessors.length + " predecessors");
@@ -164,7 +142,7 @@ public class Relationship extends Dependable {
                 this.addPredecessor(predecessor);
                 predecessor.addSuccessor(this);
             }
-        } else if (valueProperty.getValue()==value) {
+        } else if (this.getValue()==value) {
             //already set by different logic type
            // if (logicTypeProperty.get() != arg_logicType) throw new SuperfluousRelationshipException(pair,logicTypeProperty.get(),arg_logicType); //investigate up tree
         } else {
@@ -192,11 +170,26 @@ public class Relationship extends Dependable {
         }
     }
     
-    public LogicProblem getParentLogicProblem() {
-        return logicProblem;
+    
+    private void setTooltipTextBinding(){
+        StringBuilder text = new StringBuilder();
+        text.append("The relationship between " + this.itemPair.toString() +
+            " is " + (this.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.getValue()+" ("+this.getLogicType()+")"));
+        
+        if (this.getValue() != ValueType.VALUE_UNKNOWN) {
+            text.append("\n\nderived from:\n");
+            getPredecessors().forEach(dependable -> text.append(dependable));
+        }
+        
+        text.append("\n\n"+annotationProperty.get());
+        this.relationshipTextProperty.bind(Bindings.createStringBinding(() -> { 
+                return text.toString();
+                },
+                this.valueProperty,
+                this.annotationProperty, 
+                this.logicTypeProperty));
     }
     
-
     @Override
     public String toString(){
        return relationshipTextProperty.get(); 
@@ -210,4 +203,20 @@ public class Relationship extends Dependable {
     public StringProperty relationshipTextProperty() {
         return this.relationshipTextProperty;
     }
+
+    public void setAnnotation(String arg_annotation) {
+        annotationProperty.set(arg_annotation);
+    }
+    
+    public StringProperty annotationProperty() {
+        return this.annotationProperty;
+    }
+
+    public String getAnnotation() {
+        return this.annotationProperty.get();
+    }
+
 }
+
+
+

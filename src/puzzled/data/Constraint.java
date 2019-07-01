@@ -20,33 +20,21 @@ public class Constraint extends Dependable {
     //enum types makes assignment of the value between Constraint 
     //and the Relationships easier
     private Relationship.ValueType valueType;
-    private StringProperty annotation = new SimpleStringProperty("");
+    
     
     public Constraint(ItemPair pair, Relationship.ValueType value) {
         this.itemPair = pair;
         this.valueType = value;
     }
     
-    public void setAnnotation(String arg_annotation) {
-        annotation.set(arg_annotation);
-    }
-    
-    public StringProperty annotationProperty() {
-        return this.annotationProperty();
-    }
-
-    public String getAnnotation() {
-        return this.annotation.get();
-    }
-    
+   
     public Point2D getCenterPosition(){
         return null;
     }
     
     @Override
     public String toString(){
-        
-        return "Constraint " + itemPair + " -> " + annotation.get();
+        return "Constraint " + itemPair;
     }
     
 }

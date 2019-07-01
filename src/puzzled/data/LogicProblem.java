@@ -229,7 +229,7 @@ public class LogicProblem {
     
     public void clearInvestigate() {
         System.out.println("clearing previous styles");
-        for (ItemPair key : this.relationshipTable.keySet()) this.relationshipTable.get(key).getExplainProperty().set(false);
+        for (ItemPair key : this.relationshipTable.keySet()) this.relationshipTable.get(key).explainProperty().set(false);
     }
     //somehow does not get registered as an XmlElement
     public int getNumItems(){

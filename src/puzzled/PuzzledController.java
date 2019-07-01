@@ -688,7 +688,8 @@ public class PuzzledController implements Initializable {
             
             this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblem.get().dirtyFileProperty().get()?
                     Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitle()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+") *"):
-                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitle()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+")"),this.dirtyFileProperty, this.filenameProperty));
+                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblem.get().getTitle()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+")"),
+                    this.dirtyFileProperty, this.filenameProperty));
 //          
             //binds to the next ClueNumber string property, but adds ->
             nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(
