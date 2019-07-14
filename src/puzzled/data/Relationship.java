@@ -9,11 +9,15 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -43,6 +47,7 @@ public class Relationship extends Dependable {
     private DoubleProperty centerYPropery = new SimpleDoubleProperty();
     
     private StringProperty annotationProperty = new SimpleStringProperty("");
+//    private ObservableSet observablePredecessorSet;
     
 //    private StringProperty highlight = new SimpleStringProperty();
 
@@ -61,7 +66,7 @@ public class Relationship extends Dependable {
 //        System.out.println("creating relationship: " + arg_pair);
         logicProblem = arg_parent;
         itemPair = arg_pair;
-        
+//        observablePredecessorSet = FXCollections.observableSet(this.observablePredecessors());
         valueProperty.addListener( (e,oldValue,newValue) -> {
 //            fLogger.info("Relationship valueProperty chansged to: " + newValue);
             logicProblem.setDirtyLogic(true);
@@ -186,7 +191,7 @@ public class Relationship extends Dependable {
                 if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() != LogicType.CONSTRAINT) {
                     text.append("\n\nderived from:\n");
                     System.out.println("\n\nderiving from:"+getPredecessors().size());
-                    this.getPredecessors().forEach(dependable -> text.append(dependable.toString()));
+                    this.getPredecessors().forEach(dependable -> text.append(dependable.toString()+"\n"));
                     this.getPredecessors().forEach(dependable -> System.out.println(dependable.toString()));
                 }
                 if (!annotationProperty.get().isBlank()) {
@@ -197,6 +202,7 @@ public class Relationship extends Dependable {
                 },
             this.observablePredecessors(),
             this.valueProperty,
+            this.logicTypeProperty, //otherwise the timing of the binding being refreshed
             this.annotationProperty));
     }
     
