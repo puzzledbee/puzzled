@@ -149,7 +149,7 @@
                                                 <Insets left="5.0" right="5.0" />
                                              </padding>
                                           </HBox>
-                                          <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="513.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" />
+                                          <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="513.0" style="-fx-border-color: purple;" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane fx:id="dependencyPane" mouseTransparent="true" prefHeight="200.0" prefWidth="200.0" />

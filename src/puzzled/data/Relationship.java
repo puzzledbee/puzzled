@@ -133,12 +133,11 @@ public class Relationship extends Dependable {
         if (this.getValue()==ValueType.VALUE_UNKNOWN) {
             this.setValue(value);
             this.setLogicType(arg_logicType);
-            this.setTooltipTextBinding();
 
             //adjusting the upstream dependable objects (predecessors)
-            System.out.println("adding a total of  " + arg_predecessors.length + " predecessors");
+            System.out.println("adding a total of  " + arg_predecessors.length + " predecessors to " + this.toString());
             for (Dependable predecessor : arg_predecessors) {
-//                System.out.print("there is a predecessor added to " + this.toString() + " : " + predecessor.toString());
+
                 this.addPredecessor(predecessor);
                 predecessor.addSuccessor(this);
             }
@@ -170,29 +169,42 @@ public class Relationship extends Dependable {
         }
     }
     
-    
     private void setTooltipTextBinding(){
-        StringBuilder text = new StringBuilder();
-        text.append("The relationship between " + this.itemPair.toString() +
-            " is " + (this.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.getValue()+" ("+this.getLogicType()+")"));
         
-        if (this.getValue() != ValueType.VALUE_UNKNOWN) {
-            text.append("\n\nderived from:\n");
-            getPredecessors().forEach(dependable -> text.append(dependable));
-        }
         
-        text.append("\n\n"+annotationProperty.get());
+//        System.out.println("at time of binding:\n" + text.toString());
+//        System.out.println("predecessor size @ binding: "+getPredecessors().size());
         this.relationshipTextProperty.bind(Bindings.createStringBinding(() -> { 
+                StringBuilder text = new StringBuilder();
+                text.append("The relationship between " + this.itemPair.toString() +
+                    " is " + (this.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.getValue()+" ("+this.getLogicType()+")"));
+
+                if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() == LogicType.CONSTRAINT) {
+                    text.append("\n\nThis relationship was set graphically by the user\n");
+                }
+
+                if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() != LogicType.CONSTRAINT) {
+                    text.append("\n\nderived from:\n");
+                    System.out.println("\n\nderiving from:"+getPredecessors().size());
+                    this.getPredecessors().forEach(dependable -> text.append(dependable.toString()));
+                    this.getPredecessors().forEach(dependable -> System.out.println(dependable.toString()));
+                }
+                if (!annotationProperty.get().isBlank()) {
+                    text.append("\n\n"+annotationProperty.get());
+                }
+            
                 return text.toString();
                 },
-                this.valueProperty,
-                this.annotationProperty, 
-                this.logicTypeProperty));
+            this.observablePredecessors(),
+            this.valueProperty,
+            this.annotationProperty));
     }
     
     @Override
     public String toString(){
-       return relationshipTextProperty.get(); 
+        return ("The relationship between " + this.itemPair.toString() +
+            " is " + (this.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.getValue()+" ("+this.getLogicType()+")"));
+//       return relationshipTextProperty.get(); 
     }
     
     @Override

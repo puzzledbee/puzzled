@@ -299,7 +299,7 @@ public class LogicProblem {
         //        + ((relationship.getValue()==Relationship.ValueType.VALUE_YES)?" is ":" is not ") 
         //        + pair.last().getName());
         
-        System.out.println("constraint added\n"+ constraint);
+//        System.out.println("constraint added\n"+ constraint);
         constraintList.add(constraint);
         //return constraint;
     }

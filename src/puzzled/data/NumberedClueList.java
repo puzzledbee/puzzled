@@ -21,20 +21,22 @@ public class NumberedClueList {
     //private ClueNumber latestClueNumber = new ClueNumber();
     private ObjectProperty<ClueNumber> nextClueNumberProperty = new SimpleObjectProperty<ClueNumber>(new ClueNumber());
     private List<Clue> clueList = new ArrayList<Clue>();
-    private ObservableList<Clue> observableClueList;
+    //is it necessary to have both the ArrayList and the observable list
+//    or can that be collapsed like members and properties are collapsed elsewhere
+    private ObservableList<Clue> observableClueList; 
     
     public NumberedClueList(){
         //wrap clue list into an Observable object for the TableView
-        observableClueList = FXCollections.observableList(clueList);
+        this.observableClueList = FXCollections.observableList(clueList);
     }
     //this will mostly be called by the Parser
     public void addClue(Clue newClue, ClueNumber nextClueNumber){
         //this.add(new Pair(nextClueNumberProperty.get(),newClue));
         //parse clue text here?
-        observableClueList.add(newClue);
+        this.observableClueList.add(newClue);
         //reconfigure
         //System.out.println("nextClueNumber 1) : " +getNextClueNumber().clueNumberStringProperty().get());
-        nextClueNumberProperty.set(nextClueNumber);
+        this.nextClueNumberProperty.set(nextClueNumber);
         //System.out.println("nextClueNumber 2) : " +getNextClueNumber().clueNumberStringProperty().get());
         //return newClue;
     }
@@ -57,17 +59,20 @@ public class NumberedClueList {
 //    }
     
     public ObjectProperty<ClueNumber> nextClueNumberProperty(){
-        return nextClueNumberProperty;
+        return this.nextClueNumberProperty;
     }
     
     public ClueNumber getNextClueNumber() {
-        return nextClueNumberProperty.get();
+        return this.nextClueNumberProperty.get();
     }
     
     public void setNextClueNumber(ClueNumber arg_nextClueNumber) {
-        nextClueNumberProperty.set(arg_nextClueNumber);
+        this.nextClueNumberProperty.set(arg_nextClueNumber);
     }
     
-    
+    //for testing assertions
+    public List<Clue> getClueList() {
+        return this.clueList;
+    }
     
 }

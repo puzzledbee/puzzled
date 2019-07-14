@@ -125,8 +125,8 @@ public class GridCell extends StackPane {
         try {
             //create a new Constraint object
             Constraint constraint = new Constraint(linkedRelationship.getItemPair(),Relationship.ValueType.VALUE_NO);
-            System.out.println("Constraint object created:\n:");
-            System.out.println(constraint);
+//            System.out.println("Constraint object created:\n:");
+//            System.out.println(constraint);
             //needs to add this relationship to constraint table
             linkedRelationship.getParentLogicProblem().addConstraint(constraint);
             //set the relationship and set the Constraint as its predecessor
@@ -152,7 +152,7 @@ public class GridCell extends StackPane {
             linkedRelationship.getParentLogicProblem().addConstraint(constraint);
             //set the relationship and set the Constraint as its predecessor
             linkedRelationship.setValue(ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT,constraint);
-            fLogger.info("setting TRUE");
+//            fLogger.info("setting TRUE");
             
 //            setTooltipBinding(); //text binding changes after setting up a constraint
             //constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));

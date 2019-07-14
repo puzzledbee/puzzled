@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
 
 /**
@@ -22,11 +25,25 @@ public abstract class Dependable {
     private HashSet<Dependable> successors = new HashSet<Dependable>();
     private BooleanProperty explainProperty = new SimpleBooleanProperty(); 
     
+    private ObservableSet<Dependable> observablePredecessors; 
+    private ObservableSet<Dependable> observableSuccessors; 
+    
     abstract public Point2D getCenterPosition();
 
+    
+    public Dependable(){
+//        System.out.println("Dependable constructor called;");
+        this.observablePredecessors = FXCollections.observableSet(predecessors);
+        this.observableSuccessors = FXCollections.observableSet(successors);
+    }
 
+    
     public HashSet<Dependable> getPredecessors() {
         return predecessors;
+    }
+    
+    public ObservableSet observablePredecessors(){
+        return this.observablePredecessors;
     }
     
     //used in cases where a Constraint is the sole Relationship predecessor
@@ -41,22 +58,26 @@ public abstract class Dependable {
     }
     
     public HashSet<Dependable> getSuccessors() {
-        return successors;
+        return this.successors;
+    }
+    
+    public ObservableSet observableSuccessors(){
+        return this.observableSuccessors;
     }
     
     public void addPredecessor(Dependable predecessor){
-        predecessors.add(predecessor);
-        System.out.println("predecessor " + predecessor + " added!");
+        this.predecessors.add(predecessor);
+        System.out.println(">>>>>>predecessor " + predecessor.toString() + " added...");
     }
     
     public void addSuccessor(Dependable successor) {
-        successors.add(successor);
+        this.successors.add(successor);
+        System.out.println(">>>>>>successor " + successor.toString() + " added...");
     }
         
     public BooleanProperty explainProperty() {
-        return explainProperty;
+        return this.explainProperty;
     }
-    
     
     
 }
