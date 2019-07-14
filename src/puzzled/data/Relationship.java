@@ -190,9 +190,7 @@ public class Relationship extends Dependable {
 
                 if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() != LogicType.CONSTRAINT) {
                     text.append("\n\nderived from:\n");
-                    System.out.println("\n\nderiving from:"+getPredecessors().size());
                     this.getPredecessors().forEach(dependable -> text.append(dependable.toString()+"\n"));
-                    this.getPredecessors().forEach(dependable -> System.out.println(dependable.toString()));
                 }
                 if (!annotationProperty.get().isBlank()) {
                     text.append("\n\n"+annotationProperty.get());
