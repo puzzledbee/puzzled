@@ -29,47 +29,29 @@ import javax.xml.bind.annotation.XmlType;
  */
 
 @XmlRootElement
-@XmlType(propOrder={"title","source","notes","text","scale","categories","clues"})
+@XmlType(propOrder={"title","source", "problemText", "notes", "scale",
+    "categoriesList", "numberedClueList", "relationshipTable"})
 //something is amiss
 public class LogicProblem {
-
-    
     //data members members
-    
-//    @XmlElement //why are we not saving the title in the XML again?
     private StringProperty titleProperty = new SimpleStringProperty();
-    
     private StringProperty problemTextProperty = new SimpleStringProperty();
     private String problemSource;
-    
-    @XmlElement
     private String notes; //notes related to the problem
+    private List<Category> categoriesList;
     
-//    @XmlElement
-//    private int numCategories; //is this necessary or can it not be recovered, what is the point???
-//    @XmlElement
-//    private int numItems; //is this necessary or can it not be recovered, what is the point???
-    @XmlElement
-    private List<Category> categories;
-    
-    @XmlElement
     private NumberedClueList numberedClueList = new NumberedClueList(); //extends ArrayList
     //this is in the PuzzledController now, passed to the clueTabController
     //private ObservableList<Clue> clues = FXCollections.observableList(numberedClueList);
     
-    @XmlElement
     private List<Constraint> constraintList = new ArrayList<Constraint>();
-    
     private HashMap<ItemPair,Relationship> relationshipTable;
         
     // utility members
     //visual scale
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
-    
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(false);
     private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty(false);
-    
-    
     
     //necessary for unmarshalling
     public LogicProblem(){
@@ -78,101 +60,93 @@ public class LogicProblem {
     
     public LogicProblem(String ... problemInfo){
         System.out.println("constructor invoked");
-        titleProperty.set(problemInfo[0].trim()); //trim needed for loading from .lps
+        this.titleProperty.set(problemInfo[0].trim()); //trim needed for loading from .lps
         if (problemInfo.length>1) this.problemSource = problemInfo[1].trim();
         if (problemInfo.length>2) this.notes = problemInfo[2].trim();
 //        numCategories = category_number;
 //        numItems = item_number;
-        categories = new ArrayList<Category>();
+        categoriesList = new ArrayList<Category>();
         
         this.dirtyLogicProperty.addListener( (e, oldvalue, newvalue) -> System.out.println("change triggered in LogicProblem"));
         //categories.add("Age");
         //categories.add("test");
     }
+
     
-    
-    public BooleanProperty dirtyLogicProperty(){
-        return this.dirtyLogicProperty;
+    @XmlElement //unnecessary?
+    public void setScale(double newScale){
+        this.scaleProperty.set(newScale);
     }
-    
-    @XmlTransient
-    public boolean isLogicDirty(){
-        return this.dirtyLogicProperty.getValue();
+    public double getScale(){
+        return this.scaleProperty.get();
     }
-    
-    public void setDirtyLogic(boolean dirtyness){
-        System.out.println("logic problem logic set to dirty "+dirtyness);
-        this.dirtyLogicProperty.set(dirtyness);
-    }
-    
-    
-    
-    public BooleanProperty dirtyFileProperty(){
-        return this.dirtyFileProperty;
-    }
-    public void setDirtyFile(boolean dirtyness) {
-        System.out.println("\n\nlogic problem file set to dirty "+dirtyness);
-        this.dirtyFileProperty.set(dirtyness);
-    }
-     
-    @XmlTransient
-    public boolean isFileDirty(){
-        return this.dirtyFileProperty.getValue();
-    }
-    
     public DoubleProperty scaleProperty() {
         return this.scaleProperty;
     }
+    
 
     @XmlElement
-    public String getTitle() {
-        return titleProperty.getValue();
+    public void setTitle(String newTitle) {
+        this.titleProperty.set(newTitle);
     }
-    
+    public String getTitle() {
+        return this.titleProperty.getValue();
+    }
     public StringProperty titleProperty() {
-        return titleProperty;
+        return this.titleProperty;
     }
    
+    
+    @XmlElement
+    public void setProblemText(String text) {
+        this.problemTextProperty.set(text);
+    }
+    public String getProblemText() {
+        return this.problemTextProperty.get();
+    }
     public StringProperty problemTextProperty() {
-        return problemTextProperty;
+        return this.problemTextProperty;
     }
 
-    public void setTitle(String newTitle) {
-        titleProperty.set(newTitle);
-    }
-    
+    @XmlElement
     public NumberedClueList getNumberedClueList(){
-        return numberedClueList;
+        return this.numberedClueList;
     }
     
-    @XmlTransient
+    @XmlElement
     public HashMap<ItemPair,Relationship> getRelationshipTable(){
-        return relationshipTable;
+        return this.relationshipTable;
     }
     
-    /**
-     *
-     * @return
-     */
-    @XmlElement //unnecessary?
+    @XmlElement
+    public void setSource(String arg_source) {
+        this.problemSource =arg_source;
+    }
     public String getSource() {
-        return problemSource;
+        return this.problemSource;
     }
     
-    @XmlElement //unnecessary?
-    public String getText() {
-        return problemTextProperty.get();
+    @XmlElement
+    public void setNotes(String arg_notes) {
+        this.notes = arg_notes;
+    }
+    public String getNotes() {
+        return this.notes;
     }
     
+    @XmlElement
+    public List<Category> getCategoriesList() {
+        return this.categoriesList;
+    }
+
     public void initializeRelationshipTable(){
-        
         System.out.println("initializing relationshipTable");
         relationshipTable = new HashMap<ItemPair,Relationship>();
         
         ItemPair pair;
         
         //fix parent references
-        for (Category cat : getCategories()){
+        for (Category cat : getCategoriesList()){
             cat.setParent(this);
             for (Item item : cat.getItems()) {
                 item.setParent(cat);
@@ -186,8 +160,8 @@ public class LogicProblem {
 //        }
         
 //        int i=1;
-        for (Category cat1 : getCategories()) {
-            for (Category cat2 : getCategories()){
+        for (Category cat1 : getCategoriesList()) {
+            for (Category cat2 : getCategoriesList()){
                 if (cat1 != cat2) {
                     for (Item item1 : cat1.getItems()) {
                         for (Item item2 : cat2.getItems()){
@@ -211,21 +185,12 @@ public class LogicProblem {
     }
 
     
-    public void setSource(String arg_source) {
-        this.problemSource =arg_source;
-    }
-
-    public void setText(String text) {
-        this.problemTextProperty.set(text);
-    }
   
     //public FilteredList<Pair<ClueNumber, Clue>> getFilteredClues() {
     //    return new FilteredList<>(clues, row -> row.getValue().getType() != Clue.ClueType.CONSTRAINT);
     //}
     
-    public String getNotes() {
-        return notes;
-    }
+
     
     public void clearInvestigate() {
         System.out.println("clearing previous styles");
@@ -233,22 +198,20 @@ public class LogicProblem {
     }
     //somehow does not get registered as an XmlElement
     public int getNumItems(){
-        return categories.get(0).getNumItems();
+        return this.categoriesList.get(0).getNumItems();
     }
 
     //somehow does not get registered as an XmlElement
     public int getNumCategories(){
-        return categories.size();
+        return this.categoriesList.size();
     }
     
-    public List<Category> getCategories() {
-        return categories;
-    }
+
     
     public HashSet<TreeSet<Category>> getCategoryPairs() {
         HashSet<TreeSet<Category>> categoryPairs = new HashSet();
-        for (Category catA : categories) {
-            for (Category catB : categories) {
+        for (Category catA : categoriesList) {
+            for (Category catB : categoriesList) {
                 if (catA != catB) {
                     CategoryPair categoryPair = new CategoryPair(catA,catB);
                     categoryPairs.add(categoryPair);
@@ -259,19 +222,9 @@ public class LogicProblem {
     }
     
     public void addCategory(Category newCategory) {
-        categories.add(newCategory);
+        categoriesList.add(newCategory);
     }
 
-
-    public void setScale(double newScale){
-        scaleProperty.set(newScale);
-    }
-
-    @XmlElement //unnecessary
-    public double getScale(){
-        return scaleProperty.get();
-    }
-        
     @Override
     public String toString(){
         String output = new String();
@@ -280,7 +233,7 @@ public class LogicProblem {
         output += "numItems:" + this.getNumItems()+"\n";
         output += "numItems:" + this.getNumCategories()+"\n";
         
-        for(Category quark: categories){
+        for(Category quark: categoriesList){
              output += "category: " + quark + "\n";
              for (Item item: quark.getItems()){
                  output += "\titem: " + item.getName() + "\n";
@@ -293,7 +246,6 @@ public class LogicProblem {
         return constraintList;
     }
     
-    
     public void addConstraint(Constraint constraint) {
         //String clueString = new String(pair.first().getName() 
         //        + ((relationship.getValue()==Relationship.ValueType.VALUE_YES)?" is ":" is not ") 
@@ -302,5 +254,29 @@ public class LogicProblem {
 //        System.out.println("constraint added\n"+ constraint);
         constraintList.add(constraint);
         //return constraint;
+    }
+    
+    @XmlTransient
+    public void setDirtyLogic(boolean dirtyness){
+        System.out.println("logic problem logic set to dirty "+dirtyness);
+        this.dirtyLogicProperty.set(dirtyness);
+    }
+    public boolean isLogicDirty(){
+        return this.dirtyLogicProperty.getValue();
+    }
+    public BooleanProperty dirtyLogicProperty(){
+        return this.dirtyLogicProperty;
+    }
+    
+    @XmlTransient
+    public void setDirtyFile(boolean dirtyness) {
+        System.out.println("\n\nlogic problem file set to dirty "+dirtyness);
+        this.dirtyFileProperty.set(dirtyness);
+    }
+    public boolean isFileDirty(){
+        return this.dirtyFileProperty.getValue();
+    }
+    public BooleanProperty dirtyFileProperty(){
+        return this.dirtyFileProperty;
     }
 }

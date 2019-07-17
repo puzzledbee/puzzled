@@ -149,6 +149,8 @@ public class PuzzledController implements Initializable {
     
     @FXML private MenuItem saveMenuItem;
     
+    @FXML private MenuItem closeMenuItem;
+    
     @FXML private CheckMenuItem automaticProcessingMenuItem;
     
     @FXML private MenuItem saveAsMenuItem;
@@ -258,6 +260,12 @@ public class PuzzledController implements Initializable {
             notify(WarningType.WARNING,"Minimum zoom level reached!");
         }
         fLogger.log(Level.INFO,"scale:"+logicProblem.get().getScale());
+    }
+    
+    @FXML
+    private void closeAction(ActionEvent event) {
+        //
+        fLogger.log(Level.INFO,"close action");
     }
 
     @FXML
@@ -571,7 +579,7 @@ public class PuzzledController implements Initializable {
                     if (i < lines.size()-1 && lines.get(i+1).startsWith("\t")) {
                         i++;
                         ArrayList<Item> items = new ArrayList<Item>();
-                        while (i< lines.size() && lines.get(i).startsWith("\t")) {
+                        while (i < lines.size() && lines.get(i).startsWith("\t")) {
                             System.out.println("adding item "+lines.get(i).trim()+" ("+i+")");
                             items.add(new Item(lines.get(i++).trim()));
                         }
@@ -600,7 +608,7 @@ public class PuzzledController implements Initializable {
                         } //else there are no clues present
                     }
                 }
-                if (!problemText.trim().isEmpty()) newProblem.setText(problemText);
+                if (!problemText.trim().isEmpty()) newProblem.setProblemText(problemText);
 
                 logicProblem.set(newProblem);
                 this.dirtyFileProperty.set(true);//to enable save as (one cannot save an .lps file)
@@ -623,7 +631,7 @@ public class PuzzledController implements Initializable {
                         //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this will parse the clue
                         logicProblem.get().setDirtyFile(true);
                         //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
-                        
+                        notify(WarningType.SUCCESS, "Problem clues file "+file.getName()+" loaded successfully!");
                     }
                 } catch (IOException e) {
                     notify(WarningType.WARNING, "Unable to load problem clues file "+file.getName()+ "!");

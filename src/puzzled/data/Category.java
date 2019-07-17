@@ -63,7 +63,7 @@ public class Category implements DataElement {
     }
     
     public int getCatIndex() {
-        return this.getParent().getCategories().indexOf(this);
+        return this.getParent().getCategoriesList().indexOf(this);
     }
     
     public void setParent(LogicProblem arg_parent){

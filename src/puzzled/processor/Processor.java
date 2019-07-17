@@ -117,7 +117,7 @@ public class Processor {
                     //searching for a VALUE_YES relationship first
                     if (sourceRelationship.getValue()==Relationship.ValueType.VALUE_YES) {
                         System.out.println("transposing for "+item1.getName()+" and "+item2.getName());
-                        for (Category catA : logicProblem.getCategories()){
+                        for (Category catA : logicProblem.getCategoriesList()){
                             if (catA != cat1 && catA != cat2) {
                                 for (Item itemA : catA.getItems()) {
                                     Relationship relBase = relationshipTable.get(new ItemPair(item1,itemA));
@@ -259,7 +259,7 @@ public class Processor {
 //                        System.out.println("assessing "+cat1.getName()+","+item1.getName()+" vs "+cat2.getName()+"  -> size: "+searchList.size());
                 if (candidateList.size()>1 && candidateList.size()<=cat2.getNumItems()/2) {
                     System.out.println("found commonality candidate "+cat1.getName()+","+item1.getName()+" vs "+cat2.getName());
-                    for (Category catSearch: logicProblem.getCategories()) {
+                    for (Category catSearch: logicProblem.getCategoriesList()) {
                         if (catSearch!=cat1 && catSearch!=cat2) {
                             for (Item itemSearch : catSearch.getItems()) {
                                 ArrayList<Item> searchList = new ArrayList<Item>();

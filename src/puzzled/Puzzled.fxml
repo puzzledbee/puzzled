@@ -55,6 +55,7 @@
                                  </accelerator>
                               </MenuItem>
                               <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsAction" text="Save Logic Problem As..." />
+                              <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#closeAction" text="Close Logic Problem" />
                               <MenuItem fx:id="printMenuItem" mnemonicParsing="false" onAction="#print" text="Print">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />

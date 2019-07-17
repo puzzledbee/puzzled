@@ -184,7 +184,7 @@ public class Grid extends StackPane {
         
         AnchorPane anchorPane = new AnchorPane();
     
-        List<Category> categories = logicProblem.getCategories();
+        List<Category> categories = logicProblem.getCategoriesList();
         
         //left labels
         for (int cat=1;cat<=numCategories;cat++){

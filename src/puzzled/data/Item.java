@@ -52,7 +52,7 @@ public class Item implements DataElement {
         return parent.getItems().indexOf(this);
     }
     public int getCatIndex() {
-        return parent.getParent().getCategories().indexOf(parent);
+        return parent.getParent().getCategoriesList().indexOf(parent);
     }
     
     @Override
