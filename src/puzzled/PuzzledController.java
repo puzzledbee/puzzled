@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -725,7 +726,12 @@ public class PuzzledController implements Initializable {
     @FXML
     public void openAction() {
         fLogger.log(Level.INFO, "opening file invoked");
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        String lastDir = prefs.get("LAST_DIR","");
+        
         FileChooser fileChooser = new FileChooser();
+        File lastDirFile = new File(lastDir);
+        if (lastDirFile.isDirectory() && lastDirFile.canRead()) fileChooser.setInitialDirectory(lastDirFile);
         fileChooser.setTitle("Open Logic Problem File");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Logic Problem Files", "*.lpf"),
@@ -736,9 +742,12 @@ public class PuzzledController implements Initializable {
         if (selectedFile != null) {
             fLogger.log(Level.INFO, "file "+selectedFile.getName());
             loadProblem(selectedFile);
+            prefs.put("LAST_DIR", selectedFile.getParentFile().getAbsolutePath());
+//            System.out.println("preference last dir should be:"+selectedFile.getParentFile().getAbsolutePath());
         } else {
             fLogger.log(Level.INFO, "no file selected");
         }
+        
     }
     
     public void setMainApp(Puzzled parent) {
@@ -754,7 +763,13 @@ public class PuzzledController implements Initializable {
     @FXML
     public void saveAsAction(ActionEvent event) {
         fLogger.log(Level.INFO, "save as action invoked");
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        String lastDir = prefs.get("LAST_DIR","");
+//        System.out.println("preference LAST_DIR is:" + lastDir);
+        
         FileChooser fileChooser = new FileChooser();
+        File lastDirFile = new File(lastDir);
+        if (lastDirFile.isDirectory() && lastDirFile.canRead()) fileChooser.setInitialDirectory(lastDirFile);
         fileChooser.setTitle("Save Logic Problem File as");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Logic Problem Files", "*.lpf"));
@@ -764,6 +779,7 @@ public class PuzzledController implements Initializable {
         if (selectedFile != null) {
             fLogger.log(Level.INFO, "file "+selectedFile.getName());
             saveFile(selectedFile);
+            prefs.put("LAST_DIR", selectedFile.getParentFile().getAbsolutePath());
         } else {
             fLogger.log(Level.INFO, "no file selected");
         }
