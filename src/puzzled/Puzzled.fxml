@@ -49,6 +49,11 @@
                                     <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </MenuItem>
+                              <MenuItem fx:id="loadCluesMenuItem" mnemonicParsing="false" onAction="#loadCluesAction" text="Load Clues">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
                               <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveAction" text="Save Logic Problem">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />

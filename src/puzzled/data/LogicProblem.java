@@ -16,8 +16,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -207,9 +205,10 @@ public class LogicProblem {
     }
     
 
-    
-    public HashSet<TreeSet<Category>> getCategoryPairs() {
-        HashSet<TreeSet<Category>> categoryPairs = new HashSet();
+    //TreeSet are ordered, which means for each pair in the HashSet, the 
+    //two categories will be ordered naturally (based on index)
+    public HashSet<CategoryPair> getCategoryPairs() {
+        HashSet<CategoryPair> categoryPairs = new HashSet();
         for (Category catA : categoriesList) {
             for (Category catB : categoriesList) {
                 if (catA != catB) {

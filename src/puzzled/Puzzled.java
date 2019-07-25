@@ -26,6 +26,7 @@ public class Puzzled extends Application {
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
     private static Object FileUtils;
+    private PuzzledController mainController;
     
     
     //private NotificationPane nPane;
@@ -43,7 +44,7 @@ public class Puzzled extends Application {
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Puzzled.fxml"));
         Scene scene = new Scene(loader.load());
-        PuzzledController mainController = (PuzzledController)loader.getController();
+        mainController = (PuzzledController)loader.getController();
         mainController.setMainApp(this);
         mainController.setupTitleBinding(primaryStage.titleProperty());
         
@@ -96,6 +97,10 @@ public class Puzzled extends Application {
     //in NetBeans otherwise
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    public PuzzledController getMainController(){
+        return this.mainController;
     }
     
 }

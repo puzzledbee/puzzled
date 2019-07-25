@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
-import javafx.util.Duration;
 import puzzled.data.Category;
 import puzzled.data.Dependable;
 import puzzled.data.Item;
@@ -18,9 +17,8 @@ import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
 import puzzled.exceptions.RelationshipConflictException;
 import puzzled.exceptions.SuperfluousRelationshipException;
-import org.controlsfx.control.Notifications;
 import puzzled.PuzzledController;
-import javafx.beans.property.BooleanProperty;
+import puzzled.data.CategoryPair;
 
 /**
  *
@@ -29,7 +27,7 @@ import javafx.beans.property.BooleanProperty;
 public class Processor {
     
     
-    public static void process(LogicProblem logicProblem, PuzzledController controller, BooleanProperty dirtyLogicProperty) {
+    public static void process(LogicProblem logicProblem, PuzzledController controller) {
 //        System.out.println("process invoked "+automaticProcessingMenuItem.isSelected());
             
 //          System.out.println("entering processingFlag loop");
@@ -56,9 +54,9 @@ public class Processor {
 //        System.out.println("cross invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
 
-        HashSet<TreeSet<Category>> categoryPairs = logicProblem.getCategoryPairs();
+        HashSet<CategoryPair> categoryPairs = logicProblem.getCategoryPairs();
         
-        for (TreeSet<Category> categoryPair : categoryPairs) {
+        for (CategoryPair categoryPair : categoryPairs) {
         //for (Category cat1 : logicProblem.getCategories()){
         //    for (Category cat2 : logicProblem.getCategories()){
         //        if (cat1!=cat2) {
@@ -78,14 +76,14 @@ public class Processor {
                                 if (itemA != item1) {
                                     Relationship rel = relationshipTable.get(new ItemPair(itemA,item2));
                                     rel.setValue(Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
-                                    //logicProblem.setDirtyLogic(true); //?
+                                    logicProblem.setDirtyLogic(true); //?
                                 }
                             }
                             for (Item itemB : cat2.getItems()){
                                 if (itemB != item2) {
                                     Relationship rel = relationshipTable.get(new ItemPair(item1,itemB));
                                     rel.setValue(Relationship.ValueType.VALUE_NO,Relationship.LogicType.CROSS,sourceRelationship);
-                                    //logicProblem.setDirtyLogic(true); //?
+                                    logicProblem.setDirtyLogic(true); //?
                                 }
                             }
                     }
@@ -102,9 +100,9 @@ public class Processor {
         
 //      it is best to work with the category pair as a set without duplication, instead of processing each category pair twice
 //      e.g. Books vs Pages and Pages vs Books
-        HashSet<TreeSet<Category>> categoryPairs = logicProblem.getCategoryPairs();
+        HashSet<CategoryPair> categoryPairs = logicProblem.getCategoryPairs();
         
-        for (TreeSet<Category> categoryPair : categoryPairs) {
+        for (CategoryPair categoryPair : categoryPairs) {
         //for (Category cat1 : logicProblem.getCategories()){
         //    for (Category cat2 : logicProblem.getCategories()){
         //        if (cat1!=cat2) {
@@ -146,9 +144,9 @@ public class Processor {
 //        System.out.println("uniqueness invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
-        HashSet<TreeSet<Category>> categoryPairs = logicProblem.getCategoryPairs();
+        HashSet<CategoryPair> categoryPairs = logicProblem.getCategoryPairs();
         
-        for (TreeSet<Category> categoryPair : categoryPairs) {
+        for (CategoryPair categoryPair : categoryPairs) {
         //for (Category cat1 : logicProblem.getCategories()){
         //    for (Category cat2 : logicProblem.getCategories()){
         //        if (cat1!=cat2) {
@@ -235,9 +233,9 @@ public class Processor {
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
 //        int i = 1;
-        HashSet<TreeSet<Category>> categoryPairs = logicProblem.getCategoryPairs();
+        HashSet<CategoryPair> categoryPairs = logicProblem.getCategoryPairs();
         
-        for (TreeSet<Category> categoryPair : categoryPairs) {
+        for (CategoryPair categoryPair : categoryPairs) {
         //for (Category cat1 : logicProblem.getCategories()){
         //    for (Category cat2 : logicProblem.getCategories()){
         //        if (cat1!=cat2) {
