@@ -37,7 +37,7 @@ public class NumberedClueList {
         //reconfigure
         //System.out.println("nextClueNumber 1) : " +getNextClueNumber().clueNumberStringProperty().get());
         this.nextClueNumberProperty.set(nextClueNumber);
-        //System.out.println("nextClueNumber 2) : " +getNextClueNumber().clueNumberStringProperty().get());
+//        System.out.println("nextClueNumber 2) : " +getNextClueNumber().clueNumberStringProperty().get());
         //return newClue;
     }
 
@@ -66,9 +66,9 @@ public class NumberedClueList {
         return this.nextClueNumberProperty.get();
     }
     
-    public void setNextClueNumber(ClueNumber arg_nextClueNumber) {
-        this.nextClueNumberProperty.set(arg_nextClueNumber);
-    }
+//    public void setNextClueNumber(ClueNumber arg_nextClueNumber) {
+//        this.nextClueNumberProperty.set(arg_nextClueNumber);
+//    }
     
     //for testing assertions
     public List<Clue> getClueList() {

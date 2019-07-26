@@ -5,6 +5,13 @@
  */
 package puzzled.processor;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import opennlp.tools.sentdetect.SentenceDetectorME;
+import opennlp.tools.sentdetect.SentenceModel;
+import puzzled.Puzzled;
 import puzzled.data.Clue;
 import puzzled.data.ClueNumber;
 import puzzled.data.LogicProblem;
@@ -27,20 +34,51 @@ public class Parser {
         //NLP here
         //the parser needs to be able to add clue fragments (minor, subs)
         //by breaking down the sentence
-
-        //modifier logic here
-        if (isCtrlDown) {
-            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextMinorClueNumber());
-        } else if (isAltDown) {
-            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextSubClueNumber());
-        } else {
-            logicProblem.getNumberedClueList().addClue(new Clue(nextClueNumber,clueText,Clue.ClueType.NORMAL),nextClueNumber.getNextMajorClueNumber());
+        List<String> sentenceList = new ArrayList<String>();
+        
+        try {
+            sentenceList = sentenceDetector(clueText);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        
+        //all element but last
+        for (int i=0; i< sentenceList.size() -1; i++) {
+            logicProblem.getNumberedClueList().addClue(
+                    new Clue(nextClueNumber,sentenceList.get(i),Clue.ClueType.NORMAL),nextClueNumber.getNextMinorClueNumber());
+                    nextClueNumber = logicProblem.getNumberedClueList().getNextClueNumber();
+        }
+        
+        //last element
+        if (isCtrlDown) {
+            logicProblem.getNumberedClueList().addClue(
+                    new Clue(nextClueNumber,sentenceList.get(sentenceList.size() -1),Clue.ClueType.NORMAL),nextClueNumber.getNextMinorClueNumber());
+        } else if (isAltDown) {
+            logicProblem.getNumberedClueList().addClue(
+                    new Clue(nextClueNumber,sentenceList.get(sentenceList.size() -1),Clue.ClueType.NORMAL),nextClueNumber.getNextSubClueNumber());
+        } else {
+            logicProblem.getNumberedClueList().addClue(
+                    new Clue(nextClueNumber,sentenceList.get(sentenceList.size() -1),Clue.ClueType.NORMAL),nextClueNumber.getNextMajorClueNumber());
+        }
+        
         logicProblem.setDirtyLogic(true);
+        
     }
     
     public static void parse(LogicProblem logicProblem, String clueText){
         Parser.parse(logicProblem, clueText, false, false);
+    }
+    
+    public static List<String> sentenceDetector(String inputText) throws Exception {
+ 
+        InputStream is = Puzzled.class.getClassLoader().getResourceAsStream("NLPmodels/en-sent.bin");
+        SentenceModel model = new SentenceModel(is);
+
+        SentenceDetectorME sdetector = new SentenceDetectorME(model);
+
+        String sentences[] = sdetector.sentDetect(inputText);
+//        System.out.println(Arrays.toString(sentences));
+        return Arrays.asList(sentences);  
     }
     
 }
