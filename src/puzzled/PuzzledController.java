@@ -203,8 +203,7 @@ public class PuzzledController implements Initializable {
     
     @FXML private VBox clueEngineVBox;
   
-    
-    
+       
     ObjectProperty<LogicProblem> logicProblemProperty = new SimpleObjectProperty<LogicProblem>();
     DoubleProperty scaleProperty = new SimpleDoubleProperty();
     private ObservableList<Clue> clues;
@@ -651,8 +650,10 @@ public class PuzzledController implements Initializable {
             try {
                 this.logicProblemProperty.set(PuzzledFileIO.loadProblem(selectedFile));
                 notify(PuzzledController.WarningType.WARNING, "Logic problem file "+selectedFile.getName()+ " loaded successfully!");
+                this.filenameProperty.set(selectedFile.getName());
             } catch (Exception e) {
                 notify(PuzzledController.WarningType.WARNING, "Unable to load problem file "+selectedFile.getName()+ "!");
+                this.filenameProperty.set(null);
             }
             prefs.put("LAST_DIR", selectedFile.getParentFile().getAbsolutePath());
 //            System.out.println("preference last dir should be:"+selectedFile.getParentFile().getAbsolutePath());
@@ -698,7 +699,14 @@ public class PuzzledController implements Initializable {
     
     @FXML
     public void saveAction(ActionEvent event) {
-        saveFile("test.lpf");
+        try {
+            PuzzledFileIO.saveFile(this.filenameProperty.get(), this.getLogicProblem());
+            notify(PuzzledController.WarningType.SUCCESS, "File "+this.filenameProperty.get()+" saved successfully!");
+            this.dirtyFileProperty.set(false);
+        } catch (JAXBException e) {
+            notify(WarningType.WARNING, "Unable to save file "+this.filenameProperty.get()+"!");
+            e.printStackTrace();
+        }
     }
     
     @FXML
@@ -719,51 +727,18 @@ public class PuzzledController implements Initializable {
         File selectedFile = fileChooser.showSaveDialog(mainStage);
         if (selectedFile != null) {
             fLogger.log(Level.INFO, "file "+selectedFile.getName());
-            saveFile(selectedFile);
-            prefs.put("LAST_DIR", selectedFile.getParentFile().getAbsolutePath());
+            try {
+                PuzzledFileIO.saveFile(selectedFile.getName(), this.getLogicProblem());
+                notify(PuzzledController.WarningType.SUCCESS, "File "+selectedFile.getName()+" saved successfully!");
+                this.dirtyFileProperty.set(false);
+                prefs.put("LAST_DIR", selectedFile.getParentFile().getAbsolutePath());
+                this.filenameProperty.set(selectedFile.getName());
+            } catch (JAXBException e) {
+                notify(WarningType.WARNING, "Unable to save file "+this.filenameProperty.get()+"!");
+                e.printStackTrace();
+            }
         } else {
             fLogger.log(Level.INFO, "no file selected");
-        }
-    }
-    
-    public void saveFile(String filename) {
-        saveFile(new File(filename));
-    }
-    
-    public void saveFile(File file){
-        
-        fLogger.log(Level.INFO, "saveFile invoked");
-        
-        //remove constraints from clue list
-        //better add to a list and then removing
-        //ArrayList<Clue> constraints = new ArrayList<Clue>();
-        //logicProblem.get().getNumberedClueList().stream().filter(e -> e.getType() == Clue.ClueType.CONSTRAINT).forEach(e -> constraints.add(e));
-        
-        //constraints.forEach(e -> logicProblem.get().getClues().remove(e));
-        //add constraints to clue list
-        //logicProblem.get().getRelationshipTable().entrySet().stream().filter( e -> 
-        //            e.getValue().getValue() != Relationship.ValueType.VALUE_UNKNOWN && e.getValue().getLogic() == Relationship.LogicType.CONSTRAINT)
-        //    .forEach(s -> 
-        //        addConstraintClue(s.getKey(),s.getValue())
-        //    );
-            
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
-            // output pretty printed
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-//                    LogicProblem newProblem = DemoProblems.generateDemoProblem47();
-            jaxbMarshaller.marshal(logicProblemProperty.get(), file);
-
-            jaxbMarshaller.marshal(logicProblemProperty.get(), System.out);
-            logicProblemProperty.get().dirtyFileProperty().set(false);
-            notify(WarningType.SUCCESS, "File "+file.getName()+" saved successfully!");
-            this.filenameProperty.set(file.getName());
-        } catch (JAXBException e) {
-            notify(WarningType.WARNING, "Unable to save file "+file.getName()+"!");
-            e.printStackTrace();
         }
     }
         

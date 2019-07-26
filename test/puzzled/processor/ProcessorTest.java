@@ -29,7 +29,7 @@ public class ProcessorTest {
     
     LogicProblem logicProblem;
 //    PuzzledController controller;
-    BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty();
+//    BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty();
     
 //    @BeforeClass
 //    public static void setUpClass() throws InterruptedException {

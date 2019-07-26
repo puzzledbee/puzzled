@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import puzzled.data.Category;
 import puzzled.data.Item;
@@ -111,6 +112,21 @@ public class PuzzledFileIO {
                     //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this will parse the clue
                     logicProblem.setDirtyFile(true);
             }
+    }
+    
+    
+    public static void saveFile(String filename, LogicProblem logicProblem) throws JAXBException {
+        File file = new File(filename);
+        JAXBContext jaxbContext = JAXBContext.newInstance(LogicProblem.class);
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+        // output pretty printed
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+//                    LogicProblem newProblem = DemoProblems.generateDemoProblem47();
+        jaxbMarshaller.marshal(logicProblem, file);
+//        jaxbMarshaller.marshal(logicProblem, System.out);
+        logicProblem.dirtyFileProperty().set(false);
     }
     
 }
