@@ -53,6 +53,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TabPane;
@@ -145,7 +146,7 @@ public class PuzzledController implements Initializable {
 
     @FXML private Group mainGroup;
     
-    @FXML private Label nextClueNumberLabel;
+    @FXML private MenuButton nextClueNumberMenuButton;
     
     @FXML private MenuItem openMenuItem;    
     
@@ -164,7 +165,6 @@ public class PuzzledController implements Initializable {
     @FXML private MenuItem zoomInMenuItem;
     
     @FXML private MenuItem zoomOutMenuItem;
-    
 
     @FXML private MenuItem nextMajorMenuItem;
     
@@ -641,7 +641,7 @@ public class PuzzledController implements Initializable {
                     this.dirtyFileProperty, this.filenameProperty));
 //          
             //binds to the next ClueNumber string property, but adds ->
-            nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(() -> this.getLogicProblem().getNumberedClueList().
+            nextClueNumberMenuButton.textProperty().bind(Bindings.createStringBinding(() -> this.getLogicProblem().getNumberedClueList().
                             getNextClueNumber().toString()+" ->",this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
             
             
@@ -653,7 +653,8 @@ public class PuzzledController implements Initializable {
                         return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
                         this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber());
                     }
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                    //both objects are necessary because we need to test a match with the nextClueNumber
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(), 
                 this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
             
             nextMajorMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
@@ -663,7 +664,7 @@ public class PuzzledController implements Initializable {
                         return "Change to " + 
                         this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber();
                     }
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(), 
                 this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
             
             nextMinorMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
@@ -673,7 +674,9 @@ public class PuzzledController implements Initializable {
                         return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
                         this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber());
                     }
+                    //both objects are necessary because we need to test a match with the nextClueNumber
                 }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty(), 
                 this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));       
             nextMinorMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
                     if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
@@ -682,7 +685,7 @@ public class PuzzledController implements Initializable {
                         return "Change to " + 
                         this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber();
                     }
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(), 
                 this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
             
             nextSubMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
@@ -690,8 +693,9 @@ public class PuzzledController implements Initializable {
                         return true; //disable menu item when there are no clues
                     } else {
                         return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
-                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber());
+                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextSubClueNumber());
                     }
+                    //both objects are necessary because we need to test a match with the nextClueNumber
                 }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
                 this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));        
             nextSubMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
@@ -701,7 +705,7 @@ public class PuzzledController implements Initializable {
                         return "Change to " + 
                         this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextSubClueNumber();
                     }
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(), 
                 this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
             //clues have already been added to the problem and parsed when loading the file
             //this is only to draw the glyph
