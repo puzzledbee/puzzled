@@ -76,4 +76,14 @@ public class ClueNumber {
 //    public String getClueNumberString () {
 //        return Integer.toString(intMajor) + "." + Integer.toString(intMinor) + "." + Integer.toString(intSub);
 //    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (other == null) return false;
+        if (this.getClass() != other.getClass()) return false;
+        ClueNumber otherClue = (ClueNumber)other;
+        return (this.getMajor() == otherClue.getMajor() && this.getMinor() == otherClue.getMinor() && this.getSub() == otherClue.getSub());
+    }
+    
 }

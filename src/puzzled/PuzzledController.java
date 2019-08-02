@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -164,6 +165,13 @@ public class PuzzledController implements Initializable {
     
     @FXML private MenuItem zoomOutMenuItem;
     
+
+    @FXML private MenuItem nextMajorMenuItem;
+    
+    @FXML private MenuItem nextMinorMenuItem;
+    
+    @FXML private MenuItem nextSubMenuItem;
+    
     @FXML private ToolBar toolbar;
     
     @FXML private CheckMenuItem hideToolbarMenuItem;
@@ -228,7 +236,7 @@ public class PuzzledController implements Initializable {
     @FXML
     private void handleAutomaticProcessingAction(ActionEvent event) {
         // Button was clicked, do something...
-        //
+        System.out.println("automatic processing toggled");
     }
     
     @FXML
@@ -407,7 +415,26 @@ public class PuzzledController implements Initializable {
      }
     
     @FXML
-    private void quit(ActionEvent event) {
+    private void nextMajorAction(ActionEvent event) {
+        this.getLogicProblem().getNumberedClueList().setNextClueNumber(
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber());
+    }
+
+    @FXML
+    private void nextMinorAction(ActionEvent event) {
+        this.getLogicProblem().getNumberedClueList().setNextClueNumber(
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber());
+    }
+
+    @FXML
+    private void nextSubAction(ActionEvent event) {
+        this.getLogicProblem().getNumberedClueList().setNextClueNumber(
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextSubClueNumber());
+
+    }
+    
+    @FXML
+    private void quitAction(ActionEvent event) {
         //make sure logicProblem is not dirty!
         Platform.exit();
     }
@@ -426,24 +453,28 @@ public class PuzzledController implements Initializable {
         
         this.dirtyLogicProperty.addListener(logicChangeListener);
         
-        clueText.disableProperty().bind(logicProblemProperty.isNull());
-        addClueButton.disableProperty().bind(logicProblemProperty.isNull().or(clueText.textProperty().isEmpty()));
-        automaticProcessingMenuItem.disableProperty().bind(logicProblemProperty.isNull());
+        clueText.disableProperty().bind(this.logicProblemProperty.isNull());
+        addClueButton.disableProperty().bind(this.logicProblemProperty.isNull().or(clueText.textProperty().isEmpty()));
+        automaticProcessingMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         saveMenuItem.disableProperty().bind(Bindings.or(Bindings.and(this.logicProblemProperty.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
-        saveAsMenuItem.disableProperty().bind(Bindings.and(logicProblemProperty.isNull(),this.dirtyFileProperty.not()));
-        loadCluesMenuItem.disableProperty().bind(logicProblemProperty.isNull());
+        saveAsMenuItem.disableProperty().bind(Bindings.and(this.logicProblemProperty.isNull(),this.dirtyFileProperty.not()));
+        loadCluesMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         saveButton.disableProperty().bind(Bindings.or(Bindings.and(this.logicProblemProperty.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
-        propertiesMenuItem.disableProperty().bind(logicProblemProperty.isNull());
-        printMenuItem.disableProperty().bind(logicProblemProperty.isNull());
-        toolbar.managedProperty().bind(hideToolbarMenuItem.selectedProperty().not());
+        propertiesMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
+        printMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
+        toolbar.managedProperty().bind(this.hideToolbarMenuItem.selectedProperty().not());
         
-        clueEngineVBox.managedProperty().bind(hideClueEngineMenuItem.selectedProperty().not());
-        clueEngineVBox.visibleProperty().bind(hideClueEngineMenuItem.selectedProperty().not());
+        clueEngineVBox.managedProperty().bind(this.hideClueEngineMenuItem.selectedProperty().not());
+        clueEngineVBox.visibleProperty().bind(this.hideClueEngineMenuItem.selectedProperty().not());
         
-        zoomInMenuItem.disableProperty().bind(Bindings.or(logicProblemProperty.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
-        zoomOutMenuItem.disableProperty().bind(Bindings.or(logicProblemProperty.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
-        zoomInButton.disableProperty().bind(Bindings.or(logicProblemProperty.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
-        zoomOutButton.disableProperty().bind(Bindings.or(logicProblemProperty.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
+        zoomInMenuItem.disableProperty().bind(Bindings.or(this.logicProblemProperty.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
+        zoomOutMenuItem.disableProperty().bind(Bindings.or(this.logicProblemProperty.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
+        zoomInButton.disableProperty().bind(Bindings.or(this.logicProblemProperty.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
+        zoomOutButton.disableProperty().bind(Bindings.or(this.logicProblemProperty.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
+        
+        nextMajorMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
+        nextMinorMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
+        nextSubMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         
         appTitleProperty.bind(Bindings.createStringBinding(() -> Puzzled.banner +" v."+Puzzled.version));
          
@@ -531,6 +562,7 @@ public class PuzzledController implements Initializable {
                             //only load clues when there is a non-null LogicProblem
                             this.logicProblemProperty.set(PuzzledFileIO.loadProblem(Paths.get(file.toURI()).toString()));
                             notify(PuzzledController.WarningType.SUCCESS, "Problem file "+file.getName()+" loaded successfully!");
+                            this.initializeProblem();
                         } catch (Exception ex) {
                             notify(PuzzledController.WarningType.WARNING, "Unable to load problem file "+file.getName()+ "!");
                             ex.printStackTrace();
@@ -550,7 +582,7 @@ public class PuzzledController implements Initializable {
 
             event.setDropCompleted(true);
             event.consume();
-            
+           
         });
     }
 
@@ -603,16 +635,74 @@ public class PuzzledController implements Initializable {
             
             //nextClueNumber.textProperty().bind(logicProblem.get().getNextClueNumber().concat("->"));
             
-            this.appTitleProperty.bind(Bindings.createStringBinding(() -> logicProblemProperty.get().dirtyFileProperty().get()?
-                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblemProperty.get().getTitle()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+") *"):
-                    Puzzled.banner +" v."+Puzzled.version+" -  "+logicProblemProperty.get().getTitle()+(this.filenameProperty.getValue()==null?"": "   ("+this.filenameProperty.get()+")"),
+            this.appTitleProperty.bind(Bindings.createStringBinding(() -> this.getLogicProblem().dirtyFileProperty().get()?
+                    Puzzled.banner +" v."+Puzzled.version+" -  "+this.getLogicProblem().getTitle()+(this.filenameProperty.get()==null?"": "   ("+this.filenameProperty.get()+") *"):
+                    Puzzled.banner +" v."+Puzzled.version+" -  "+this.getLogicProblem().getTitle()+(this.filenameProperty.get()==null?"": "   ("+this.filenameProperty.get()+")"),
                     this.dirtyFileProperty, this.filenameProperty));
 //          
             //binds to the next ClueNumber string property, but adds ->
-            nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(() -> logicProblemProperty.get().getNumberedClueList().
-                            getNextClueNumber().toString()+" ->",logicProblemProperty.get().getNumberedClueList().nextClueNumberProperty()));
+            nextClueNumberLabel.textProperty().bind(Bindings.createStringBinding(() -> this.getLogicProblem().getNumberedClueList().
+                            getNextClueNumber().toString()+" ->",this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
             
-
+            
+            //ClueNumber label context menu bindings (disable properties and text properties)
+            nextMajorMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
+                        return true; //disable menu item when there are no clues
+                    } else {
+                        return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
+                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber());
+                    }
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
+            
+            nextMajorMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
+                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
+                        return "Change to next major";
+                    } else {
+                        return "Change to " + 
+                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber();
+                    }
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
+            
+            nextMinorMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
+                        return true; //disable menu item when there are no clues
+                    } else {
+                        return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
+                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber());
+                    }
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));       
+            nextMinorMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
+                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
+                        return "Change to next minor";
+                    } else {
+                        return "Change to " + 
+                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber();
+                    }
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
+            
+            nextSubMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
+                        return true; //disable menu item when there are no clues
+                    } else {
+                        return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
+                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber());
+                    }
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));        
+            nextSubMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
+                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
+                        return "Change to next sub";
+                    } else {
+                        return "Change to " + 
+                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextSubClueNumber();
+                    }
+                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
+                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
             //clues have already been added to the problem and parsed when loading the file
             //this is only to draw the glyph
             //for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));

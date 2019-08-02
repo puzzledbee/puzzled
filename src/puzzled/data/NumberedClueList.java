@@ -23,7 +23,7 @@ public class NumberedClueList {
     private List<Clue> clueList = new ArrayList<Clue>();
     //is it necessary to have both the ArrayList and the observable list
 //    or can that be collapsed like members and properties are collapsed elsewhere
-    private ObservableList<Clue> observableClueList; 
+    private ObservableList<Clue> observableClueList;
     
     public NumberedClueList(){
         //wrap clue list into an Observable object for the TableView
@@ -66,9 +66,18 @@ public class NumberedClueList {
         return this.nextClueNumberProperty.get();
     }
     
-//    public void setNextClueNumber(ClueNumber arg_nextClueNumber) {
-//        this.nextClueNumberProperty.set(arg_nextClueNumber);
-//    }
+    public void setNextClueNumber(ClueNumber arg_nextClueNumber) {
+//        System.out.println("action taken");
+        this.nextClueNumberProperty.set(arg_nextClueNumber);
+    }
+    
+    public ObjectProperty<ClueNumber> lastClueNumberProperty() {
+        return (this.clueList.isEmpty()?null:this.clueList.get(clueList.size()-1).clueNumberProperty());
+    }
+    
+    public ClueNumber getLastClueNumber() {
+        return (this.clueList.isEmpty()?null:lastClueNumberProperty().get());
+    }
     
     //for testing assertions
     public List<Clue> getClueList() {
