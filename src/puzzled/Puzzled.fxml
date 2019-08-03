@@ -4,11 +4,10 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
-<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -182,8 +181,8 @@
                   <Separator prefWidth="200.0" style="-fx-border-color: FF0000;" />
                   <FlowPane alignment="CENTER" hgap="5.0" prefHeight="45.0" prefWidth="600.0">
                      <children>
-                        <Label alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="83.0" text="Add clue:" textAlignment="RIGHT" />
-                        <MenuButton fx:id="nextClueNumberMenuButton" alignment="CENTER_LEFT" prefHeight="18.0" text="1.1.1 -&gt;" textAlignment="LEFT" textFill="#1b2ab5" >
+                        <Label alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="83.0" style="-fx-font-weight: bold;" text="Add clue:" textAlignment="RIGHT" />
+                        <MenuButton fx:id="nextClueNumberMenuButton" alignment="CENTER_LEFT" prefHeight="18.0" text="1.1.1 -&gt;" textAlignment="LEFT" textFill="#1b2ab5">
                                 <items>
                                     <MenuItem fx:id="nextMajorMenuItem" mnemonicParsing="false" onAction="#nextMajorAction" text="Change to next major" />
                                     <MenuItem fx:id="nextMinorMenuItem" mnemonicParsing="false" onAction="#nextMinorAction" text="Change to next minor" />
