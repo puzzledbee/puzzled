@@ -144,6 +144,13 @@
     -fx-background-color: blueviolet;
     -fx-text-fill: white;
 }
+.glyphbox .virtual-flow .label .tooltip {
+    -fx-background-color: white;
+    -fx-text-fill: blueviolet;
+    -fx-border-color: blueviolet;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
 
 
 /*.glyphbox .label {

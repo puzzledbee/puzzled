@@ -79,6 +79,10 @@ public class Clue extends Dependable implements Comparable<Clue> {
     public String getClueText(){
         return this.clueTextProperty.get();
     }
+
+    public String displayClue(){
+        return this.getClueNumber().toString() + " -> " + this.clueTextProperty.get();
+    }
     
     public void setClueText(String arg_text) {
         clueTextProperty.set(arg_text);
@@ -143,7 +147,7 @@ public class Clue extends Dependable implements Comparable<Clue> {
         List<StringProperty> dependencies = new ArrayList<>();
         filteredlist.forEach(clue -> dependencies.add(clue.clueTextProperty()));
         
-        return Bindings.createStringBinding( () ->  filteredlist.stream().map(e -> e.getClueText()).collect(Collectors.joining("\n"))
+        return Bindings.createStringBinding( () ->  filteredlist.stream().map(e -> e.displayClue()).collect(Collectors.joining("\n"))
     , filteredlist,FXCollections.observableArrayList(dependencies));
     }
     
