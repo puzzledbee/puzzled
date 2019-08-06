@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -53,6 +54,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -86,10 +88,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.NotificationPane;
+import org.fxmisc.flowless.Cell;
+import org.fxmisc.flowless.VirtualFlow;
 import puzzled.UI.Grid;
 import puzzled.UI.SlideOutPane;
 import puzzled.data.Category;
 import puzzled.data.Clue;
+import static puzzled.data.Clue.labelGenerator;
+import puzzled.data.DistinctMappingList;
 import puzzled.data.Item;
 import puzzled.data.LogicProblem;
 import puzzled.processor.Parser;
@@ -597,124 +603,144 @@ public class PuzzledController implements Initializable {
         
         if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
             logicProblemProperty.get().getNumberedClueList().clear();
-            this.clueGlyphBox.getChildren().clear();
+//            this.clueGlyphBox.getChildren().clear();
             
             this.initializeProblem();
             notify(WarningType.SUCCESS, "Logic problem reset successfully!");
         }
     }
     
+    //setup or re-set bindings once problem is loaded
     private void initializeProblem(){
         
-            this.getLogicProblem().initializeRelationshipTable();
-            logicProblemGrid = new Grid(this,logicProblemProperty.get());
-            mainGroup.getChildren().clear();
-            mainGroup.getChildren().add(logicProblemGrid);
-            
-            clueGlyphBox.getChildren().clear();
-            
-            //setup data source for the Clue Table ?!
+
+        this.getLogicProblem().initializeRelationshipTable();
+        logicProblemGrid = new Grid(this,logicProblemProperty.get());
+        mainGroup.getChildren().clear();
+        mainGroup.getChildren().add(logicProblemGrid);
+        this.clues = this.logicProblemProperty.get().getNumberedClueList().getObservableClueList();
+        
+//            clueGlyphBox.getChildren().clear();
+
+        //setup data source for the Clue Table ?!
 //            clues = FXCollections.observableList(logicProblem.get().getNumberedClueList());
-            clueTabController.setData(logicProblemProperty.get().getNumberedClueList().getObservableClueList());
-            
-            //bind labels layer visibility to checkMenuItem
-            logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
-            //bind relationships layer visibility to checkMenuItem        
-            logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
-            
-            this.dirtyLogicProperty.bind(logicProblemProperty.get().dirtyLogicProperty());
-            this.dirtyFileProperty.bind(logicProblemProperty.get().dirtyFileProperty());
-            this.scaleProperty.bind(logicProblemProperty.get().scaleProperty());
+        clueTabController.setData(this.clues);
+
+        //bind labels layer visibility to checkMenuItem
+        logicProblemGrid.getChildren().get(1).visibleProperty().bind(hideLabelsMenuItem.selectedProperty().not());
+        //bind relationships layer visibility to checkMenuItem        
+        logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
+
+        this.dirtyLogicProperty.bind(logicProblemProperty.get().dirtyLogicProperty());
+        this.dirtyFileProperty.bind(logicProblemProperty.get().dirtyFileProperty());
+        this.scaleProperty.bind(logicProblemProperty.get().scaleProperty());
 //            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
 //            soPane.textProperty().bind(logicProblem.get().problemTextProperty());
-            soPane.textProperty().bindBidirectional(logicProblemProperty.get().problemTextProperty());
+        soPane.textProperty().bindBidirectional(logicProblemProperty.get().problemTextProperty());
 
-            
-            //logicProblem.get().getClues().stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).count()
-            //                    .stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).collect(collectingAndThen(toList(), l -> FXCollections.observableArrayList(l)))
-            
-            //nextClueNumber.textProperty().bind(logicProblem.get().getNextClueNumber().concat("->"));
-            
-            this.appTitleProperty.bind(Bindings.createStringBinding(() -> this.getLogicProblem().dirtyFileProperty().get()?
-                    Puzzled.banner +" v."+Puzzled.version+" -  "+this.getLogicProblem().getTitle()+(this.filenameProperty.get()==null?"": "   ("+this.filenameProperty.get()+") *"):
-                    Puzzled.banner +" v."+Puzzled.version+" -  "+this.getLogicProblem().getTitle()+(this.filenameProperty.get()==null?"": "   ("+this.filenameProperty.get()+")"),
-                    this.dirtyFileProperty, this.filenameProperty));
+
+        //logicProblem.get().getClues().stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).count()
+        //                    .stream().filter(e -> e.getType() != Clue.ClueType.CONSTRAINT).collect(collectingAndThen(toList(), l -> FXCollections.observableArrayList(l)))
+
+        //nextClueNumber.textProperty().bind(logicProblem.get().getNextClueNumber().concat("->"));
+
+        this.appTitleProperty.bind(Bindings.createStringBinding(() -> this.getLogicProblem().dirtyFileProperty().get()?
+                Puzzled.banner +" v."+Puzzled.version+" -  "+this.getLogicProblem().getTitle()+(this.filenameProperty.get()==null?"": "   ("+this.filenameProperty.get()+") *"):
+                Puzzled.banner +" v."+Puzzled.version+" -  "+this.getLogicProblem().getTitle()+(this.filenameProperty.get()==null?"": "   ("+this.filenameProperty.get()+")"),
+                this.dirtyFileProperty, this.filenameProperty));
 //          
-            //binds to the next ClueNumber string property, but adds ->
-            nextClueNumberMenuButton.textProperty().bind(Bindings.createStringBinding(() -> this.getLogicProblem().getNumberedClueList().
-                            getNextClueNumber().toString()+" ->",this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
-            
-            
-            //ClueNumber label context menu bindings (disable properties and text properties)
-            nextMajorMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
-                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
-                        return true; //disable menu item when there are no clues
-                    } else {
-                        return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
-                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber());
-                    }
-                    //both objects are necessary because we need to test a match with the nextClueNumber
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(), 
+        //binds to the next ClueNumber string property, but adds ->
+        nextClueNumberMenuButton.textProperty().bind(Bindings.createStringBinding(() -> 
+                this.getLogicProblem().getNumberedClueList().
+                        getNextClueNumber().toString()+" ->",
                 this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
-            
-            nextMajorMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
-                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
-                        return "Change to next major";
-                    } else {
-                        return "Change to " + 
-                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber();
-                    }
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(), 
-                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
-            
-            nextMinorMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
-                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
-                        return true; //disable menu item when there are no clues
-                    } else {
-                        return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
-                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber());
-                    }
-                    //both objects are necessary because we need to test a match with the nextClueNumber
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
-                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty(), 
-                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));       
-            nextMinorMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
-                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
-                        return "Change to next minor";
-                    } else {
-                        return "Change to " + 
-                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber();
-                    }
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(), 
-                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
-            
-            nextSubMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
-                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
-                        return true; //disable menu item when there are no clues
-                    } else {
-                        return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
-                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextSubClueNumber());
-                    }
-                    //both objects are necessary because we need to test a match with the nextClueNumber
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(),
-                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));        
-            nextSubMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
-                    if (this.getLogicProblem().getNumberedClueList().getObservableClueList().isEmpty()) {
-                        return "Change to next sub";
-                    } else {
-                        return "Change to " + 
-                        this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextSubClueNumber();
-                    }
-                }, this.getLogicProblem().getNumberedClueList().getObservableClueList(), 
-                this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
-            //clues have already been added to the problem and parsed when loading the file
-            //this is only to draw the glyph
-            //for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
+
+
+        //ClueNumber label context menu bindings (disable properties and text properties)
+        nextMajorMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+                if (this.clues.isEmpty()) {
+                    return true; //disable menu item when there are no clues
+                } else {
+                    return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber());
+                }
+                //both objects are necessary because we need to test a match with the nextClueNumber
+            }, this.clues, 
+            this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
+
+        nextMajorMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
+                if (this.clues.isEmpty()) {
+                    return "Change to next major";
+                } else {
+                    return "Change to " + 
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMajorClueNumber();
+                }
+            }, this.clues, 
+            this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
+
+        nextMinorMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+                if (this.clues.isEmpty()) {
+                    return true; //disable menu item when there are no clues
+                } else {
+                    return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber());
+                }
+                //both objects are necessary because we need to test a match with the nextClueNumber
+            }, this.clues,
+            this.getLogicProblem().getNumberedClueList().nextClueNumberProperty(), 
+            this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));       
+        nextMinorMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
+                if (this.clues.isEmpty()) {
+                    return "Change to next minor";
+                } else {
+                    return "Change to " + 
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextMinorClueNumber();
+                }
+            }, this.clues, 
+            this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
+
+        nextSubMenuItem.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+                if (this.clues.isEmpty()) {
+                    return true; //disable menu item when there are no clues
+                } else {
+                    return this.getLogicProblem().getNumberedClueList().getNextClueNumber().equals(
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextSubClueNumber());
+                }
+                //both objects are necessary because we need to test a match with the nextClueNumber
+            }, this.clues,
+            this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));        
+        nextSubMenuItem.textProperty().bind(Bindings.createStringBinding(() -> {
+                if (this.clues.isEmpty()) {
+                    return "Change to next sub";
+                } else {
+                    return "Change to " + 
+                    this.getLogicProblem().getNumberedClueList().getLastClueNumber().getNextSubClueNumber();
+                }
+            }, this.clues, 
+            this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
+        //clues have already been added to the problem and parsed when loading the file
+        //this is only to draw the glyph
+        //for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
 //                Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
 //                Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
 //                label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
 //                
 //                label.getStyleClass().add("clue_"+clue.getType());
+
+        Function<Clue, Integer> cluemapper = c -> c.clueNumberProperty().get().getMajor();
+        ObservableList<Integer> mappedcluemajors = new DistinctMappingList<>(this.clues, cluemapper);
+        //https://stackoverflow.com/questions/43890528/observablelist-bind-content-with-elements-conversion
+
+//        ListView<Integer> cluemajorlist = new ListView<>(mappedcluemajors.sorted());
+
+        //https://github.com/FXMisc/Flowless
+        VirtualFlow<Integer,Cell<Integer,Label>> vflow = 
+                    VirtualFlow.createHorizontal(
+                            mappedcluemajors.sorted(),
+                            element -> org.fxmisc.flowless.Cell.wrapNode(labelGenerator(this.clues,element)),
+                            VirtualFlow.Gravity.REAR);
+
+        clueGlyphBox.getChildren().addAll(vflow);
     }
     
     private Label generateClueGlyph(Clue clue){

@@ -15,7 +15,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author https://github.com/bepuzzled
  */
-public class ClueNumber {
+public class ClueNumber implements Comparable<ClueNumber>{
     //the following need to be properties for the String binding to work
     private IntegerProperty majorProperty = new SimpleIntegerProperty();
     private IntegerProperty minorProperty = new SimpleIntegerProperty();
@@ -86,4 +86,14 @@ public class ClueNumber {
         return (this.getMajor() == otherClue.getMajor() && this.getMinor() == otherClue.getMinor() && this.getSub() == otherClue.getSub());
     }
     
+    @Override
+    public int compareTo(ClueNumber anotherNumber) {
+        if (this.getMajor() != anotherNumber.getMajor()) {
+            return this.getMajor() - anotherNumber.getMajor();
+        } else if (this.getMinor() != anotherNumber.getMinor()) {
+            return this.getMinor() - anotherNumber.getMinor();
+        } else {
+            return this.getSub() - anotherNumber.getSub();
+        }
+    }
 }

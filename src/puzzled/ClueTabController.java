@@ -8,6 +8,7 @@ package puzzled;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -45,7 +46,6 @@ public class ClueTabController implements Initializable {
         clueNumberColumn.setCellValueFactory(cellData -> cellData.getValue().getClueNumber().clueNumberStringProperty());
         clueTextColumn.setCellValueFactory(cellData -> cellData.getValue().clueTextProperty());
         
-        
 //        clueNumberColumn.setCellValueFactory(new PairKeyFactory());
 //        clueTextColum.setCellValueFactory(new PairValueFactory());
 
@@ -70,7 +70,9 @@ public class ClueTabController implements Initializable {
     
     //can't set that during initialize
     public void setData(ObservableList<Clue> clues) {
-        clueTableView.setItems(clues);
+        SortedList<Clue> sortedclues = new SortedList<>(clues.sorted());
+        clueTableView.setItems(sortedclues);
+        sortedclues.comparatorProperty().bind(clueTableView.comparatorProperty()); //lets users change the sort direction
     }
     
     public void refreshTable() {

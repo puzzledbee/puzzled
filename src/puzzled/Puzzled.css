@@ -105,7 +105,48 @@
     -fx-font-weight: bold;
 }
 
-.glyphbox .label {
+
+.glyphbox .virtual-flow {
+/*    -fx-preferred-width: 34px;
+    -fx-max-width: 34px;
+    -fx-min-width: 34px;*/
+    /*-fx-padding: 0 0 0 0;*/
+    -fx-margins: 4 4 4 4;
+    /*-fx-orientation:horizontal;*/
+    /*-fx-alignment: CENTER_RIGHT;*/
+    -fx-min-height: 30px;
+    -fx-preferred-height: 30px;
+    -fx-max-height: 30px;
+    -fx-background-color: transparent;
+    /*-fx-padding: 0 100 0 100;*/
+}
+
+
+.glyphbox .virtual-flow .label {
+    -fx-background-radius: 2em;
+    -fx-border-radius: 2em;
+    -fx-border-color: blueviolet;
+    
+                /*top right bottom left*/
+    -fx-padding: 0 10 0 10;
+    /*-fx-margins: 4 40 4 4;*/
+    
+    -fx-preferred-width: 34px;
+    -fx-min-width: 34px;
+    -fx-max-width: 34px;
+    -fx-font-weight: bold;
+    -fx-background-color: white;
+    -fx-text-fill: blueviolet;
+    -fx-alignment:CENTER;
+}
+
+.glyphbox .virtual-flow .label:hover {
+    -fx-background-color: blueviolet;
+    -fx-text-fill: white;
+}
+
+
+/*.glyphbox .label {
     -fx-background-radius: 3em;
     -fx-border-radius: 3em;
     -fx-min-width: 34px;
@@ -120,7 +161,7 @@
 .glyphbox .label:hover {
     -fx-background-color: blueviolet;
     -fx-text-fill: white;
-}
+}*/
 
 .clue_NORMAL {
     -fx-border-color: blueviolet;

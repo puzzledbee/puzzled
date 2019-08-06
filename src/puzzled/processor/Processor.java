@@ -31,7 +31,7 @@ public class Processor {
 //        System.out.println("process invoked "+automaticProcessingMenuItem.isSelected());
             
 //          System.out.println("entering processingFlag loop");
-            while (logicProblem.isLogicDirty()){
+//            while (logicProblem.isLogicDirty()){
 //                System.out.println("executing processingFlag loop");
                 logicProblem.setDirtyLogic(false);
                 
@@ -44,7 +44,7 @@ public class Processor {
                 } catch (SuperfluousRelationshipException | RelationshipConflictException e) {
                     controller.notify(PuzzledController.WarningType.WARNING, e.toString());
                 }
-            }
+//            }
             
         }
             
