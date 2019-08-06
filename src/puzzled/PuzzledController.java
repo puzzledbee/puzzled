@@ -73,6 +73,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
@@ -739,8 +740,9 @@ public class PuzzledController implements Initializable {
                             mappedcluemajors.sorted(),
                             element -> org.fxmisc.flowless.Cell.wrapNode(labelGenerator(this.clues,element)),
                             VirtualFlow.Gravity.REAR);
-
+//        vflow.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE );
         clueGlyphBox.getChildren().addAll(vflow);
+        HBox.setHgrow(vflow, Priority.ALWAYS);
     }
     
     private Label generateClueGlyph(Clue clue){
