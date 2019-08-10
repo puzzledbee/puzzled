@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -48,16 +47,16 @@ public class LogicProblem {
     // utility members
     //visual scale
     private DoubleProperty scaleProperty = new SimpleDoubleProperty(1);
+    
     private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(false);
     private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty(false);
     
-    //necessary for unmarshalling
+    //necessary for unmarshalling?
     public LogicProblem(){
     }
     
-    
     public LogicProblem(String ... problemInfo){
-        System.out.println("constructor invoked");
+//        System.out.println("constructor invoked");
         this.titleProperty.set(problemInfo[0].trim()); //trim needed for loading from .lps
         if (problemInfo.length>1) this.problemSource = problemInfo[1].trim();
         if (problemInfo.length>2) this.notes = problemInfo[2].trim();
@@ -65,7 +64,7 @@ public class LogicProblem {
 //        numItems = item_number;
         categoriesList = new ArrayList<Category>();
         
-        this.dirtyLogicProperty.addListener( (e, oldvalue, newvalue) -> System.out.println("change triggered in LogicProblem"));
+//        this.dirtyLogicProperty.addListener( (e, oldvalue, newvalue) -> System.out.println("change triggered in LogicProblem"));
         //categories.add("Age");
         //categories.add("test");
     }
@@ -142,7 +141,6 @@ public class LogicProblem {
         relationshipTable = new HashMap<ItemPair,Relationship>();
         
         ItemPair pair;
-        
         //fix parent references
         for (Category cat : getCategoriesList()){
             cat.setParent(this);
@@ -174,7 +172,6 @@ public class LogicProblem {
                     }
                 }
             }
-            
         }
         
 //        testSet.add(this.getCategories().get(4).getItems().get(1));
@@ -255,9 +252,9 @@ public class LogicProblem {
         //return constraint;
     }
     
-    @XmlTransient
+//    @XmlTransient
     public void setDirtyLogic(boolean dirtyness){
-        System.out.println("logic problem logic set to dirty "+dirtyness);
+        System.out.println("logic problem dirtyLogic set to: "+dirtyness);
         this.dirtyLogicProperty.set(dirtyness);
     }
     public boolean isLogicDirty(){

@@ -21,7 +21,7 @@ import javafx.stage.Stage;
  */
 public class Puzzled extends Application {
     public static final String banner = "Puzzled! - Logic problem solver";
-    public static final String version = "2.0.3";
+    public static final String version = "2.1.0";
     
     private static final Logger fLogger =
         Logger.getLogger(Puzzled.class.getPackage().getName());
@@ -48,6 +48,8 @@ public class Puzzled extends Application {
         mainController.setMainApp(this);
         mainController.setupTitleBinding(primaryStage.titleProperty());
         
+        //save application preferences, check for fileDirty
+        primaryStage.setOnCloseRequest(e -> mainController.quitProcedure());
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setMaximized(true);
@@ -61,6 +63,8 @@ public class Puzzled extends Application {
         //set application icon
         //the alternative method primaryStage.getIcons().add(new Image("file:icon.png")); does not work
         primaryStage.getIcons().add(new Image(Puzzled.class.getResourceAsStream("/icons/puzzle_32.png")));
+        
+        
         
     }
     

@@ -10,6 +10,10 @@
     -fx-graphic: url("/icons/toolbar/save.png");
 }
 
+#btn_process {          
+    -fx-graphic: url("/icons/toolbar/process.png");
+}
+
 #btn_undo {
     -fx-graphic: url("/icons/toolbar/undo.png");
 }
@@ -151,24 +155,6 @@
     -fx-border-radius: 10;
     -fx-background-radius: 10;
 }
-
-
-/*.glyphbox .label {
-    -fx-background-radius: 3em;
-    -fx-border-radius: 3em;
-    -fx-min-width: 34px;
-    -fx-min-height: 34px;
-    -fx-max-width: 34px;
-    -fx-max-height: 34px;
-    -fx-font-weight: bold;
-    -fx-text-fill: blueviolet;
-    -fx-alignment:CENTER;
-}
-
-.glyphbox .label:hover {
-    -fx-background-color: blueviolet;
-    -fx-text-fill: white;
-}*/
 
 .clue_NORMAL {
     -fx-border-color: blueviolet;

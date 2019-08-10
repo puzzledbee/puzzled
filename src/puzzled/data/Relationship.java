@@ -5,26 +5,22 @@
  */
 package puzzled.data;
 
-import java.util.Optional;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import puzzled.Puzzled;
 import puzzled.exceptions.RelationshipConflictException;
-import puzzled.exceptions.SuperfluousRelationshipException;
 
 /**
  *
@@ -42,6 +38,7 @@ public class Relationship extends Dependable {
     
     private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<ValueType>(this, "value" , ValueType.VALUE_UNKNOWN);
     private ObjectProperty<LogicType> logicTypeProperty = new SimpleObjectProperty<LogicType>(this, "value" , LogicType.CONSTRAINT);
+    private BooleanProperty appliedProperty = new SimpleBooleanProperty(true);
     
     private DoubleProperty centerXProperty = new SimpleDoubleProperty(); //--> should we move this into GridCell or Dependable?
     private DoubleProperty centerYPropery = new SimpleDoubleProperty();
@@ -68,8 +65,8 @@ public class Relationship extends Dependable {
         itemPair = arg_pair;
 //        observablePredecessorSet = FXCollections.observableSet(this.observablePredecessors());
         valueProperty.addListener( (e,oldValue,newValue) -> {
-//            fLogger.info("Relationship valueProperty chansged to: " + newValue);
-            logicProblem.setDirtyLogic(true);
+//            fLogger.info("Relationship valueProperty for "+arg_pair+" changed to: " + newValue);
+            if (newValue != Relationship.ValueType.VALUE_UNKNOWN) logicProblem.setDirtyLogic(true);
                 });
         
         explainProperty().addListener((e,oldValue,newValue) -> {
@@ -119,7 +116,6 @@ public class Relationship extends Dependable {
     public ItemPair getItemPair() {
         return this.itemPair;
     }
-
     
     public ValueType getValue(){
         return valueProperty.get();
@@ -129,23 +125,29 @@ public class Relationship extends Dependable {
         return valueProperty;
     }
     
-    public void setValue(ValueType value){
+    public void setValue(ValueType value, boolean apply){
         valueProperty.set(value);
+        this.appliedProperty.set(apply);
     }
         
-    public void setValue(ValueType value, LogicType arg_logicType, Dependable ... arg_predecessors) throws SuperfluousRelationshipException, RelationshipConflictException {
+    public void setValue(ValueType value, LogicType arg_logicType, boolean apply, Dependable ... arg_predecessors) 
+            throws RelationshipConflictException {
         //is this relationship previously unassigned? then there are no issues, it can just take the new value
         if (this.getValue()==ValueType.VALUE_UNKNOWN) {
-            this.setValue(value);
+            this.setValue(value, apply);
             this.setLogicType(arg_logicType);
+            
 
             //adjusting the upstream dependable objects (predecessors)
-            System.out.println("adding a total of  " + arg_predecessors.length + " predecessors to " + this.toString());
+//            System.out.println("adding a total of  " + arg_predecessors.length + " predecessors to " + this.toString());
             for (Dependable predecessor : arg_predecessors) {
 
                 this.addPredecessor(predecessor);
                 predecessor.addSuccessor(this);
             }
+            //changing this flag is the sole responsibility of this method
+            //it signifies the Processor.process static method needs to run again
+//            logicProblem.dirtyLogicProperty().set(true); //not required a ChangeListener is registered
         } else if (this.getValue()==value) {
             //already set by different logic type
            // if (logicTypeProperty.get() != arg_logicType) throw new SuperfluousRelationshipException(pair,logicTypeProperty.get(),arg_logicType); //investigate up tree
@@ -232,6 +234,20 @@ public class Relationship extends Dependable {
         return this.annotationProperty.get();
     }
 
+    
+    
+    public BooleanProperty appliedProperty() {
+        return this.appliedProperty;
+    }
+    
+    public boolean isApplied() {
+        return this.appliedProperty.get();
+    }
+    
+    public void apply(boolean shown) {
+        this.appliedProperty.set(shown);
+    }
+    
 }
 
 

@@ -78,12 +78,12 @@ public abstract class Dependable {
     
     public void addPredecessor(Dependable predecessor){
         this.observablePredecessors.add(predecessor);
-        System.out.println(">>>>>>predecessor " + predecessor.toString() + " added...");
+//        System.out.println(">>>>>>predecessor " + predecessor.toString() + " added...");
     }
     
     public void addSuccessor(Dependable successor) {
         this.observableSuccessors.add(successor);
-        System.out.println(">>>>>>successor " + successor.toString() + " added...");
+//        System.out.println(">>>>>>successor " + successor.toString() + " added...");
     }
         
     public BooleanProperty explainProperty() {

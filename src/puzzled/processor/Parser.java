@@ -60,8 +60,7 @@ public class Parser {
             logicProblem.getNumberedClueList().addClue(
                     new Clue(nextClueNumber,sentenceList.get(sentenceList.size() -1),Clue.ClueType.NORMAL),nextClueNumber.getNextMajorClueNumber());
         }
-        
-        logicProblem.setDirtyLogic(true);
+//        logicProblem.setDirtyLogic(true);
         
     }
     

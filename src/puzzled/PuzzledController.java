@@ -6,14 +6,8 @@
 package puzzled;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
@@ -24,16 +18,18 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,7 +50,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -83,22 +78,18 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.NotificationPane;
 import org.fxmisc.flowless.Cell;
 import org.fxmisc.flowless.VirtualFlow;
 import puzzled.UI.Grid;
 import puzzled.UI.SlideOutPane;
-import puzzled.data.Category;
 import puzzled.data.Clue;
 import static puzzled.data.Clue.labelGenerator;
 import puzzled.data.DistinctMappingList;
-import puzzled.data.Item;
 import puzzled.data.LogicProblem;
+import puzzled.data.Relationship;
 import puzzled.processor.Parser;
 import puzzled.processor.Processor;
 
@@ -112,6 +103,10 @@ public class PuzzledController implements Initializable {
     private static double maxZoom = 2.3;
     private static double minZoom = 0.4;
     private static int notificationTimer = 3000;
+    private LongProperty pendingRelationshipsCountProperty = new SimpleLongProperty(0);
+    //tracks the number of Relationships discovered by the Processor that have not
+    //yet been set (useful when automatic processing is disabled)
+    
     
     private Puzzled mainApplication;
    
@@ -132,80 +127,46 @@ public class PuzzledController implements Initializable {
     }
 
     @FXML private Parent root;
-    
     @FXML private BorderPane bPane;
-    
     @FXML private TabPane tPane;
-    
-    @FXML private HBox clueGlyphBox;
-    
+    @FXML private HBox clueMajorGlyphBox;
     @FXML private NotificationPane nPane;
-    
     @FXML private Button addClueButton;
-    
     @FXML private TextField clueText;
-
     @FXML private AnchorPane mainGrid;
-
     @FXML private StackPane mainStack;
-    
     @FXML private ScrollPane mainScroll;
-
     @FXML private Group mainGroup;
     
     @FXML private MenuButton nextClueNumberMenuButton;
-    
     @FXML private MenuItem openMenuItem;    
-    
     @FXML private MenuItem loadCluesMenuItem;
-    
     @FXML private MenuItem saveMenuItem;
-    
     @FXML private MenuItem closeMenuItem;
-    
     @FXML private CheckMenuItem automaticProcessingMenuItem;
-    
     @FXML private MenuItem saveAsMenuItem;
-    
     @FXML private MenuItem printMenuItem;
-    
     @FXML private MenuItem zoomInMenuItem;
-    
     @FXML private MenuItem zoomOutMenuItem;
-
     @FXML private MenuItem nextMajorMenuItem;
-    
     @FXML private MenuItem nextMinorMenuItem;
-    
     @FXML private MenuItem nextSubMenuItem;
-    
-    @FXML private ToolBar toolbar;
-    
     @FXML private CheckMenuItem hideToolbarMenuItem;
-    
-    @FXML private Button saveButton;
-
-    @FXML private Button resetButton;
-
-    @FXML private Button undoButton;
-    
-    @FXML private Button zoomOutButton;
-    
-    @FXML private Button zoomInButton;
-    
     @FXML private MenuItem propertiesMenuItem;
-    
     @FXML private CheckMenuItem hideLabelsMenuItem;
-    
     @FXML private CheckMenuItem hideRelationshipsMenuItem;
-    
     @FXML private CheckMenuItem hideClueEngineMenuItem;
-    
+    @FXML private ToolBar toolbar;
+    @FXML private Button saveButton;
+    @FXML private Button resetButton;
+    @FXML private Button undoButton;
+    @FXML private Button processButton;
+    @FXML private Button zoomOutButton;
+    @FXML private Button zoomInButton;    
     @FXML private HiddenSidesPane pane;
 
     //connects with nested controller?
     @FXML private Parent clueTab;
-    
     @FXML private ClueTabController clueTabController; // $embeddedElement+Controller
     
 //    @FXML
@@ -218,22 +179,20 @@ public class PuzzledController implements Initializable {
     
     @FXML private VBox clueEngineVBox;
   
-       
     ObjectProperty<LogicProblem> logicProblemProperty = new SimpleObjectProperty<LogicProblem>();
     DoubleProperty scaleProperty = new SimpleDoubleProperty();
-    private ObservableList<Clue> clues;
+    private ObservableList<Clue> clues; //?
     
     //private HashMap<Pair<Item,Item>,Relationship> relationships;
-    private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty();
+
+    private BooleanProperty dirtyLogicProperty = new SimpleBooleanProperty(); 
     private BooleanProperty dirtyFileProperty = new SimpleBooleanProperty();
-    
-    private LogicChangeListener logicChangeListener = new LogicChangeListener();
     
     private static final Logger fLogger =
     Logger.getLogger(Puzzled.class.getPackage().getName());
     
     Grid logicProblemGrid;
-//    private boolean processingFlag = false; //is this necessary?
+
     //private String appTitle;
     //private String appVersion;
 
@@ -244,11 +203,15 @@ public class PuzzledController implements Initializable {
     private void handleAutomaticProcessingAction(ActionEvent event) {
         // Button was clicked, do something...
         System.out.println("automatic processing toggled");
+        //trigger a dirty logic to force processing
+        if (this.automaticProcessingMenuItem.isSelected() && this.getLogicProblem() != null) {
+            this.getLogicProblem().setDirtyLogic(true); //this should trigger the changeListener
+        }
     }
     
     @FXML
     private void loadMe(ActionEvent event) {
-        String filename = new String("resources/samples/problem47.lps");
+        String filename = new String("resources/samples/problem47.lpd");
         try {
             this.logicProblemProperty.set(PuzzledFileIO.loadProblem(filename));
             this.filenameProperty.set(filename);
@@ -267,7 +230,7 @@ public class PuzzledController implements Initializable {
     }
     
     @FXML
-    private void zoomInButtonAction(ActionEvent event) {
+    private void zoomInAction(ActionEvent event) {
         
         if (logicProblemProperty.get().getScale() <= maxZoom) {
             logicProblemProperty.get().setScale(logicProblemProperty.get().getScale()*zoomFactor);
@@ -276,11 +239,21 @@ public class PuzzledController implements Initializable {
         }
         fLogger.log(Level.INFO, "scale:"+logicProblemProperty.get().getScale());
     }    
-    
+
     @FXML
-    private void zoomOutButtonAction(ActionEvent event) {
-        if (logicProblemProperty.get().getScale() >= minZoom) {
-            logicProblemProperty.get().setScale(logicProblemProperty.get().getScale()/zoomFactor);
+    private void processAction(ActionEvent event) {
+        fLogger.log(Level.INFO, "process action invoked");
+//        Processor.process(this.getLogicProblem(), this.pendingRelationshipsCounterProperty(),this.isAutomaticProcessing(), true);
+        //go through RelationshipTable and apply all
+        for (Relationship rel : this.getLogicProblem().getRelationshipTable().values()) {
+            rel.apply(true);
+        }
+    }    
+
+    @FXML
+    private void zoomOutAction(ActionEvent event) {
+        if (this.getLogicProblem().getScale() >= minZoom) {
+            this.getLogicProblem().setScale(logicProblemProperty.get().getScale()/zoomFactor);
         } else {
             notify(WarningType.WARNING,"Minimum zoom level reached!");
         }
@@ -398,13 +371,16 @@ public class PuzzledController implements Initializable {
         //Clue newClue = new Clue(clueText.getText());
         //Parse first, with modifier, which will add the clue to the list
         Parser.parse(logicProblemProperty.get(), clueText.getText(), event.isControlDown(), event.isAltDown());
+        
+//        this.getLogicProblem().setDirtyFile(true);
         //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this invokes clue parsing
         clueText.clear();
+//        this.getLogicProblem().setDirtyLogic(true);
 //        clueTabController.refreshTable();
 
         //how is the glyph generation going to work if we no longer create the clue here?
         //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
-        logicProblemProperty.get().setDirtyFile(true);
+        
         //notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
     }
     
@@ -415,6 +391,7 @@ public class PuzzledController implements Initializable {
             Parser.parse(logicProblemProperty.get(), clueText.getText(), event.isControlDown(), event.isAltDown());
             //logicProblem.get().getNumberedClueList().addMajorClue(newClue); //this invokes clue parsing
             clueText.clear();
+//            this.getLogicProblem().setDirtyLogic(true);
             //how is the glyph generation going to work if we no longer create the clue here?
             //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
 //            logicProblem.get().setDirtyFile(true);
@@ -442,8 +419,17 @@ public class PuzzledController implements Initializable {
     
     @FXML
     private void quitAction(ActionEvent event) {
+        this.quitProcedure();
+    }
+    
+    //can be called from a menu ActionEvent or a WindowEvent (see Puzzled.java)
+    public void quitProcedure() {
         //make sure logicProblem is not dirty!
-        Platform.exit();
+        //save UI preferences
+        fLogger.log(Level.INFO,"quit action");
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        prefs.putBoolean("AUTOMATIC_PROCESSING",this.automaticProcessingMenuItem.isSelected());
+        Platform.exit(); 
     }
     
     public void notify(WarningType type, String text) {
@@ -458,18 +444,35 @@ public class PuzzledController implements Initializable {
         setupNotifier(); //configures the notification pane slide down
         mainScroll.setPannable(true);
         
-        this.dirtyLogicProperty.addListener(logicChangeListener);
+//        this.dirtyLogicProperty.addListener(logicChangeListener);
+
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        this.automaticProcessingMenuItem.setSelected(prefs.getBoolean("AUTOMATIC_PROCESSING",true));
+        
+//        this.automaticProcessingMenuItem.
         
         clueText.disableProperty().bind(this.logicProblemProperty.isNull());
+        toolbar.managedProperty().bind(this.hideToolbarMenuItem.selectedProperty().not());
+
         addClueButton.disableProperty().bind(this.logicProblemProperty.isNull().or(clueText.textProperty().isEmpty()));
-        automaticProcessingMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
+//        automaticProcessingMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
+        processButton.disableProperty().bind(this.logicProblemProperty.isNull().or(
+                        this.automaticProcessingMenuItem.selectedProperty().or(
+                        this.pendingRelationshipsCountProperty.isEqualTo(0))));
+        Tooltip processButtonTooltip = new Tooltip();
+        processButtonTooltip.textProperty().bind(Bindings.createStringBinding(() -> "There are "+ this.pendingRelationshipsCountProperty.get()+" newly discovered relationships",
+                this.pendingRelationshipsCountProperty));
+        processButton.setTooltip(processButtonTooltip);
+        resetButton.disableProperty().bind(this.logicProblemProperty.isNull());
+        undoButton.disableProperty().bind(this.logicProblemProperty.isNull());
+
+
         saveMenuItem.disableProperty().bind(Bindings.or(Bindings.and(this.logicProblemProperty.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
         saveAsMenuItem.disableProperty().bind(Bindings.and(this.logicProblemProperty.isNull(),this.dirtyFileProperty.not()));
         loadCluesMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         saveButton.disableProperty().bind(Bindings.or(Bindings.and(this.logicProblemProperty.isNull(),this.dirtyFileProperty.not()),this.filenameProperty.isNull()));
         propertiesMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         printMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
-        toolbar.managedProperty().bind(this.hideToolbarMenuItem.selectedProperty().not());
         
         clueEngineVBox.managedProperty().bind(this.hideClueEngineMenuItem.selectedProperty().not());
         clueEngineVBox.visibleProperty().bind(this.hideClueEngineMenuItem.selectedProperty().not());
@@ -483,7 +486,8 @@ public class PuzzledController implements Initializable {
         nextMinorMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         nextSubMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         
-        appTitleProperty.bind(Bindings.createStringBinding(() -> Puzzled.banner +" v."+Puzzled.version));
+        //no binding required here, the values are static properties
+        appTitleProperty.set(Puzzled.banner +" v."+Puzzled.version);
          
 //        this.logicProblem.addListener( (e, oldvalue, newvalue) -> {
 ////            System.out.println("unbinding and rebinding");
@@ -522,7 +526,6 @@ public class PuzzledController implements Initializable {
         //inject into scene
         bPane.setCenter(hsPane);
         
-        
     //    relationships = new HashMap<Pair<Item,Item>,Relationship>(logicProblem.getNumItems()*logicProblem.getNumItems()*(logicProblem.getNumCategories()-1)*logicProblem.getNumCategories()/2);
     }    
     
@@ -538,7 +541,6 @@ public class PuzzledController implements Initializable {
     public ObjectProperty<LogicProblem> logicProblemProperty(){
         return this.logicProblemProperty;
     }
-    
     
     /*
     * Sets up the drag and drop capability for files and URLs to be
@@ -564,7 +566,7 @@ public class PuzzledController implements Initializable {
                 .stream()
                 .forEach( file -> {
                     String extension = file.getName().replaceAll("^.*\\.([^.]+)$", "$1");
-                    if (extension.equalsIgnoreCase("lpf") || extension.equalsIgnoreCase("lps")) {
+                    if (extension.equalsIgnoreCase("lpf") || extension.equalsIgnoreCase("lpd")) {
                         try {
                             //only load clues when there is a non-null LogicProblem
                             this.logicProblemProperty.set(PuzzledFileIO.loadProblem(Paths.get(file.toURI()).toString()));
@@ -594,7 +596,7 @@ public class PuzzledController implements Initializable {
     }
 
     @FXML
-    public void resetButtonAction(ActionEvent event) {
+    public void resetAction(ActionEvent event) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Reset Logic Problem");
         alert.initStyle(StageStyle.UTILITY);
@@ -603,9 +605,7 @@ public class PuzzledController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         
         if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
-            logicProblemProperty.get().getNumberedClueList().clear();
-//            this.clueGlyphBox.getChildren().clear();
-            
+            this.getLogicProblem().getNumberedClueList().clear();
             this.initializeProblem();
             notify(WarningType.SUCCESS, "Logic problem reset successfully!");
         }
@@ -613,16 +613,43 @@ public class PuzzledController implements Initializable {
     
     //setup or re-set bindings once problem is loaded
     private void initializeProblem(){
-        
-
         this.getLogicProblem().initializeRelationshipTable();
+        this.dirtyLogicProperty.bind(this.getLogicProblem().dirtyLogicProperty());
+        this.dirtyLogicProperty.addListener((arg, oldVal, newVal)  -> {
+            //prevent recursion, dirtyLogicProperty changes will be confined to the LogicProblem object
+            //and not propagate to the PuzzledController
+//            fLogger.log(Level.INFO, "process action triggered through dirtyLogic change propagation");
+//            System.out.println("controller's dirtyLogic value is "+this.dirtyLogicProperty.get());
+//            this.getLogicProblem().setDirtyLogic(false);
+//            System.out.println("unbinding");
+            this.dirtyLogicProperty.unbind();
+            if (newVal == true) Processor.process(this.getLogicProblem(), this.isAutomaticProcessing());
+            //rebinding may trigger a change!
+            //System.out.println("rebinding -> triggering another change?");
+            
+            this.dirtyLogicProperty.bind(this.getLogicProblem().dirtyLogicProperty());
+                });
+            
+            pendingRelationshipsCountProperty.bind(
+                Bindings.createLongBinding(
+                    () -> this.getLogicProblem().getRelationshipTable().values().stream().filter(rel -> !rel.isApplied()).count(),
+                    this.getLogicProblem().getRelationshipTable().values().stream().map(rel -> rel.appliedProperty()).toArray(SimpleBooleanProperty[]::new)
+                ));
+//        List<BooleanProperty> appliedRelationshipList = new ArrayList<>();
+//        appliedRelationshipList = this.getLogicProblem().getRelationshipTable().values().forEach(l -> l.appliedProperty()).collect();
+//        for (Relationship rel : this.getLogicProblem().getRelationshipTable().values()) {
+//            relationshipList
+//        }
+        
+//        this.getLogicProblem().getRelationshipTable().values().toArray()
+//        createIntegerbinding(filter(thosenotapplied).count(),relationshiplist.toArray(new [locations.size()]));
+        
+        
         logicProblemGrid = new Grid(this,logicProblemProperty.get());
         mainGroup.getChildren().clear();
         mainGroup.getChildren().add(logicProblemGrid);
-        this.clues = this.logicProblemProperty.get().getNumberedClueList().getObservableClueList();
+        this.clues = this.getLogicProblem().getNumberedClueList().getObservableClueList();
         
-//            clueGlyphBox.getChildren().clear();
-
         //setup data source for the Clue Table ?!
 //            clues = FXCollections.observableList(logicProblem.get().getNumberedClueList());
         clueTabController.setData(this.clues);
@@ -632,7 +659,7 @@ public class PuzzledController implements Initializable {
         //bind relationships layer visibility to checkMenuItem        
         logicProblemGrid.getChildren().get(2).visibleProperty().bind(hideRelationshipsMenuItem.selectedProperty().not());
 
-        this.dirtyLogicProperty.bind(logicProblemProperty.get().dirtyLogicProperty());
+//        this.dirtyLogicProperty.bind(logicProblemProperty.get().dirtyLogicProperty());
         this.dirtyFileProperty.bind(logicProblemProperty.get().dirtyFileProperty());
         this.scaleProperty.bind(logicProblemProperty.get().scaleProperty());
 //            this.titleLabel.textProperty().bind(logicProblem.get().getTitleProperty());
@@ -741,7 +768,7 @@ public class PuzzledController implements Initializable {
                             element -> org.fxmisc.flowless.Cell.wrapNode(labelGenerator(this.clues,element)),
                             VirtualFlow.Gravity.REAR);
 //        vflow.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE );
-        clueGlyphBox.getChildren().addAll(vflow);
+        clueMajorGlyphBox.getChildren().addAll(vflow);
         HBox.setHgrow(vflow, Priority.ALWAYS);
     }
     
@@ -764,7 +791,7 @@ public class PuzzledController implements Initializable {
         fileChooser.setTitle("Open Logic Problem File");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Logic Problem Files", "*.lpf"),
-                new ExtensionFilter("Logic Problem Shorthand", "*.lps"));//,
+                new ExtensionFilter("Logic Problem Definition", "*.lpd"));//,
         Stage mainStage = (Stage) root.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(mainStage);
         if (selectedFile != null) {
@@ -879,18 +906,13 @@ public class PuzzledController implements Initializable {
                  nPane.hide();
              }
         });
-
     }
     
-    private class LogicChangeListener<Boolean> implements ChangeListener<Boolean> {
-       
-       @Override 
-       public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-           System.out.println("change detected to dirtyLogicProperty"); 
-           dirtyLogicProperty.removeListener(logicChangeListener);
-           Processor.process(logicProblemProperty.get(),PuzzledController.this);
-           dirtyLogicProperty.addListener(logicChangeListener);
-       }
-   }   
-    
+//    public IntegerProperty pendingRelationshipsCountProperty() {
+//        return this.pendingRelationshipsCountProperty;
+//    }
+
+    public boolean isAutomaticProcessing() {
+            return this.automaticProcessingMenuItem.isSelected();
+    }
 }

@@ -60,7 +60,6 @@ public class GridCell extends StackPane {
         this.linkedRelationship = relationship;
         this.fileDirtyProperty = arg_fileDirtyProperty;
         
-        
         this.highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.getLogicType().toString(),linkedRelationship.logicTypeProperty()));
         
         linkedRelationship.explainProperty().addListener((e,oldValue,newValue) -> {
@@ -85,7 +84,7 @@ public class GridCell extends StackPane {
         circle.getStyleClass().add("o");
         //circle.relocate(5, 5);
         
-        circle.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_YES));
+        circle.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_YES).and(linkedRelationship.appliedProperty()));
         
         //line1.setMouseTransparent(true);
         line1.getStyleClass().add("x");
@@ -93,8 +92,8 @@ public class GridCell extends StackPane {
         line2.getStyleClass().add("x");
         line2.setMouseTransparent(true);
         //xPane.getChildren().addAll(line1,line2);
-        line1.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_NO));
-        line2.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_NO));
+        line1.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_NO).and(linkedRelationship.appliedProperty()));
+        line2.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_NO).and(linkedRelationship.appliedProperty()));
 
         ContextMenu contextMenu = this.buildContextMenu();
         cellRectangle.setOnMouseClicked(e -> contextMenu.show(cellRectangle, Side.RIGHT, 0, 0)); 
@@ -114,7 +113,7 @@ public class GridCell extends StackPane {
     
     public void setFalseConstraint() throws RelationshipConflictException {
         //this.valueProperty.set(ValueType.VALUE_NO);
-        fLogger.info("setting FALSE");
+//        fLogger.info("setting FALSE");
         try {
             //create a new Constraint object
             Constraint constraint = new Constraint(linkedRelationship.getItemPair(),Relationship.ValueType.VALUE_NO);
@@ -123,8 +122,9 @@ public class GridCell extends StackPane {
             //needs to add this relationship to constraint table
             linkedRelationship.getParentLogicProblem().addConstraint(constraint);
             //set the relationship and set the Constraint as its predecessor
-            linkedRelationship.setValue(ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT,constraint);
-            fLogger.info("setting FALSE");
+            linkedRelationship.setValue(ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT,true, constraint);
+//            fLogger.info("setting FALSE");
+//            linkedRelationship.getParentLogicProblem().setDirtyLogic(true);
            
             //constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));
 //            setTooltipBinding(); //text binding changes after setting up a constraint
@@ -136,7 +136,7 @@ public class GridCell extends StackPane {
     
     public void setTrueConstraint() throws RelationshipConflictException {
         //this.valueProperty.set(ValueType.VALUE_YES);
-        fLogger.info("setting TRUE");
+//        fLogger.info("setting TRUE");
         try {
             
             //create a new Constraint object
@@ -144,8 +144,9 @@ public class GridCell extends StackPane {
             //needs to add this relationship to constraint table
             linkedRelationship.getParentLogicProblem().addConstraint(constraint);
             //set the relationship and set the Constraint as its predecessor
-            linkedRelationship.setValue(ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT,constraint);
-//            fLogger.info("setting TRUE");
+            linkedRelationship.setValue(ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT,true, constraint);
+            fLogger.info("setting TRUE");
+//            linkedRelationship.getParentLogicProblem().setDirtyLogic(true);
             
 //            setTooltipBinding(); //text binding changes after setting up a constraint
             //constraintProperty.set(linkedRelationship.getParent().addConstraint(linkedRelationship));
@@ -264,7 +265,8 @@ public class GridCell extends StackPane {
         //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 
         setFalseMenuItem.setGraphic(new ImageView("/icons/context-menus/x.png"));
-        setFalseMenuItem.disableProperty().bind(linkedRelationship.valueProperty().isNotEqualTo(ValueType.VALUE_UNKNOWN));
+        setFalseMenuItem.disableProperty().bind(linkedRelationship.valueProperty().isNotEqualTo(ValueType.VALUE_UNKNOWN).
+                and(linkedRelationship.appliedProperty()));
         setFalseMenuItem.setOnAction(e -> {
             try {
                 this.setFalseConstraint();
@@ -277,7 +279,8 @@ public class GridCell extends StackPane {
                 
         setTrueMenuItem.setGraphic(new ImageView("/icons/context-menus/o.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-        setTrueMenuItem.disableProperty().bind(linkedRelationship.valueProperty().isNotEqualTo(ValueType.VALUE_UNKNOWN));
+        setTrueMenuItem.disableProperty().bind(linkedRelationship.valueProperty().isNotEqualTo(ValueType.VALUE_UNKNOWN).
+                and(linkedRelationship.appliedProperty()));
 //        item2.setDisable(true);
         setTrueMenuItem.setOnAction(e -> {
             try {

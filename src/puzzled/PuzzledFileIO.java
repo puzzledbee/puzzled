@@ -53,7 +53,7 @@ public class PuzzledFileIO {
             newProblem = (LogicProblem) jaxbUnmarshaller.unmarshal(file);
             fLogger.log(Level.INFO, newProblem.toString());
             return newProblem;
-        } else if (extension.equalsIgnoreCase("lps")) {
+        } else if (extension.equalsIgnoreCase("lpd")) {
 //            System.out.println("trying to load Logic Problem Shorthand");
             List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 //                System.out.println("problem "+lines.get(0)+" with "+ lines.size());
@@ -70,7 +70,7 @@ public class PuzzledFileIO {
                     i++;
                     ArrayList<Item> items = new ArrayList<Item>();
                     while (i < lines.size() && lines.get(i).startsWith("\t")) {
-                        System.out.println("adding item "+lines.get(i).trim()+" ("+i+")");
+//                        System.out.println("adding item "+lines.get(i).trim()+" ("+i+")");
                         items.add(new Item(lines.get(i++).trim()));
                     }
 //                        System.out.println("adding category "+lines.get(catIndex)+" ("+catIndex+")");
@@ -85,10 +85,10 @@ public class PuzzledFileIO {
                             i++; //skip over blank line
                         } else {
                             if (problemTextToggle) {
-                                System.out.println("appending text "+lines.get(i));
+//                                System.out.println("appending text "+lines.get(i));
                                 problemText += lines.get(i++) + "\n";
                             } else {
-                                System.out.println("adding clue "+lines.get(i)+" ("+i+")");
+//                                System.out.println("adding clue "+lines.get(i)+" ("+i+")");
                                 String[] clueInfo = lines.get(i++).split(";");
                                 //Clue newClue = new Clue(clueInfo);
                                 Parser.parse(newProblem,clueInfo[0]);

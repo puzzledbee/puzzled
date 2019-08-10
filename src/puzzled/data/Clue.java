@@ -56,6 +56,9 @@ public class Clue extends Dependable implements Comparable<Clue> {
     private ClueType clueType = ClueType.NORMAL;
      //whether the clue is enabled or disabled
     private BooleanProperty activeProperty = new SimpleBooleanProperty(true); 
+    //whether the clue has been resolved or if it needs to be parsed
+    //can be bound to visual property of the clue in the tooltip or the ClueTab
+    private BooleanProperty resolvedProperty = new SimpleBooleanProperty(true);
     
     
     //necessary for iterator?
@@ -132,7 +135,6 @@ public class Clue extends Dependable implements Comparable<Clue> {
         return this.getClueNumber().compareTo(o.getClueNumber());
     }
     
-    
     public static Label labelGenerator(ObservableList<Clue> clues, Integer element) {
         Label label = new Label(element.toString());
         label.setTooltip(new Tooltip()); //else we get a NPE
@@ -150,5 +152,4 @@ public class Clue extends Dependable implements Comparable<Clue> {
         return Bindings.createStringBinding( () ->  filteredlist.stream().map(e -> e.displayClue()).collect(Collectors.joining("\n"))
     , filteredlist,FXCollections.observableArrayList(dependencies));
     }
-    
 }

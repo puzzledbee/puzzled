@@ -1,0 +1,38 @@
+Problem 47;Penny Press Original Logic Problems Mar 1999
+Book
+	Haley's Comet
+	Into The Fire
+	Never Again
+	Passion Play
+	Starburst
+Author
+	Bettany
+	Donovan
+	Elizabeth
+	Frederick
+	Peyton
+Pages;NUMERICAL
+	15
+	16
+	17
+	18
+	19
+Genre
+	Biography
+	Fantasy
+	Mystery
+	Romance
+	Science-Fiction
+Last Name
+	Chapman
+	Holden
+	Koenig
+	Rawlins
+	Wright
+Neither Peyton’s book nor the science-fiction novel is Starburst. Sabrina read exactly one page fewer of the biography than she did of Passion Play. Frederick (who didn’t pen the fantasy novel) isn’t the one surnamed Wright (who isn’t the one who wrote Haley’s Comet).
+Sabrina read exactly one more page of the mystery tome (which wasn’t written by Elizabeth) than she did of Chapman’s book. She read exactly one more page of the romance novel than she did of Into the Fire (which isn’t the mystery). Sabrina read exactly one page fewer of Never Again than she did of the science-fiction book.
+Sabrina read exactly one page fewer of Donovan’s book than she did of the book written by the author surnamed Holden (which isn’t the romance novel). Neither Donovan nor the one surnamed Chapman wrote Starburst. Sabrina read exactly one more page of Elizabeth’s book than she did of the science-fiction tome.
+Neither Peyton nor Frederick wrote the biography. Frederick (who didn’t write Into the Fire) didn’t pen the romance novel. Bethany is neither the author surnamed Holden nor the one surnamed Koenig.
+Starburst (which isn’t the mystery novel) wasn’t written by the author surnamed Rawlins. Peyton didn’t write the fantasy book. The romance novel isn’t called Haley’s Comet. Neither Bethany nor Elizabeth is surnamed Wright.
+
+Between the demands of her job as a production editor and those of her growing family, Sabrina rarely has time to indulge in her favorite pastime – reading!  Knowing her free time is scarce, Sabrina often reads several books at once.  Last night, for instance, she read a different number of pages (15 through 19) from five different books!  Each book was written by a different author and is of a different genre.  Fortunately, Sabrina’s family always knows what to get her for her birthday – bookmarks!  From the information provided, can you determine the author (identified by first and last names) and genre of each book, as well as the number of pages Sabrina read in each?
