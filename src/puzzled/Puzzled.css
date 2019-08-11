@@ -108,6 +108,7 @@
     -fx-max-height: 34px;
     -fx-font-weight: bold;
 }
+
 .cirlcebutton#plus {
     -fx-graphic: url("/icons/toolbar/plus.png");
 }
@@ -219,4 +220,21 @@
 /* popup notifications */
 .notification-bar > .pane {
     -fx-background-color: slateblue;
+}
+
+
+.actioncolumn {
+    -fx-alignment:baseline-center; 
+}
+
+.enablebutton {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-graphic: url("/icons/cluetable/disabled.png");
+}
+
+.enablebutton:selected {
+     -fx-graphic: url("/icons/cluetable/enabled.png");
 }

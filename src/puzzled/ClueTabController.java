@@ -7,13 +7,18 @@ package puzzled;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 import puzzled.data.Clue;
 import puzzled.data.ClueNumber;
 
@@ -28,8 +33,8 @@ public class ClueTabController implements Initializable {
     @FXML TableView<Clue> clueTableView;
     
     @FXML TableColumn<Clue,String> clueNumberColumn;
-    
     @FXML TableColumn<Clue,String> clueTextColumn;
+    @FXML TableColumn<Clue,String> actionColumn;
     
     public void setParentController(PuzzledController parent) {
         this.parentController = parent;
@@ -45,6 +50,40 @@ public class ClueTabController implements Initializable {
 //        clueTextColumn.setCellValueFactory(new PropertyValueFactory<Clue,String>("clueText"));
         clueNumberColumn.setCellValueFactory(cellData -> cellData.getValue().getClueNumber().clueNumberStringProperty());
         clueTextColumn.setCellValueFactory(cellData -> cellData.getValue().clueTextProperty());
+        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty("DUMMY"));
+        
+        Callback<TableColumn<Clue, String>, TableCell<Clue, String>> cellFactory
+                =  new Callback<TableColumn<Clue, String>, TableCell<Clue, String>>() {
+            
+            @Override
+            public TableCell call(final TableColumn<Clue, String> param) {
+                final TableCell<Clue, String> cell = new TableCell<Clue, String>() {
+
+                    ToggleButton btn = new ToggleButton("");
+                    
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            btn.getStyleClass().add("enablebutton");
+                            btn.setSelected(true);
+                            btn.setOnAction(event -> {
+                                Clue clue = getTableView().getItems().get(getIndex());
+                                System.out.println(clue.getClueText());
+                            });
+                            setGraphic(btn);
+                            setText(null);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+
+        actionColumn.setCellFactory(cellFactory);
         
 //        clueNumberColumn.setCellValueFactory(new PairKeyFactory());
 //        clueTextColum.setCellValueFactory(new PairValueFactory());

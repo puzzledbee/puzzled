@@ -11,7 +11,7 @@
         <columns>
           <TableColumn fx:id="clueNumberColumn" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Clue Number" />
           <TableColumn fx:id="clueTextColumn" prefWidth="408.79998779296875" text="Clue Text" />
-            <TableColumn minWidth="0.0" prefWidth="68.800048828125" text="Actions" />
+            <TableColumn fx:id="actionColumn" minWidth="0.0" prefWidth="68.800048828125" styleClass="actioncolumn" text="Actions" />
         </columns>
       </TableView>
    </children>
