@@ -91,16 +91,16 @@
                                     <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                  </accelerator>
                               </CheckMenuItem>
-                              <CheckMenuItem fx:id="hideToolbarMenuItem" mnemonicParsing="false" text="Hide Toolbar" />
-                              <CheckMenuItem fx:id="hideLabelsMenuItem" mnemonicParsing="false" text="Hide Labels" />
-                              <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
-                              <CheckMenuItem fx:id="hideClueEngineMenuItem" mnemonicParsing="false" text="Hide Clue Engine" />
                               <SeparatorMenuItem mnemonicParsing="false" />
                               <MenuItem mnemonicParsing="false" text="Preferences..." />
                           </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="View">
                            <items>
+                              <CheckMenuItem fx:id="hideToolbarMenuItem" mnemonicParsing="false" text="Hide Toolbar" />
+                              <CheckMenuItem fx:id="hideLabelsMenuItem" mnemonicParsing="false" text="Hide Labels" />
+                              <CheckMenuItem fx:id="hideRelationshipsMenuItem" mnemonicParsing="false" text="Hide Relationships" />
+                              <CheckMenuItem fx:id="hideCluePanelMenuItem" mnemonicParsing="false" text="Hide Clue Panel" />
                               <MenuItem fx:id="zoomInMenuItem" mnemonicParsing="false" onAction="#zoomInAction" text="Zoom in">
                                  <accelerator>
                                     <KeyCodeCombination alt="UP" code="EQUALS" control="DOWN" meta="UP" shift="UP" shortcut="UP" />

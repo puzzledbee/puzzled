@@ -18,10 +18,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -155,7 +153,7 @@ public class PuzzledController implements Initializable {
     @FXML private MenuItem propertiesMenuItem;
     @FXML private CheckMenuItem hideLabelsMenuItem;
     @FXML private CheckMenuItem hideRelationshipsMenuItem;
-    @FXML private CheckMenuItem hideClueEngineMenuItem;
+    @FXML private CheckMenuItem hideCluePanelMenuItem;
     @FXML private ToolBar toolbar;
     @FXML private Button saveButton;
     @FXML private Button resetButton;
@@ -474,8 +472,8 @@ public class PuzzledController implements Initializable {
         propertiesMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         printMenuItem.disableProperty().bind(this.logicProblemProperty.isNull());
         
-        clueEngineVBox.managedProperty().bind(this.hideClueEngineMenuItem.selectedProperty().not());
-        clueEngineVBox.visibleProperty().bind(this.hideClueEngineMenuItem.selectedProperty().not());
+        clueEngineVBox.managedProperty().bind(this.hideCluePanelMenuItem.selectedProperty().not());
+        clueEngineVBox.visibleProperty().bind(this.hideCluePanelMenuItem.selectedProperty().not());
         
         zoomInMenuItem.disableProperty().bind(Bindings.or(this.logicProblemProperty.isNull(),this.scaleProperty.greaterThanOrEqualTo(maxZoom)));
         zoomOutMenuItem.disableProperty().bind(Bindings.or(this.logicProblemProperty.isNull(),this.scaleProperty.lessThanOrEqualTo(minZoom)));
