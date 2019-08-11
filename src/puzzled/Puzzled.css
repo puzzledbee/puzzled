@@ -108,7 +108,12 @@
     -fx-max-height: 34px;
     -fx-font-weight: bold;
 }
-
+.cirlcebutton#plus {
+    -fx-graphic: url("/icons/toolbar/plus.png");
+}
+.cirlcebutton#minus {
+    -fx-graphic: url("/icons/toolbar/minus.png");
+}
 
 .glyphbox .virtual-flow {
 /*    -fx-preferred-width: 34px;

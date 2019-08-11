@@ -172,7 +172,7 @@ public class GridCell extends StackPane {
         // Create the custom dialog.
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Annotation");
-        dialog.setHeaderText("Please enter the annotation text for this relationship");
+        dialog.setHeaderText("Please enter the annotation text for this relationship.\nTo remove the annotation, leave the text box blank.");
 
         dialog.setGraphic(new ImageView("icons/context-menus/annotate.png"));
 
@@ -204,12 +204,12 @@ public class GridCell extends StackPane {
         // Enable/Disable login button depending on whether a username was entered.
         Node okButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
         Node cancelButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-        okButton.setDisable(true);
+//        okButton.setDisable(true);
 
         // Do some validation (using the Java 8 lambda syntax).
-        annotationText.textProperty().addListener((observable, oldValue, newValue) -> {
-            okButton.setDisable(newValue.trim().isEmpty());
-        });
+//        annotationText.textProperty().addListener((observable, oldValue, newValue) -> {
+//            okButton.setDisable(newValue.trim().isEmpty());
+//        });
 
         dialog.getDialogPane().setContent(bPane);
 
@@ -294,9 +294,10 @@ public class GridCell extends StackPane {
         MenuItem annotateMenuItem = new MenuItem("Annotate");
         annotateMenuItem.setGraphic(new ImageView("/icons/context-menus/annotate.png"));
         //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-//        annotateMenuItem.disableProperty().bind(
-//                linkedRelationship.valueProperty().isEqualTo(Relationship.ValueType.VALUE_UNKNOWN).or(
-//                        linkedRelationship.logicTypeProperty().isNotEqualTo(Relationship.LogicType.CONSTRAINT))); //grey out item unless it has been set as a constraint
+        annotateMenuItem.textProperty().bind(
+                Bindings.when(this.linkedRelationship.annotationProperty().isEqualTo(""))
+                        .then("Annotate")
+                        .otherwise("Edit annotation"));
         annotateMenuItem.setOnAction(e -> {
 //           System.out.println("linked relationship's logicType:" + linkedRelationship.logicTypeProperty().get());
            this.showAnnotationDialog();

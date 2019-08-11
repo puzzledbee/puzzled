@@ -133,11 +133,10 @@ public class Relationship extends Dependable {
     public void setValue(ValueType value, LogicType arg_logicType, boolean apply, Dependable ... arg_predecessors) 
             throws RelationshipConflictException {
         //is this relationship previously unassigned? then there are no issues, it can just take the new value
-        if (this.getValue()==ValueType.VALUE_UNKNOWN) {
+        if (this.getValue()==ValueType.VALUE_UNKNOWN || (this.getValue()==value && !this.isApplied())) {
             this.setValue(value, apply);
             this.setLogicType(arg_logicType);
             
-
             //adjusting the upstream dependable objects (predecessors)
 //            System.out.println("adding a total of  " + arg_predecessors.length + " predecessors to " + this.toString());
             for (Dependable predecessor : arg_predecessors) {
@@ -178,19 +177,16 @@ public class Relationship extends Dependable {
     
     private void setTooltipTextBinding(){
         
-        
-//        System.out.println("at time of binding:\n" + text.toString());
-//        System.out.println("predecessor size @ binding: "+getPredecessors().size());
         this.relationshipTextProperty.bind(Bindings.createStringBinding(() -> { 
                 StringBuilder text = new StringBuilder();
                 text.append("The relationship between " + this.itemPair.toString() +
-                    " is " + (this.getValue()==ValueType.VALUE_UNKNOWN?"not defined":this.getValue()+" ("+this.getLogicType()+")"));
+                    " is " + (this.getValue()==ValueType.VALUE_UNKNOWN || !this.isApplied()?"not defined":this.getValue()+" ("+this.getLogicType()+")"));
 
                 if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() == LogicType.CONSTRAINT) {
                     text.append("\n\nThis relationship was set graphically by the user\n");
                 }
 
-                if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() != LogicType.CONSTRAINT) {
+                if (this.getValue() != ValueType.VALUE_UNKNOWN && this.getLogicType() != LogicType.CONSTRAINT && this.isApplied()) {
                     text.append("\n\nderived from:\n");
                     this.getPredecessors().forEach(dependable -> text.append(dependable.toString()+"\n"));
                 }
@@ -202,6 +198,7 @@ public class Relationship extends Dependable {
                 },
             this.observablePredecessors(),
             this.valueProperty,
+            this.appliedProperty,
             this.logicTypeProperty, //otherwise the timing of the binding being refreshed
             this.annotationProperty));
     }
