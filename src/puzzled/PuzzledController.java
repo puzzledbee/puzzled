@@ -14,7 +14,9 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -55,6 +57,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -447,6 +450,23 @@ public class PuzzledController implements Initializable {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         this.automaticProcessingMenuItem.setSelected(prefs.getBoolean("AUTOMATIC_PROCESSING",true));
         
+        //fancy animatino when relationshps are discovered in "asynchronous" mode
+        ColorAdjust colorAdjust = new ColorAdjust();
+//        colorAdjust.setHue(+0?.05);
+        this.processButton.setEffect(colorAdjust);
+        this.processButton.disableProperty().addListener( (e,oldvalue,newvalue) -> {
+            if (!newvalue) {
+                Timeline fadeInTimeline = new Timeline(
+                        new KeyFrame(Duration.seconds(0), 
+                                new KeyValue(colorAdjust.hueProperty(), colorAdjust.hueProperty().getValue(), Interpolator.LINEAR)), 
+                                new KeyFrame(Duration.seconds(0.5), new KeyValue(colorAdjust.hueProperty(), +1, Interpolator.LINEAR)
+                                ));
+                fadeInTimeline.setCycleCount(2);
+                fadeInTimeline.setAutoReverse(true);
+                fadeInTimeline.play();
+            }
+        });
+         
 //        this.automaticProcessingMenuItem.
         
         clueText.disableProperty().bind(this.logicProblemProperty.isNull());
