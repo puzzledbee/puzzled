@@ -5,4 +5,4 @@ JavaFX logic problem solver
 
 [The project documentation is hosted via GitHub Pages](https://puzzledbee.github.io/puzzled/index.html "puzzled home")
 
-![screen-mainui](https://user-images.githubusercontent.com/17093421/39663708-2d37d63a-5046-11e8-9fa4-c178ddd99e37.png)
+![screen-mainui](https://user-images.githubusercontent.com/17093421/62828382-05a8cf00-bbb3-11e9-8855-465055bf55ed.png)
