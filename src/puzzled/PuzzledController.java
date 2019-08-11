@@ -539,7 +539,8 @@ public class PuzzledController implements Initializable {
         //steal tPane from scene
         hsPane.setContent(tPane);
 //        System.out.println("trigger distance:"+hsPane.getTriggerDistance());
-        hsPane.setTriggerDistance(3);
+        hsPane.setTriggerDistance(1);
+        hsPane.setAnimationDelay(Duration.seconds(1));
         hsPane.setRight(soPane);
         //inject into scene
         bPane.setCenter(hsPane);

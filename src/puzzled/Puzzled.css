@@ -227,14 +227,37 @@
     -fx-alignment:baseline-center; 
 }
 
-.enablebutton {
+.cluetablebutton {
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-background-radius: 0;
     -fx-background-color: transparent;
+    -fx-padding: 3;
+}
+.cluetablebutton:hover ImageView {
+    -fx-effect: innershadow( gaussian , red , 7 , 1 , 1 , 1 );
+}
+
+.cluetablebutton#editbutton {
+    -fx-graphic: url("/icons/cluetable/edit.png");
+}
+
+.cluetablebutton#deletebutton {
+    -fx-graphic: url("/icons/cluetable/delete.png");
+}
+
+.cluetableenablebutton {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-padding: 3;
     -fx-graphic: url("/icons/cluetable/disabled.png");
 }
 
-.enablebutton:selected {
+.cluetableenablebutton:selected {
      -fx-graphic: url("/icons/cluetable/enabled.png");
+}
+.cluetableenablebutton:selected:hover ImageView {
+    -fx-effect: innershadow( gaussian , red , 7 , 1 , 1 , 1 );
 }

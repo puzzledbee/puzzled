@@ -18,6 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import puzzled.data.Clue;
 import puzzled.data.ClueNumber;
@@ -34,7 +35,7 @@ public class ClueTabController implements Initializable {
     
     @FXML TableColumn<Clue,String> clueNumberColumn;
     @FXML TableColumn<Clue,String> clueTextColumn;
-    @FXML TableColumn<Clue,String> actionColumn;
+    @FXML TableColumn<Clue,Void> actionColumn;
     
     public void setParentController(PuzzledController parent) {
         this.parentController = parent;
@@ -50,40 +51,49 @@ public class ClueTabController implements Initializable {
 //        clueTextColumn.setCellValueFactory(new PropertyValueFactory<Clue,String>("clueText"));
         clueNumberColumn.setCellValueFactory(cellData -> cellData.getValue().getClueNumber().clueNumberStringProperty());
         clueTextColumn.setCellValueFactory(cellData -> cellData.getValue().clueTextProperty());
-        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty("DUMMY"));
+//        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty("DUMMY"));
         
-        Callback<TableColumn<Clue, String>, TableCell<Clue, String>> cellFactory
-                =  new Callback<TableColumn<Clue, String>, TableCell<Clue, String>>() {
+        actionColumn.setCellFactory(param -> new TableCell<Clue,Void>() {
             
-            @Override
-            public TableCell call(final TableColumn<Clue, String> param) {
-                final TableCell<Clue, String> cell = new TableCell<Clue, String>() {
+            ToggleButton enableButton = new ToggleButton("");
+            ToggleButton editButton = new ToggleButton("");
+            ToggleButton deleteButton = new ToggleButton("");
+            
+            HBox buttonBox = new HBox();
+            {
+                enableButton.getStyleClass().add("cluetableenablebutton");
+//                enableButton.setId("enablebutton");
+                enableButton.setSelected(true);
+                enableButton.setOnAction(event -> {
+                    Clue clue = getTableView().getItems().get(getIndex());
+                    System.out.println(clue.getClueText());
+                });
 
-                    ToggleButton btn = new ToggleButton("");
-                    
-                    @Override
-                    public void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                            setText(null);
-                        } else {
-                            btn.getStyleClass().add("enablebutton");
-                            btn.setSelected(true);
-                            btn.setOnAction(event -> {
-                                Clue clue = getTableView().getItems().get(getIndex());
-                                System.out.println(clue.getClueText());
-                            });
-                            setGraphic(btn);
-                            setText(null);
-                        }
-                    }
-                };
-                return cell;
+                editButton.getStyleClass().add("cluetablebutton");
+                editButton.setId("editbutton");
+                editButton.setOnAction(event -> {
+                    Clue clue = getTableView().getItems().get(getIndex());
+                    System.out.println(clue.getClueText());
+                });
+
+                deleteButton.getStyleClass().add("cluetablebutton");
+                deleteButton.setId("deletebutton");
+                deleteButton.setOnAction(event -> {
+                    Clue clue = getTableView().getItems().get(getIndex());
+                    System.out.println(clue.getClueText());
+                });
+                
+                buttonBox.getChildren().addAll(enableButton,editButton,deleteButton);
             }
-        };
+                    
+            @Override
+            public void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : buttonBox);
+            }
+        });
 
-        actionColumn.setCellFactory(cellFactory);
+        
         
 //        clueNumberColumn.setCellValueFactory(new PairKeyFactory());
 //        clueTextColum.setCellValueFactory(new PairValueFactory());
