@@ -35,29 +35,29 @@ public class Processor {
 //        IntegerProperty newlyDiscoveredRelationships =  controller.pendingRelationshipsCounterProperty();
 //        boolean automaticProcessing = controller.getAutomaticProcessing();
         
-        System.out.println("entering processing loop");
+//        System.out.println("entering processing loop");
         while (logicProblem.isLogicDirty()){
 //                System.out.println("executing processingFlag loop");
             logicProblem.setDirtyLogic(false);
             
             //re-process SPECIAL clues (with streams and filters maybe?)
             try {
-                System.out.println("\t cross -> "+ logicProblem.isLogicDirty());
+//                System.out.println("\t cross -> "+ logicProblem.isLogicDirty());
                 Processor.cross(logicProblem, applyChanges);
-                System.out.println("\t unique -> "+ logicProblem.isLogicDirty());
+//                System.out.println("\t unique -> "+ logicProblem.isLogicDirty());
                 Processor.uniqueness(logicProblem, applyChanges);
-                System.out.println("\t transpose -> "+ logicProblem.isLogicDirty());
+//                System.out.println("\t transpose -> "+ logicProblem.isLogicDirty());
                 Processor.transpose(logicProblem, applyChanges);
                 
                 if (logicProblem.getNumItems() >3) 
-                    System.out.println("\t commonality -> "+ logicProblem.isLogicDirty());
+//                    System.out.println("\t commonality -> "+ logicProblem.isLogicDirty());
                     Processor.commonality(logicProblem, applyChanges);
             } catch (RelationshipConflictException e) {
 //                    controller.notify(PuzzledController.WarningType.WARNING, e.toString());
             }
-            System.out.println("now what? -> "+ logicProblem.isLogicDirty());
+//            System.out.println("now what? -> "+ logicProblem.isLogicDirty());
         }
-        System.out.println("exiting processing loop");
+//        System.out.println("exiting processing loop");
     }
             
  

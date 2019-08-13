@@ -7,6 +7,8 @@ package puzzled;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -17,6 +19,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
@@ -35,7 +38,7 @@ public class ClueTabController implements Initializable {
     
     @FXML TableColumn<Clue,String> clueNumberColumn;
     @FXML TableColumn<Clue,String> clueTextColumn;
-    @FXML TableColumn<Clue,Void> actionColumn;
+    @FXML TableColumn<Clue,Boolean> actionColumn;
     
     public void setParentController(PuzzledController parent) {
         this.parentController = parent;
@@ -51,9 +54,11 @@ public class ClueTabController implements Initializable {
 //        clueTextColumn.setCellValueFactory(new PropertyValueFactory<Clue,String>("clueText"));
         clueNumberColumn.setCellValueFactory(cellData -> cellData.getValue().getClueNumber().clueNumberStringProperty());
         clueTextColumn.setCellValueFactory(cellData -> cellData.getValue().clueTextProperty());
-//        actionColumn.setCellValueFactory(cellData -> new SimpleStringProperty("DUMMY"));
+        actionColumn.setCellValueFactory(cellData -> cellData.getValue().activeProperty());
         
-        actionColumn.setCellFactory(param -> new TableCell<Clue,Void>() {
+
+        //inspired from Fabian at https://stackoverflow.com/questions/46498649/add-two-button-in-one-column-and-get-the-click-row-value-javafx
+        actionColumn.setCellFactory(param -> new TableCell<Clue,Boolean>() {
             
             ToggleButton enableButton = new ToggleButton("");
             ToggleButton editButton = new ToggleButton("");
@@ -63,14 +68,20 @@ public class ClueTabController implements Initializable {
             {
                 enableButton.getStyleClass().add("cluetableenablebutton");
 //                enableButton.setId("enablebutton");
-                enableButton.setSelected(true);
+//                enableButton.setSelected(true);
+                enableButton.selectedProperty().bindBidirectional(itemProperty());
+                enableButton.setTooltip(new Tooltip("Enable or disable this clue"));
                 enableButton.setOnAction(event -> {
                     Clue clue = getTableView().getItems().get(getIndex());
-                    System.out.println(clue.getClueText());
+                    clue.setActive(enableButton.isSelected());
+//                    System.out.println("toggling enabled to: "+clue.activeProperty());
+                    System.out.println("\t"+clue.getClueText());
+                    
                 });
 
                 editButton.getStyleClass().add("cluetablebutton");
                 editButton.setId("editbutton");
+                editButton.setTooltip(new Tooltip("Edit this clue"));
                 editButton.setOnAction(event -> {
                     Clue clue = getTableView().getItems().get(getIndex());
                     System.out.println(clue.getClueText());
@@ -78,16 +89,17 @@ public class ClueTabController implements Initializable {
 
                 deleteButton.getStyleClass().add("cluetablebutton");
                 deleteButton.setId("deletebutton");
+                deleteButton.setTooltip(new Tooltip("Delete this clue"));
                 deleteButton.setOnAction(event -> {
                     Clue clue = getTableView().getItems().get(getIndex());
                     System.out.println(clue.getClueText());
                 });
                 
-                buttonBox.getChildren().addAll(enableButton,editButton,deleteButton);
+                buttonBox.getChildren().setAll(enableButton,editButton,deleteButton);
             }
                     
             @Override
-            public void updateItem(Void item, boolean empty) {
+            public void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : buttonBox);
             }

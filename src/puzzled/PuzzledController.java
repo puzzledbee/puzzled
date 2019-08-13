@@ -379,9 +379,6 @@ public class PuzzledController implements Initializable {
 //        this.getLogicProblem().setDirtyLogic(true);
 //        clueTabController.refreshTable();
 
-        //how is the glyph generation going to work if we no longer create the clue here?
-        //clueGlyphBox.getChildren().add(generateClueGlyph(newClue));
-        
         //notify(WarningType.SUCCESS,"Clue "+logicProblem.get().getFilteredClues().size()+" was just added!");
     }
     
@@ -665,8 +662,8 @@ public class PuzzledController implements Initializable {
         
         
         logicProblemGrid = new Grid(this,logicProblemProperty.get());
-        mainGroup.getChildren().clear();
-        mainGroup.getChildren().add(logicProblemGrid);
+//        mainGroup.getChildren().clear(); //necessary for reset
+        mainGroup.getChildren().setAll(logicProblemGrid);
         this.clues = this.getLogicProblem().getNumberedClueList().getObservableClueList();
         
         //setup data source for the Clue Table ?!
@@ -765,15 +762,8 @@ public class PuzzledController implements Initializable {
                 }
             }, this.clues, 
             this.getLogicProblem().getNumberedClueList().nextClueNumberProperty()));
-        //clues have already been added to the problem and parsed when loading the file
-        //this is only to draw the glyph
-        //for (Clue clue : logicProblem.get().getFilteredClues()) clueGlyphBox.getChildren().add(generateClueGlyph(clue));
-//                Label label = new Label(Integer.toString(logicProblem.get().getClues().indexOf(clue)+1));
-//                Label label = new Label(Integer.toString(logicProblem.get().getFilteredClues().indexOf(clue)+1));
-//                label.setTooltip(new Tooltip(clue.getText()+" ("+clue.getType()+")"));
-//                
-//                label.getStyleClass().add("clue_"+clue.getType());
 
+        //setup clue major glyphs
         Function<Clue, Integer> cluemapper = c -> c.clueNumberProperty().get().getMajor();
         ObservableList<Integer> mappedcluemajors = new DistinctMappingList<>(this.clues, cluemapper);
         //https://stackoverflow.com/questions/43890528/observablelist-bind-content-with-elements-conversion
@@ -784,20 +774,15 @@ public class PuzzledController implements Initializable {
         VirtualFlow<Integer,Cell<Integer,Label>> vflow = 
                     VirtualFlow.createHorizontal(
                             mappedcluemajors.sorted(),
-                            element -> org.fxmisc.flowless.Cell.wrapNode(labelGenerator(this.clues,element)),
+                            element -> org.fxmisc.flowless.Cell.wrapNode(Clue.labelGenerator(this.clues,element)),
                             VirtualFlow.Gravity.REAR);
 //        vflow.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE );
-        clueMajorGlyphBox.getChildren().addAll(vflow);
+//        clueMajorGlyphBox.getChildren().clear(); //for reset functionality
+        clueMajorGlyphBox.getChildren().setAll(vflow);
         HBox.setHgrow(vflow, Priority.ALWAYS);
     }
     
-    private Label generateClueGlyph(Clue clue){
-        Label label = new Label(clue.clueNumberProperty().get().clueNumberStringProperty().get());
-        label.setTooltip(new Tooltip(clue.getClueText()+" ("+clue.getClueType()+")"));
-        label.getStyleClass().add("clue_"+clue.getClueType());
-        return label;
-    }
-    
+   
     @FXML
     public void openAction() {
         fLogger.log(Level.INFO, "opening file invoked");

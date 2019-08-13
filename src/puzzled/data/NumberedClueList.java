@@ -47,6 +47,7 @@ public class NumberedClueList {
     
     public void clear(){
         this.observableClueList.clear();
+        this.nextClueNumberProperty.set(new ClueNumber());
     }
     
 //    public void removeClue(Clue oldClue){
