@@ -7,6 +7,7 @@ package puzzled.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
@@ -23,8 +24,10 @@ import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -36,6 +39,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import org.fxmisc.flowless.Cell;
+import org.fxmisc.flowless.VirtualFlow;
 
 /**
  *
@@ -165,12 +170,7 @@ public class Clue extends Dependable implements Comparable<Clue> {
         Predicate<Clue> firstMajor = i -> (i.getClueNumber().getMajor() == clueMajor);
         FilteredList<Clue> filteredClues = new FilteredList(clues, firstMajor);
         
-        
-//            tooltip.textProperty().bind(Clue.clueTooltip(clues,clueMajor));
-        VBox vbox = new VBox();
-        ObservableList<Text> textArray;
-
-        textArray = filteredClues.stream().map( clue -> {
+        Function<Clue, Text> textmapper = clue -> {
             Text clueText = new Text();
             clueText.setFont(Font.font(Font.getDefault().getName(), FontWeight.BOLD, Font.getDefault().getSize()));
             //bind clue text
@@ -180,47 +180,36 @@ public class Clue extends Dependable implements Comparable<Clue> {
                     Bindings.when(clue.activeProperty).then(Color.BLUEVIOLET).otherwise(Color.GRAY)
                     );
             return clueText;
-        }).collect(Collectors.toCollection(FXCollections::observableArrayList));
-        vbox.getChildren().setAll(textArray);
-        tooltip.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        };
+//                
+        //distinct is not required, but it saves creating a new class that omits the .distinct() stream method 
+        ObservableList<Text> textList = new DistinctMappingList<>(filteredClues, textmapper);
+        
+        VBox vbox = new VBox();
+        Bindings.bindContent(vbox.getChildren(), textList);
+        
+        //this is probably the thing that took me the most time figuring out
+        //without these bindings, it looks as if the filtered textList binding does not
+        //react to new clues
+        tooltip.prefWidthProperty().bind(vbox.widthProperty());
+        tooltip.prefHeightProperty().bind(vbox.heightProperty());
         tooltip.setGraphic(vbox);
-            
-        label.setTooltip(tooltip); 
+        tooltip.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        
+        label.setTooltip(tooltip);
         return label;
     }
     
+    private static Text clueText(Clue clue) {
+        Text clueText = new Text();
+        clueText.setFont(Font.font(Font.getDefault().getName(), FontWeight.BOLD, Font.getDefault().getSize()));
+        //bind clue text
+        clueText.textProperty().bind(clue.getClueNumber().clueNumberStringProperty().concat(" -> ").concat(clue.clueTextProperty));
+        //bind clue colour
+        clueText.fillProperty().bind(
+                Bindings.when(clue.activeProperty).then(Color.BLUEVIOLET).otherwise(Color.GRAY)
+                );
+        return clueText;
+    }
     
-    
-//    public static StringBinding clueTooltip(ObservableList<Clue> clues, Integer clueMajor) {
-//        Predicate<Clue> firstMajor = i -> (i.getClueNumber().getMajor() == clueMajor);
-//        FilteredList<Clue> filteredlist = new FilteredList(clues, firstMajor);
-//
-//        List<StringProperty> dependencies = new ArrayList<>();
-//        filteredlist.forEach(clue -> dependencies.add(clue.clueTextProperty()));
-//        
-////        javafx.scene.layout.VBox textFlow = new javafx.scene.layout.VBox();
-////        
-////        for (Clue clue : clues) {
-////            
-////        }
-////        Text text1 = new Text("Big italic red text");
-////        text1.setFill(Color.RED);
-//////        text1.setFont(Font.font("Helvetica", FontPosture.ITALIC, 40));
-////        Text text2 = new Text(" little bold blue text");
-////        text2.setFill(Color.BLUE);
-//////        text2.setFont(Font.font("Helvetica", FontWeight.BOLD, 10));
-////        text1, text2);  
-//////        HBox hbox = new HBox(textFlow);
-//////        textFlow.setPrefHeight(100);
-//////        System.out.println("computed value -> "+textFlow.c);
-//////
-////        Tooltip tooltip = new Tooltip();
-//////        tooltip.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-////        tooltip.setGraphic(textFlow);
-////        label.setTooltip(tooltip); //else we get a NPE
-//        
-//        return Bindings.createStringBinding( 
-//                    () ->  filteredlist.stream().map(e -> e.displayClue()).collect(Collectors.joining("\n")),
-//                    filteredlist,FXCollections.observableArrayList(dependencies));
-//    }
 }

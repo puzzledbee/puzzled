@@ -54,6 +54,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
@@ -169,6 +170,9 @@ public class PuzzledController implements Initializable {
     //connects with nested controller?
     @FXML private Parent clueTab;
     @FXML private ClueTabController clueTabController; // $embeddedElement+Controller
+    @FXML private Button debugbutton;
+    @FXML private VBox debugarea;
+    
     
 //    @FXML
     private SlideOutPane soPane;

@@ -152,7 +152,7 @@
                                           </ScrollPane>
                                           <Button id="minus" fx:id="zoomOutButton" mnemonicParsing="false" onAction="#zoomOutAction" snapToPixel="false" styleClass="cirlcebutton" text="-" textAlignment="CENTER" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="10.0" />
                                           <Button id="plus" fx:id="zoomInButton" mnemonicParsing="false" onAction="#zoomInAction" snapToPixel="false" styleClass="cirlcebutton" text="+" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="10.0" />
-                                          <HBox fx:id="clueMajorGlyphBox" alignment="CENTER_RIGHT" prefHeight="38.0" prefWidth="721.0" styleClass="glyphbox" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="233.0" />
+                                          <HBox fx:id="clueMajorGlyphBox" alignment="CENTER_RIGHT" prefHeight="38.0" prefWidth="919.0" styleClass="glyphbox" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="233.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane fx:id="dependencyPane" mouseTransparent="true" prefHeight="200.0" prefWidth="200.0">
@@ -171,7 +171,16 @@
                          <fx:include id="clueTab" fx:id="clueTab" source="ClueTab.fxml" />
                      </content>
                   </Tab>
-                <Tab text="Answers" />
+                <Tab text="Answers">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="debugbutton" layoutX="92.0" layoutY="66.0" mnemonicParsing="false" text="Button" />
+                              <VBox fx:id="debugarea" layoutX="199.0" layoutY="52.0" prefHeight="256.0" prefWidth="442.0" />
+                              <VBox fx:id="debugarea1" layoutX="199.0" layoutY="300.0" prefHeight="256.0" prefWidth="442.0" />
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
               </tabs>
             </TabPane>
           </center>
