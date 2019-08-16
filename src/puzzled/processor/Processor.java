@@ -251,21 +251,26 @@ public class Processor {
 //        System.out.println("commonality invoked");
         HashMap<ItemPair,Relationship> relationshipTable = logicProblem.getRelationshipTable();
         
-//        int i = 1;
         HashSet<CategoryPair> categoryPairs = logicProblem.getCategoryPairs();
         
+//        System.out.println("\n\n\n");
         for (CategoryPair categoryPair : categoryPairs) {
-        //for (Category cat1 : logicProblem.getCategories()){
-        //    for (Category cat2 : logicProblem.getCategories()){
-        //        if (cat1!=cat2) {
             Category cat1 = categoryPair.first();
             Category cat2 = categoryPair.last();
-        //for (Category cat1 : logicProblem.getCategories()){
-        //    for (Category cat2 : logicProblem.getCategories()){
-        //        if (cat1!=cat2) {
+            
+            
+//            System.out.println("assessing "+cat1.getName()+" vs "+cat2.getName());
+            
+            //"vertical search"
             for (Item item1 : cat1.getItems()){
+                
                 ArrayList<Item> candidateList = new ArrayList<Item>();
                 ArrayList<Dependable> predecessors1 = new ArrayList<Dependable>();
+                
+                //for a given item and item set in a category pair, stack all 
+                //unknow values and mark them as candidates
+                //then try to find common VALUE_NO for each of the candidates
+                
                 for (Item item2 : cat2.getItems()){
                     Relationship sourceRelationship = relationshipTable.get(new ItemPair(item1,item2));
                     if (sourceRelationship.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
@@ -273,10 +278,21 @@ public class Processor {
                         predecessors1.add(sourceRelationship);
                     }
                 }
-//                        System.out.println("assessing "+cat1.getName()+","+item1.getName()+" vs "+cat2.getName()+"  -> size: "+searchList.size());
+//                System.out.println("\t\tfor item " + item1 + " -> candidate size: "+candidateList.size());
+                
+                //count the stack
+                //stacks of size - 1 are tackled through uniqueness
+                //stacks of 1 would be similarly tackled if another category had n-1 VALUE_NO from which a relationship 
+                //could be inferred
+                //the next consideration is we want to avoid double searching
+                //so we promote the stacks that are less than half on the basis
+                //(the algorithm would find both otherwise)
                 if (candidateList.size()>1 && candidateList.size()<=cat2.getNumItems()/2) {
+//                if (candidateList.size()>1 && candidateList.size()<cat2.getNumItems()-1) {
 //                    System.out.println("found commonality candidate "+cat1.getName()+","+item1.getName()+" vs "+cat2.getName());
                     for (Category catSearch: logicProblem.getCategoriesList()) {
+                        //looking to interpolate in another region
+                        //away from the intersection under investigation (aka stack)
                         if (catSearch!=cat1 && catSearch!=cat2) {
                             for (Item itemSearch : catSearch.getItems()) {
                                 ArrayList<Item> searchList = new ArrayList<Item>();
@@ -288,6 +304,9 @@ public class Processor {
                                         predecessors2.add(searchRelationship);
                                     }
                                 }
+                                
+                               //the search list will contain only those relationships that have VALUE_NO
+                               //matching ALL the VALUE_UNKNOWN from the search list
                                 if (searchList.size()==candidateList.size()) {
                                     //System.out.println("discovered new commonalisty for " + cat1.getName()+","+item1.getName()+" vs "+cat2.getName() + " at "+catSearch.getName()+","+itemSearch.getName());
                                     predecessors1.addAll(predecessors2); //merge predecessors
@@ -302,6 +321,67 @@ public class Processor {
                     }
                 }
             }
+            //"horizontal search"
+            for (Item item1 : cat2.getItems()){
+                
+                ArrayList<Item> candidateList = new ArrayList<Item>();
+                ArrayList<Dependable> predecessors1 = new ArrayList<Dependable>();
+                
+                //for a given item and item set in a category pair, stack all 
+                //unknow values and mark them as candidates
+                //then try to find common VALUE_NO for each of the candidates
+                
+                for (Item item2 : cat1.getItems()){
+                    Relationship sourceRelationship = relationshipTable.get(new ItemPair(item1,item2));
+                    if (sourceRelationship.getValue()==Relationship.ValueType.VALUE_UNKNOWN) {
+                        candidateList.add(item2);
+                        predecessors1.add(sourceRelationship);
+                    }
+                }
+//                System.out.println("\t\tfor item " + item1 + " -> candidate size: "+candidateList.size());
+                
+                //count the stack
+                //stacks of size - 1 are tackled through uniqueness
+                //stacks of 1 would be similarly tackled if another category had n-1 VALUE_NO from which a relationship 
+                //could be inferred
+                //the next consideration is we want to avoid double searching
+                //so we promote the stacks that are less than half on the basis
+                //(the algorithm would find both otherwise)
+                if (candidateList.size()>1 && candidateList.size()<=cat2.getNumItems()/2) {
+//                if (candidateList.size()>1 && candidateList.size()<cat2.getNumItems()-1) {
+//                    System.out.println("found commonality candidate "+cat1.getName()+","+item1.getName()+" vs "+cat2.getName());
+                    for (Category catSearch: logicProblem.getCategoriesList()) {
+                        //looking to interpolate in another region
+                        //away from the intersection under investigation (aka stack)
+                        if (catSearch!=cat1 && catSearch!=cat2) {
+                            for (Item itemSearch : catSearch.getItems()) {
+                                ArrayList<Item> searchList = new ArrayList<Item>();
+                                ArrayList<Dependable> predecessors2 = new ArrayList<Dependable>();
+                                for (Item candidate : candidateList) {
+                                    Relationship searchRelationship = relationshipTable.get(new ItemPair(itemSearch,candidate));
+                                    if (searchRelationship.getValue()==Relationship.ValueType.VALUE_NO) {
+                                        searchList.add(itemSearch);
+                                        predecessors2.add(searchRelationship);
+                                    }
+                                }
+                                
+                               //the search list will contain only those relationships that have VALUE_NO
+                               //matching ALL the VALUE_UNKNOWN from the search list
+                                if (searchList.size()==candidateList.size()) {
+                                    //System.out.println("discovered new commonalisty for " + cat1.getName()+","+item1.getName()+" vs "+cat2.getName() + " at "+catSearch.getName()+","+itemSearch.getName());
+                                    predecessors1.addAll(predecessors2); //merge predecessors
+                                    Processor.setRelationship(logicProblem, applyChanges, 
+                                            relationshipTable.get(new ItemPair(item1,itemSearch)), 
+                                            Relationship.ValueType.VALUE_NO, Relationship.LogicType.COMMON,
+                                            predecessors1.toArray(new Relationship[predecessors1.size()]));
+//                                    relationshipTable.get(new ItemPair(item1,itemSearch)).setValue(Relationship.ValueType.VALUE_NO, Relationship.LogicType.COMMON,predecessors1.toArray(new Relationship[predecessors1.size()]));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
     

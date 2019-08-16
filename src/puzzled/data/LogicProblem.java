@@ -204,6 +204,7 @@ public class LogicProblem {
 
     //TreeSet are ordered, which means for each pair in the HashSet, the 
     //two categories will be ordered naturally (based on index)
+    //pairs will contain mutually exclusive categories
     public HashSet<CategoryPair> getCategoryPairs() {
         HashSet<CategoryPair> categoryPairs = new HashSet();
         for (Category catA : categoriesList) {

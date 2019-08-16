@@ -189,8 +189,8 @@ public class Clue extends Dependable implements Comparable<Clue> {
         Bindings.bindContent(vbox.getChildren(), textList);
         
         //this is probably the thing that took me the most time figuring out
-        //without these bindings, it looks as if the filtered textList binding does not
-        //react to new clues
+        //without these bindings, it looks as if the filtered textList binding in the 
+        //VBox container does not react to new clues
         tooltip.prefWidthProperty().bind(vbox.widthProperty());
         tooltip.prefHeightProperty().bind(vbox.heightProperty());
         tooltip.setGraphic(vbox);
