@@ -135,9 +135,9 @@
 .glyphbox .virtual-flow .label {
     -fx-background-radius: 2em;
     -fx-border-radius: 2em;
-    -fx-border-color: blueviolet;
+    /*-fx-border-color: blueviolet;*/
     
-                /*top right bottom left*/
+    /*top right bottom left*/
     -fx-padding: 0 10 0 10;
     /*-fx-margins: 4 40 4 4;*/
     
@@ -146,9 +146,30 @@
     -fx-max-width: 34px;
     -fx-font-weight: bold;
     -fx-background-color: white;
-    -fx-text-fill: blueviolet;
+    /*-fx-text-fill: blueviolet;*/
     -fx-alignment:CENTER;
 }
+
+.glyphbox .virtual-flow .label#cluesactive {
+    -fx-border-color: blueviolet;
+    -fx-text-fill: blueviolet;
+}
+
+.glyphbox .virtual-flow .label#cluesinactive {
+    -fx-border-color: gray;
+    -fx-text-fill: gray;
+}
+.glyphbox .virtual-flow .label#cluespartiallyactive {
+    -fx-border-color: blueviolet;
+    -fx-border-style:dashed;
+    /*-fx-stroke: blueviolet;*/
+    /*-fx-stroke-width: 5;*/
+    /*-fx-stroke-dash-array: 5 5;*/
+    /*-fx-stroke-dash-offset: 6;*/
+    /*-fx-stroke-line-cap: butt;*/
+    -fx-text-fill: blueviolet;
+}
+
 
 .glyphbox .virtual-flow .label:hover {
     -fx-background-color: blueviolet;

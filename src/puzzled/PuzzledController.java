@@ -88,12 +88,12 @@ import org.fxmisc.flowless.VirtualFlow;
 import puzzled.UI.Grid;
 import puzzled.UI.SlideOutPane;
 import puzzled.data.Clue;
-import static puzzled.data.Clue.labelGenerator;
 import puzzled.data.DistinctMappingList;
 import puzzled.data.LogicProblem;
 import puzzled.data.Relationship;
 import puzzled.processor.Parser;
 import puzzled.processor.Processor;
+import static puzzled.data.Clue.majorGlyphGenerator;
 
 /**
  *
@@ -170,8 +170,7 @@ public class PuzzledController implements Initializable {
     //connects with nested controller?
     @FXML private Parent clueTab;
     @FXML private ClueTabController clueTabController; // $embeddedElement+Controller
-    @FXML private Button debugbutton;
-    @FXML private VBox debugarea;
+
     
     
 //    @FXML
@@ -776,9 +775,8 @@ public class PuzzledController implements Initializable {
 
         //https://github.com/FXMisc/Flowless
         VirtualFlow<Integer,Cell<Integer,Label>> vflow = 
-                    VirtualFlow.createHorizontal(
-                            mappedcluemajors.sorted(),
-                            element -> org.fxmisc.flowless.Cell.wrapNode(Clue.labelGenerator(this.clues,element)),
+                    VirtualFlow.createHorizontal(mappedcluemajors.sorted(),
+                            element -> org.fxmisc.flowless.Cell.wrapNode(Clue.majorGlyphGenerator(this.clues,element)),
                             VirtualFlow.Gravity.REAR);
 //        vflow.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE );
 //        clueMajorGlyphBox.getChildren().clear(); //for reset functionality

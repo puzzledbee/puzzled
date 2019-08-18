@@ -171,16 +171,7 @@
                          <fx:include id="clueTab" fx:id="clueTab" source="ClueTab.fxml" />
                      </content>
                   </Tab>
-                <Tab text="Answers">
-                     <content>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Button fx:id="debugbutton" layoutX="92.0" layoutY="66.0" mnemonicParsing="false" text="Button" />
-                              <VBox fx:id="debugarea" layoutX="199.0" layoutY="52.0" prefHeight="256.0" prefWidth="442.0" />
-                              <VBox fx:id="debugarea1" layoutX="199.0" layoutY="300.0" prefHeight="256.0" prefWidth="442.0" />
-                           </children>
-                        </AnchorPane>
-                     </content></Tab>
+                <Tab text="Answers" />
               </tabs>
             </TabPane>
           </center>

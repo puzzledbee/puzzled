@@ -62,6 +62,10 @@ public class Processor {
             
  
     //public for JUnit
+    
+    //this static method resolves the rest of a subrow and rest of subcolumn
+    // (within a subgrid)
+    //when a relationship between two items is set to VALUE_YES
     public static void cross(LogicProblem logicProblem, boolean applyChanges) 
             throws RelationshipConflictException {
 //        System.out.println("cross invoked");
@@ -254,6 +258,7 @@ public class Processor {
         HashSet<CategoryPair> categoryPairs = logicProblem.getCategoryPairs();
         
 //        System.out.println("\n\n\n");
+        //define source subgrid
         for (CategoryPair categoryPair : categoryPairs) {
             Category cat1 = categoryPair.first();
             Category cat2 = categoryPair.last();
@@ -262,6 +267,7 @@ public class Processor {
 //            System.out.println("assessing "+cat1.getName()+" vs "+cat2.getName());
             
             //"vertical search"
+            //subrow/column
             for (Item item1 : cat1.getItems()){
                 
                 ArrayList<Item> candidateList = new ArrayList<Item>();

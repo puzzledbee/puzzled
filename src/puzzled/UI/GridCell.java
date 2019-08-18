@@ -62,6 +62,8 @@ public class GridCell extends StackPane {
         
         this.highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.getLogicType().toString(),linkedRelationship.logicTypeProperty()));
         
+        
+        //is this necessary or can we get away with more bindings?
         linkedRelationship.explainProperty().addListener((e,oldValue,newValue) -> {
             if (newValue==true) {
                 this.getStyleClass().add("highlight-PREDECESSOR");
@@ -72,28 +74,27 @@ public class GridCell extends StackPane {
         });
         
         
-        //graphical representation of the cell
+        //Graphical representation of the cell (all possibilities)
         //rectangle overlay for mouse events, all others elements are transparent to the mouse
-        //VALUE_YES
+
+        //TRUE marker
         Circle circle = new Circle((float)cellwidth*2/5,Color.TRANSPARENT);
-        //VALUE_NO
-        Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
-        Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );
-        
         circle.setMouseTransparent(true);
         circle.getStyleClass().add("o");
-        //circle.relocate(5, 5);
-        
+        //visibility is further constrained by the layer visibility configured through the View menu
         circle.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_YES).and(linkedRelationship.appliedProperty()));
         
-        //line1.setMouseTransparent(true);
+        //FALSE marker
+        Line line1 = new Line(5,5,cellwidth -5 ,cellwidth -5 );
+        Line line2 = new Line(cellwidth -5 ,5,5,cellwidth -5 );
         line1.getStyleClass().add("x");
         line1.setMouseTransparent(true);
         line2.getStyleClass().add("x");
         line2.setMouseTransparent(true);
-        //xPane.getChildren().addAll(line1,line2);
+        //visibility is further constrained by the layer visibility configured through the View menu
         line1.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_NO).and(linkedRelationship.appliedProperty()));
         line2.visibleProperty().bind(linkedRelationship.valueProperty().isEqualTo(ValueType.VALUE_NO).and(linkedRelationship.appliedProperty()));
+
 
         ContextMenu contextMenu = this.buildContextMenu();
         cellRectangle.setOnMouseClicked(e -> contextMenu.show(cellRectangle, Side.RIGHT, 0, 0)); 

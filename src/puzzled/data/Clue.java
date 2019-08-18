@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
@@ -132,7 +133,7 @@ public class Clue extends Dependable implements Comparable<Clue> {
         return this.activeProperty;
     }
     
-    public boolean getActive() {
+    public boolean isActive() {
         return this.activeProperty.get();
     }
     
@@ -163,7 +164,7 @@ public class Clue extends Dependable implements Comparable<Clue> {
     }
     
     
-    public static Label labelGenerator(ObservableList<Clue> clues, Integer clueMajor) {
+    public static Label majorGlyphGenerator(ObservableList<Clue> clues, Integer clueMajor) {
         Label label = new Label(clueMajor.toString());
         Tooltip tooltip = new Tooltip();//else we get a NPE
         
@@ -181,11 +182,34 @@ public class Clue extends Dependable implements Comparable<Clue> {
                     );
             return clueText;
         };
+        
+        //the technique below creates a property binding from an observable
+        //list that also reacts to property changes in the individual elements
+        //inspired from https://stackoverflow.com/questions/46300540/javafx-how-to-make-a-binding-to-a-list-of-properties
+        List<BooleanProperty> l = filteredClues.stream()
+            .map(c -> c.activeProperty())
+            .collect(Collectors.toList());
 //                
+        ObservableList<BooleanProperty> cluewatcher = 
+                FXCollections.observableArrayList(w -> new Observable[] {w});
+        
+        cluewatcher.addAll(l);
+        
+        label.idProperty().bind(Bindings.when(
+                Bindings.createBooleanBinding(
+            () -> cluewatcher.stream().allMatch(BooleanProperty::get), cluewatcher))
+            .then("cluesactive").otherwise(
+                    Bindings.when(Bindings.createBooleanBinding(
+                    () -> cluewatcher.stream().noneMatch(BooleanProperty::get), cluewatcher))
+                    .then("cluesinactive")
+                    .otherwise("cluespartiallyactive")
+            ));
+        
         //distinct is not required, but it saves creating a new class that omits the .distinct() stream method 
         ObservableList<Text> textList = new DistinctMappingList<>(filteredClues, textmapper);
         
         VBox vbox = new VBox();
+        
         Bindings.bindContent(vbox.getChildren(), textList);
         
         //this is probably the thing that took me the most time figuring out
