@@ -162,19 +162,14 @@
 .glyphbox .virtual-flow .label#cluespartiallyactive {
     -fx-border-color: blueviolet;
     -fx-border-style:dashed;
-    /*-fx-stroke: blueviolet;*/
-    /*-fx-stroke-width: 5;*/
-    /*-fx-stroke-dash-array: 5 5;*/
-    /*-fx-stroke-dash-offset: 6;*/
-    /*-fx-stroke-line-cap: butt;*/
     -fx-text-fill: blueviolet;
 }
 
-
-.glyphbox .virtual-flow .label:hover {
+.glyphbox .virtual-flow .label#cluespartiallyactive:hover, .glyphbox .virtual-flow .label#cluesactive:hover, .glyphbox .virtual-flow .label#cluesinactive:hover {
     -fx-background-color: blueviolet;
-    -fx-text-fill: white;
+    -fx-text-fill: white;    
 }
+
 .glyphbox .virtual-flow .label .tooltip {
     -fx-background-color: white;
     -fx-text-fill: blueviolet;
