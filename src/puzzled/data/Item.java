@@ -20,19 +20,28 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Item implements DataElement {
     
     private StringProperty nameProperty = new SimpleStringProperty();
-    @XmlTransient
-    private Category parent;
+//    @XmlTransient
+    
+    //it is necessary for a given item to have a relationship (pointer) to
+    //its' parent category so that 
+    //two Items can be compared and be different if they are of the same "name"
+    //but are in different category
+    //this is useful if for example two categories both use colours or times
+    //e.g. arrival and departure times
+    
+    private Category parentCategory;
     
     //necessary for unmarshalling
     public Item() {
     }
     
-    public Item(String mytext){
+    public Item(String mytext, Category category){
         nameProperty.set(mytext);
+        this.parentCategory = category;
     }
     
-    public void setParent(Category arg_parent){
-        this.parent = arg_parent;
+    public void setParentCategory(Category arg_parent){
+        this.parentCategory = arg_parent;
     }
     
     public void setName(String newText) {
@@ -49,10 +58,10 @@ public class Item implements DataElement {
     }
     
     public int getItemIndex() {
-        return parent.getItems().indexOf(this);
+        return parentCategory.getItems().indexOf(this);
     }
     public int getCatIndex() {
-        return parent.getParent().getCategoriesList().indexOf(parent);
+        return parentCategory.getParent().getCategoriesList().indexOf(parentCategory);
     }
     
     @Override

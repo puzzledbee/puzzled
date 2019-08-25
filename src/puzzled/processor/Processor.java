@@ -387,8 +387,18 @@ public class Processor {
                     }
                 }
             }
-
         }
+    }
+    
+    public static void pseudoTrueTuples(LogicProblem logicProblem, boolean applyChanges)
+        throws RelationshipConflictException {
+        //inspired from Puzzle Baron's pseudo-true pairs, extended to multiple
+        //vertical and horizontal, within a subgrid        
+            //for i = 2 to n-2
+                //generate sets of (vertical) VALUE_NO for each of n (horizontal) items (set of sets)
+                    //for every combination https://www.baeldung.com/java-combinations-algorithm
+                        //set intersection size = n-i elements? https://www.geeksforgeeks.org/sets-intersection-function-guava-java/
+                            //mark all other n-i items false for these i options
     }
     
     private static void setRelationship(LogicProblem logicProblem,

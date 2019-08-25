@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -145,7 +146,7 @@ public class LogicProblem {
         for (Category cat : getCategoriesList()){
             cat.setParent(this);
             for (Item item : cat.getItems()) {
-                item.setParent(cat);
+                item.setParentCategory(cat);
             }
         }
         
@@ -179,7 +180,22 @@ public class LogicProblem {
 //        positionGridCell(testSet);
     }
 
+    //returns the object item
+    public Item findItem(String itemName) {
+        List<Item> fullItemList = new ArrayList();
+        this.categoriesList.forEach(cat -> fullItemList.addAll(cat.getItems()));
+        Item item = fullItemList.stream()
+            .filter(i -> itemName.equals(i.getName()))
+            .findAny()
+            .orElse(null);
+        return item;
+    }
     
+        
+//    public Category findItemCategory(String itemName) {
+//        return 
+//    }
+  
   
     //public FilteredList<Pair<ClueNumber, Clue>> getFilteredClues() {
     //    return new FilteredList<>(clues, row -> row.getValue().getType() != Clue.ClueType.CONSTRAINT);

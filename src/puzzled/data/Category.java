@@ -49,17 +49,20 @@ public class Category implements DataElement {
     public Category(){
     }
     
-    
-    
-    public Category(String myTitle,List<Item> myItems) {
-        nameProperty.set(myTitle);
-        items = myItems;
+    public Category(String... catInfo) {
+        this.nameProperty.set(catInfo[0].trim());
+        if (catInfo.length>1) categoryTypeProperty.set(CategoryType.valueOf(catInfo[1].trim()));
+//        items = myItems;
     }
     
     public Category(List<Item> myItems, String... catInfo){ //will set text and type
-        items = myItems;
-        nameProperty.set(catInfo[0].trim());
-        if (catInfo.length>1) categoryTypeProperty.set(CategoryType.valueOf(catInfo[1].trim()));
+        this.items = myItems;
+        this.nameProperty.set(catInfo[0].trim());
+        if (catInfo.length>1) this.categoryTypeProperty.set(CategoryType.valueOf(catInfo[1].trim()));
+    }
+    
+    public void setItems(List<Item> myItems) {
+        this.items = myItems;
     }
     
     public int getCatIndex() {

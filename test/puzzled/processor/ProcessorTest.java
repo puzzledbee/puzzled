@@ -49,7 +49,7 @@ public class ProcessorTest {
     
     public ProcessorTest() {
         try {
-            this.logicProblem = PuzzledFileIO.loadProblem("resources/samples/problem47.lps");
+            this.logicProblem = PuzzledFileIO.loadProblem("resources/samples/problem47.lpd");
             this.logicProblem.initializeRelationshipTable();
         } catch (Exception e) {
             System.out.println("unable to load problem file");
@@ -97,6 +97,52 @@ public class ProcessorTest {
             }
         } else fail("The HashSet of CategoryPairs is empty");
     }
+    
+    
+    
+    
+    @Test
+    public void testPseudoTrueTuples() throws Exception {
+        System.out.println("pseudo true tuples");
+//        Processor.process(this.logicProblem, this.controller);
+        HashMap<ItemPair,Relationship> relationshipTable = this.logicProblem.getRelationshipTable();
+        HashSet<CategoryPair> categoryPairs = this.logicProblem.getCategoryPairs();
+        IntegerProperty newlyDiscoveredRelationshipsProperty = new SimpleIntegerProperty(0); 
+            
+//        System.out.println(categoryPairs);
+        
+        if (!categoryPairs.isEmpty()) {
+            CategoryPair categoryPair = categoryPairs.iterator().next();
+            Category cat1 = categoryPair.first();
+            Category cat2 = categoryPair.last();
+            
+            Item item1 = cat1.getItems().get(0);
+            Item item2 = cat2.getItems().get(0);
+            ItemPair itemPair = new ItemPair(item1,item2);
+            Relationship relationship = relationshipTable.get(itemPair);
+            relationship.setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT, true,
+                    new Constraint(itemPair,Relationship.ValueType.VALUE_YES));
+            
+            //LogicProblem logicProblem, IntegerProperty newlyDiscoveredRelationshipsProperty, 
+            //boolean automaticProcessing, boolean applyChanges
+            Processor.pseudoTrueTuples(logicProblem,true);
+            
+            for (Item testItem : cat2.getItems()) {
+                if (testItem != item2) {
+                    ItemPair testPair = new ItemPair(item1,testItem);
+                    assertTrue("failing at "+testPair,relationshipTable.get(testPair).getValue() == Relationship.ValueType.VALUE_NO);
+                }
+            }
+            
+            for (Item testItem : cat1.getItems()) {
+                if (testItem != item1) {
+                    ItemPair testPair = new ItemPair(testItem, item2);
+                    assertTrue("failing at "+testPair,relationshipTable.get(testPair).getValue() == Relationship.ValueType.VALUE_NO);
+                }
+            }
+        } else fail("The HashSet of CategoryPairs is empty");
+    }
+    
 
     @Ignore
     @Test

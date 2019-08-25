@@ -106,7 +106,6 @@
     -fx-min-height: 34px;
     -fx-max-width: 34px;
     -fx-max-height: 34px;
-    -fx-font-weight: bold;
 }
 
 .cirlcebutton#plus {
@@ -178,14 +177,6 @@
     -fx-background-radius: 10;
 }
 
-.clue_NORMAL {
-    -fx-border-color: blueviolet;
-}
-
-.clue_SPECIAL {
-    -fx-border-color: red;
-}
-
 .tooltip {
     -fx-background-color: blueviolet;
 }
@@ -197,7 +188,6 @@
 .notification-pane .notification-bar > .pane > .label {
     -fx-text-fill: white;
 }
-
 
 
 .gridCell:hover {

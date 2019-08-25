@@ -63,19 +63,32 @@ public class PuzzledFileIO {
             newProblem = new LogicProblem(lines.get(0).split(";"));
             int i=1;
             int catIndex=1;
+            int lastItemListSize=0;
             Boolean problemTextToggle = false;
             String problemText = "";
             while (i < lines.size()) {
+                                        //&& next line is an item
                 if (i < lines.size()-1 && lines.get(i+1).startsWith("\t")) {
+                    String[] catInfo = lines.get(catIndex).split(";");
+                    Category newCat = new Category(catInfo);
                     i++;
                     ArrayList<Item> items = new ArrayList<Item>();
                     while (i < lines.size() && lines.get(i).startsWith("\t")) {
 //                        System.out.println("adding item "+lines.get(i).trim()+" ("+i+")");
-                        items.add(new Item(lines.get(i++).trim()));
+                        items.add(new Item(lines.get(i++).trim(), newCat));
                     }
+                    
+                    //consistency check
+                    if (catIndex>1 && items.size() != lastItemListSize) {
+                        // inconsitency in the number of items per category
+                        // can't be checked while seeding first category
+                        //throw exception
+                    }
+                    lastItemListSize = items.size();
+                    
+                    
+                    newCat.setItems(items);
 //                        System.out.println("adding category "+lines.get(catIndex)+" ("+catIndex+")");
-                    String[] catInfo = lines.get(catIndex).split(";");
-                    Category newCat = new Category(items,catInfo);
                     catIndex = i;
                     newProblem.addCategory(newCat);
                 } else {

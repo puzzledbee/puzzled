@@ -63,7 +63,7 @@ public class GridCell extends StackPane {
         this.highlight.bind(Bindings.createStringBinding(() -> linkedRelationship.getLogicType().toString(),linkedRelationship.logicTypeProperty()));
         
         
-        //is this necessary or can we get away with more bindings?
+        //is this necessary or can we get away with a binding to this' idProperty()?
         linkedRelationship.explainProperty().addListener((e,oldValue,newValue) -> {
             if (newValue==true) {
                 this.getStyleClass().add("highlight-PREDECESSOR");
