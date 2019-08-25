@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import puzzled.exceptions.MultipleMatchesException;
 
 /**
  *
@@ -181,15 +182,25 @@ public class LogicProblem {
     }
 
     //returns the object item
-    public Item findItem(String itemName) {
+    public Item searchItem(String itemName) throws MultipleMatchesException {
         List<Item> fullItemList = new ArrayList();
         this.categoriesList.forEach(cat -> fullItemList.addAll(cat.getItems()));
-        Item item = fullItemList.stream()
-            .filter(i -> itemName.equals(i.getName()))
-            .findAny()
-            .orElse(null);
-        return item;
+        
+        if (fullItemList.stream()
+                .filter(i -> itemName.equals(i.getName())).count() >1) {
+            throw new MultipleMatchesException(fullItemList.stream()
+                .filter(i -> itemName.equals(i.getName())).collect(Collectors.toList()));
+        } else {
+            Item item = fullItemList.stream()
+                .filter(i -> itemName.equals(i.getName()))
+                .findAny()
+                .orElse(null);
+            return item;
+        }
     }
+    
+    
+    
     
         
 //    public Category findItemCategory(String itemName) {

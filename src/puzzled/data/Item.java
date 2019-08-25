@@ -44,6 +44,10 @@ public class Item implements DataElement {
         this.parentCategory = arg_parent;
     }
     
+    public Category getParentCategory() {
+        return this.parentCategory;
+    }
+    
     public void setName(String newText) {
         nameProperty.set(newText);
     }
