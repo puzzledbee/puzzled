@@ -60,7 +60,7 @@ public class ProcessorTest {
 
     @Test
     public void testCross() throws Exception {
-        System.out.println("cross");
+        System.out.println("testing cross");
         HashMap<ItemPair,Relationship> relationshipTable = this.logicProblem.getRelationshipTable();
         IntegerProperty newlyDiscoveredRelationshipsProperty = new SimpleIntegerProperty(0); 
             
@@ -95,17 +95,12 @@ public class ProcessorTest {
         }
     }
     
-    
-    
-    
-    
     @Test
     public void testTranspose() throws Exception {
-        System.out.println("transpose");
+        System.out.println("testing transpose");
         HashMap<ItemPair,Relationship> relationshipTable = this.logicProblem.getRelationshipTable();
         IntegerProperty newlyDiscoveredRelationshipsProperty = new SimpleIntegerProperty(0); 
         List<ItemPair> pairList = new ArrayList<>();
-        
         
         //single VALUE_YES
         Item item1 = this.logicProblem.searchItem("Bettany");
@@ -115,7 +110,6 @@ public class ProcessorTest {
         relationship.setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT, true,
                 new Constraint(itemPair,Relationship.ValueType.VALUE_YES));
     
-        
         //threee VALUE_NO
         item1 = this.logicProblem.searchItem("Koenig");
         item2 = this.logicProblem.searchItem("Haley's Comet");
@@ -156,7 +150,7 @@ public class ProcessorTest {
 
     @Test
     public void testUniqueness() throws Exception {
-        System.out.println("uniqueness");
+        System.out.println("testing uniqueness");
     HashMap<ItemPair,Relationship> relationshipTable = this.logicProblem.getRelationshipTable();
         IntegerProperty newlyDiscoveredRelationshipsProperty = new SimpleIntegerProperty(0); 
         List<ItemPair> pairList = new ArrayList<>();
@@ -184,6 +178,8 @@ public class ProcessorTest {
             relationship.setValue(Relationship.ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT, true,
                     new Constraint(itemPair,Relationship.ValueType.VALUE_NO));
         }
+
+        
         
         Processor.uniqueness(logicProblem,true);
         
@@ -191,12 +187,48 @@ public class ProcessorTest {
                 relationshipTable.get(
                         new ItemPair(logicProblem.searchItem("Bettany"),logicProblem.searchItem("Starburst")))
                                 .getValue() == Relationship.ValueType.VALUE_YES);
+                               
+
+        pairList.clear();
+        
+        item1 = this.logicProblem.searchItem("Biography");
+        item2 = this.logicProblem.searchItem("15");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Fantasy");
+        item2 = this.logicProblem.searchItem("15");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Mystery");
+        item2 = this.logicProblem.searchItem("15");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Romance");
+        item2 = this.logicProblem.searchItem("15");
+        pairList.add(new ItemPair(item1,item2));
+    
+        for (ItemPair itemPair : pairList) {
+            Relationship relationship = relationshipTable.get(itemPair);
+            relationship.setValue(Relationship.ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT, true,
+                    new Constraint(itemPair,Relationship.ValueType.VALUE_NO));
+        }
+        
+        Processor.uniqueness(logicProblem,true);
+        
+        assertTrue("failing at Sci-Fi vs 15",
+                relationshipTable.get(
+                        new ItemPair(logicProblem.searchItem("Science-Fiction"),logicProblem.searchItem("15")))
+                                .getValue() == Relationship.ValueType.VALUE_YES);
+
+
+        
+        
     }
 
-    
+
     @Test
     public void testCommonality() throws Exception {
-        System.out.println("commonality");
+        System.out.println("testing commonality");
         HashMap<ItemPair,Relationship> relationshipTable = this.logicProblem.getRelationshipTable();
         IntegerProperty newlyDiscoveredRelationshipsProperty = new SimpleIntegerProperty(0); 
         List<ItemPair> pairList = new ArrayList<>();
@@ -237,43 +269,155 @@ public class ProcessorTest {
                                 .getValue() == Relationship.ValueType.VALUE_NO);
     }
     
-    @Ignore
     @Test
     public void testPseudoTrueTuples() throws Exception {
-        System.out.println("pseudo true tuples");
+        System.out.println("testing pseudo true tuples");
         HashMap<ItemPair,Relationship> relationshipTable = this.logicProblem.getRelationshipTable();
         IntegerProperty newlyDiscoveredRelationshipsProperty = new SimpleIntegerProperty(0); 
             
-        Item item1 = this.logicProblem.searchItem("Peyton");
-        Item item2 = this.logicProblem.searchItem("Haley's Comet");
-
-        Category cat1 = item1.getParentCategory();
-        Category cat2 = item2.getParentCategory();
-        ItemPair itemPair = new ItemPair(item1,item2);
-        Relationship relationship = relationshipTable.get(itemPair);
-        relationship.setValue(Relationship.ValueType.VALUE_YES, Relationship.LogicType.CONSTRAINT, true,
-                new Constraint(itemPair,Relationship.ValueType.VALUE_YES));
-
-        Processor.cross(logicProblem,true);
-        assertTrue("failing at Peyton vs Starburst",
-                relationshipTable.get(
-                        new ItemPair(logicProblem.searchItem("Peyton"),logicProblem.searchItem("Starburst")))
-                                .getValue() == Relationship.ValueType.VALUE_NO);
-
-
-        for (Item testItem : cat2.getItems()) {
-            if (testItem != item2) {
-                ItemPair testPair = new ItemPair(item1,testItem);
-                assertTrue("failing at "+testPair,relationshipTable.get(testPair).getValue() == Relationship.ValueType.VALUE_NO);
-            }
-        }
-
-        for (Item testItem : cat1.getItems()) {
-            if (testItem != item1) {
-                ItemPair testPair = new ItemPair(testItem, item2);
-                assertTrue("failing at "+testPair,relationshipTable.get(testPair).getValue() == Relationship.ValueType.VALUE_NO);
-            }
-        }
-    }
+        Item item1;
+        Item item2;
+        List<ItemPair> pairList = new ArrayList<>();
+        
+        System.out.println("\n\nfirst test case\nBettany&Donovan vs Haley's Comet;Never Again;Into the Fire");
+        
+        //vertical pairs
+        //set 6 VALUE_NO relationships
+        item1 = this.logicProblem.searchItem("Bettany");
+        item2 = this.logicProblem.searchItem("Haley's Comet");
+        pairList.add(new ItemPair(item1,item2));
     
+        item1 = this.logicProblem.searchItem("Bettany");
+        item2 = this.logicProblem.searchItem("Never Again");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Bettany");
+        item2 = this.logicProblem.searchItem("Into The Fire");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Donovan");
+        item2 = this.logicProblem.searchItem("Haley's Comet");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Donovan");
+        item2 = this.logicProblem.searchItem("Never Again");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Donovan");
+        item2 = this.logicProblem.searchItem("Into The Fire");
+        pairList.add(new ItemPair(item1,item2));
+    
+        for (ItemPair itemPair : pairList) {
+            Relationship relationship = relationshipTable.get(itemPair);
+            relationship.setValue(Relationship.ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT, true,
+                    new Constraint(itemPair,Relationship.ValueType.VALUE_NO));
+        }
+
+        Processor.pseudoTrueTuples(logicProblem,true);
+        
+        pairList.clear();
+        
+        //test 6 VALUE_NO relationships
+        item1 = this.logicProblem.searchItem("Elizabeth");
+        item2 = this.logicProblem.searchItem("Starburst");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Elizabeth");
+        item2 = this.logicProblem.searchItem("Passion Play");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Frederick");
+        item2 = this.logicProblem.searchItem("Starburst");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Frederick");
+        item2 = this.logicProblem.searchItem("Passion Play");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Peyton");
+        item2 = this.logicProblem.searchItem("Starburst");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Peyton");
+        item2 = this.logicProblem.searchItem("Passion Play");
+        pairList.add(new ItemPair(item1,item2));
+        
+        for (ItemPair itemPair : pairList) {
+            assertTrue("failing at vertical pairs -> "+ itemPair.first().getName() + " vs " + itemPair.last().getName(),
+                    relationshipTable.get(itemPair)
+                                    .getValue() == Relationship.ValueType.VALUE_NO);
+        }
+        
+        
+        pairList.clear();
+        
+        System.out.println("\n\nsecond test case\nChapman;Koenig;Wright vs Into The Fire & Passion Play");
+        
+        //horizontal pairs
+        //set 6 VALUE_NO relationships
+        item1 = this.logicProblem.searchItem("Chapman");
+        item2 = this.logicProblem.searchItem("Into The Fire");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Chapman");
+        item2 = this.logicProblem.searchItem("Passion Play");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Koenig");
+        item2 = this.logicProblem.searchItem("Into The Fire");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Koenig");
+        item2 = this.logicProblem.searchItem("Passion Play");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Wright");
+        item2 = this.logicProblem.searchItem("Into The Fire");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Wright");
+        item2 = this.logicProblem.searchItem("Passion Play");
+        pairList.add(new ItemPair(item1,item2));
+    
+        for (ItemPair itemPair : pairList) {
+            Relationship relationship = relationshipTable.get(itemPair);
+            relationship.setValue(Relationship.ValueType.VALUE_NO, Relationship.LogicType.CONSTRAINT, true,
+                    new Constraint(itemPair,Relationship.ValueType.VALUE_NO));
+        }
+
+        Processor.pseudoTrueTuples(logicProblem,true);
+        
+        pairList.clear();
+        
+        //test 6 VALUE_NO relationships
+        item1 = this.logicProblem.searchItem("Holden");
+        item2 = this.logicProblem.searchItem("Haley's Comet");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Holden");
+        item2 = this.logicProblem.searchItem("Never Again");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Holden");
+        item2 = this.logicProblem.searchItem("Starburst");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Rawlins");
+        item2 = this.logicProblem.searchItem("Haley's Comet");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Rawlins");
+        item2 = this.logicProblem.searchItem("Never Again");
+        pairList.add(new ItemPair(item1,item2));
+    
+        item1 = this.logicProblem.searchItem("Rawlins");
+        item2 = this.logicProblem.searchItem("Starburst");
+        pairList.add(new ItemPair(item1,item2));
+        
+        for (ItemPair itemPair : pairList) {
+            assertTrue("failing at horizontal pairs -> "+ itemPair.first().getName() + " vs " + itemPair.last().getName(),
+                    relationshipTable.get(itemPair)
+                                    .getValue() == Relationship.ValueType.VALUE_NO);
+        }       
+    }
 }

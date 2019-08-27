@@ -33,7 +33,7 @@ public class Relationship extends Dependable {
     }
     
     public static enum LogicType {
-        CONSTRAINT, CROSS, TRANSPOSE, UNIQUE, COMMON
+        CONSTRAINT, CROSS, TRANSPOSE, UNIQUE, COMMON, PSEUDOTRUE
     }
     
     private ObjectProperty<ValueType> valueProperty = new SimpleObjectProperty<ValueType>(this, "value" , ValueType.VALUE_UNKNOWN);
