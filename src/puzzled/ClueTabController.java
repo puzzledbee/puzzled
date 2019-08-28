@@ -7,24 +7,17 @@ package puzzled;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.util.Callback;
 import puzzled.data.Clue;
-import puzzled.data.ClueNumber;
 
 /**
  *
@@ -75,8 +68,7 @@ public class ClueTabController implements Initializable {
                     Clue clue = getTableView().getItems().get(getIndex());
                     clue.setActive(enableButton.isSelected());
 //                    System.out.println("toggling enabled to: "+clue.activeProperty());
-                    System.out.println("\t"+clue.getClueText());
-                    
+//                    System.out.println("\t"+clue.getClueText());
                 });
 
                 editButton.getStyleClass().add("cluetablebutton");

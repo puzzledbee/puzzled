@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -21,9 +22,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Point2D;
+import javafx.geometry.Side;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -196,6 +201,11 @@ public class Clue extends Dependable implements Comparable<Clue> {
                     .otherwise("cluespartiallyactive")
             ));
         
+        ContextMenu contextMenu = buildContextMenu(filteredClues,
+                Bindings.createBooleanBinding(
+                    () -> cluewatcher.stream().allMatch(BooleanProperty::get), cluewatcher));
+        label.setOnMouseClicked(e -> contextMenu.show(label, Side.RIGHT, 0, 0));
+        
         //distinct is not required, but it saves creating a new class that omits the .distinct() stream method 
         ObservableList<Text> textList = new DistinctMappingList<>(filteredClues, textmapper);
         
@@ -214,6 +224,37 @@ public class Clue extends Dependable implements Comparable<Clue> {
         label.setTooltip(tooltip);
         return label;
     }
+    
+    private static ContextMenu buildContextMenu(FilteredList<Clue> filteredClues, BooleanBinding allEnabled){
+        
+        ContextMenu contextMenu = new ContextMenu();
+                
+        //building up menus
+        MenuItem disableAllMenuItem = new MenuItem("Disable all");
+        //        <div>Icon made by <a href="http://www.amitjakhu.com" title="Amit Jakhu">Amit Jakhu</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+//        disableAllMenuItem.setGraphic(new ImageView("/icons/context-menus/x.png"));
+        disableAllMenuItem.disableProperty().bind(allEnabled.not());    
+        
+        disableAllMenuItem.setOnAction(e -> {
+                System.out.println("disabling");
+                filteredClues.stream().forEach(c -> c.setActive(false));
+        });
+
+        MenuItem enableAllMenuItem = new MenuItem("Enable all");
+                
+//        enableAllMenuItem.setGraphic(new ImageView("/icons/context-menus/o.png"));
+        //<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+        enableAllMenuItem.disableProperty().bind(allEnabled);  
+        enableAllMenuItem.setOnAction(e -> {
+                System.out.println("enabling");
+                filteredClues.stream().forEach(c -> c.setActive(true));
+        });
+        
+        contextMenu.getItems().addAll(disableAllMenuItem,enableAllMenuItem);
+        return contextMenu;
+    }
+    
     
     private static Text clueText(Clue clue) {
         Text clueText = new Text();

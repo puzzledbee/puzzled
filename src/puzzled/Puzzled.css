@@ -175,9 +175,20 @@
     -fx-border-color: blueviolet;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
+    -fx-show-duration: 20s
 }
 
-.tooltip {
+.glyphbox .virtual-flow .label .menu-item {
+    -fx-background-color: white;
+    -fx-border-color: white
+}
+
+.glyphbox .virtual-flow .label .menu-item:focused .label {
+    -fx-background-color: blueviolet;
+    -fx-text-fill: white
+}
+
+.label .tooltip {
     -fx-background-color: blueviolet;
 }
 
